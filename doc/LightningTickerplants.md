@@ -1,0 +1,949 @@
+---
+authors:
+    - Jeremy Lucid
+date: December 2018
+keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
+---
+# Lightning Tickerplants: Pay-per-ticker with micropayments on the Lightning network
+
+
+# Introduction
+
+[Lightning](https://lightning.network/lightning-network-paper.pdf) is a technology designed to dramatically scale blockchains, like Bitcoin, by enabling payments to be performed rapidly, with greater privacy and without a trusted third party. It is a Layer 2 infastructure which builds upon the security and [smart contract](https://en.wikipedia.org/wiki/Smart_contract) functionality of the underlying base blockchain, analagous to how the HTTP application layer protocol builds on an underlying and reliable TCP layer. 
+Lightning succeeds by allowing payments to be made off-chain, meaning the entire underlying (Bitcoin) network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (hundreds of a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most [rapidly growing](https://1ml.com/statistics) networks in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
+
+Currently, many Lightning applications (LApps) are in the early stages of development but include [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micro-paymement paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators and [micro-payment tipping](https://tippin.me/) services (twitter).
+Lightning payments are also highly applicable to the IoT space, as the network can be used used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of its key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456). For crypto currency exchanges,
+integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, which allows end users to subscribe to streaming futures data from the BitMEX and Kraken exchanges with Lightning payments.
+
+
+In this paper, we will explore Lightning network technology, and describe how one can use the qlnd library 
+to interact with a running Lighting node to create payment channels with peers, generate invoices for payment, 
+and route payments rapidly across the network. As an example of how lightning can be integrated into
+kdb+ based applications, this paper will describe how a standard kdb+ tickerplant can be easily modified 
+to accept payments for data on a per ticker basis, with near instant settlement and zero fees. 
+
+All tests were carried out using
+
+* kdb+ version 3.5 (2017.03.15) 
+* python 3.7.0
+* Bitcoin Core daemon version v0.17.1.0-gef70f9b52b851c7997a9f1a0834714e3eebc1fd8.
+* Lightning daemon (lnd) version 0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858
+
+Optional Software
+ * [qbitcoind](https://github.com/jlucid/qbitcoind) A q library to interact with a bitcoin node.
+   Used here to transfer funds from a bitcoin core wallet to a lightning wallet. For more info see [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
+
+The reader should be aware that the above Lightning daemon software, while recent, is still a Beta version, so
+caution should be taken when using. That is to say, users should keep funds held on Lightning payment channels to a minimum.
+
+# Overview of the Lightning Network
+
+The Lightning Network is a scaling solution being applied to Bitcoin, and other compatible blockchains, which enables
+trustless instant payments, together with improved privacy features. It is a layer-two solution which leverages the 
+security and smart contract functionality of the base layer Bitcoin network to create a system where transactions can
+be performed off-chain, meaning transaction confimations are not limited by the base layer settlement time.
+Instead transaction confirmation times are limited primarily by the latency between participants in the network, and their
+processing power. Often lightning payment confirmations times are of the same order as message transfers over modern 
+instant-messaging services.
+
+
+While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the lightning
+network allows for millions of transactions per second, including micro-payments of the order of thousands of a cent.
+This is accomplished through the creation of "payment-channels" between peers, wherein parties commit funds to the
+channel, and pay each other simply by updating the balance redeemable by each party.
+
+
+Below is an image taken from a Lightning node block explorer showing the distribution of public nodes
+and the known channels between them. The network has seen a dramatic growth over the past year, with
+the value held on lightning increasing continuously.
+
+![](lightningMap.JPG)
+
+
+# Installing and Configuring a Lightning node
+
+There are currently multiple implementations of the Lightning protocol, including [lnd](https://github.com/lightningnetwork/lnd) from [Lightning Labs](https://lightning.engineering/), [eclair](https://github.com/ACINQ/eclair) from [ACINQ](https://acinq.co/) and [c-lightning](https://github.com/ElementsProject/lightning) from [Blockstream](https://blockstream.com/technology/). 
+To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to specialise in different aspects of the technology, like mobile integration, browser plugins, and enterprise products, while retaining cross-compatibility.
+
+While multiple lightning implementations exist, the [qlnd](https://github.com/jlucid/qlnd) library discussed here is designed specifically to communicate with the `lnd` daemon from Lightning Labs. Therefore, the steps described below correspond only to the installation of this implementation.
+
+The steps are broken down into the following parts
+* Installation of the Bitcoin Core Full node, `bitcoind`  
+* Installation of the `lnd` daemon
+* Running `lnd` and creating a wallet
+
+## bitcoind
+
+In order to run `lnd`, it is required that a bitcoin full node daemon be running on the same host. 
+This is because the lightning node needs a way to communicate with the underlying blockchain in order to send
+on-chain payments, create channel open/close transactions and monitor relevant transactions on the network. 
+While there are novel approaches which do not require a local full node, such as [Neutrino](https://github.com/lightninglabs/neutrino), these are outside the scope of this paper.
+
+Detailed steps on how to install and run `bitcoind`, for different operating systems, can be found on the recommended [instructions](https://bitcoin.org/en/full-node#linux-instructions) page.
+
+For Linux based operating systems, the install procedure can be as simple as running
+```bash
+$sudo apt-get install bitcoind
+```
+
+Before starting the daemon, a `bitcoin.conf` file should be created in the install folder (usually $HOME/.bitcoin),
+as described previously in the whitepaper [Storing and Exploring the Bitcoin Blockchain](https://code.kx.com/q/wp/blockchain/?_ga=2.31949815.87606725.1550512369-1296260280.1520717656#installing-a-bitcoin-full-node).
+However, the sample `bitcoin.conf` file presented in that whitepaper should now be extended, as shown below, to
+include the [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/master/doc/zmq.md) wrapper which will allow the lightning
+node to be notified of events like the arrival of new blocks or transactions. Note that in the conf file below, the
+`rpcuser` and `rpcpassword` values need to be changed.
+
+```python
+# Maintain a full transaction index, used to query the node historically.
+txindex=1
+# [rpc]
+# Accept command line and JSON-RPC commands.
+server=1
+rpcuser=<username>
+rpcpassword=<password>
+# Additional lines to enable ZeroMQ
+zmqpubrawblock=tcp://127.0.0.1:28332
+zmqpubrawtx=tcp://127.0.0.1:28332
+```
+
+After starting `bitcoind`, using the command below, syncing the entire blockchain may take up to one 
+week depending on connectivity. Your lightning node should not be started until after the bitcoin node is in sync.
+
+```bash
+$ bitcoind -daemon
+```
+
+One way to confirm the local node is in sync with the rest of the network is by comparing the 
+block height with another public node. In the example below, a comparison is made against
+[blockexplorer.com](https://blockexplorer.com/).
+
+```bash
+# Extract the block height from blockexplorer.com
+$ wget -q -O- https://blockexplorer.com/q/getblockcount; echo
+{"info":{"version":120100,"protocolversion":70012,"blocks":563793,"timeoffset":-1,"connections":26,"proxy":"","difficulty":6061518831027.271,"testnet":false,"relayfee":0.0001,"errors":"Warning: unknown new rules activated (versionbit 1)","network":"livenet"}}
+
+# Extract the block height from bitcoind using the bitcoin-cli utility
+$ bitcoin-cli getblockcount
+563793
+
+## Extract the block height from bitcoind using the qbitcoind library 
+$q
+q).utl.require"qbitcoind"
+q).bitcoind.getblockcount[]
+result| 563793
+error |
+id    | 0
+```
+
+
+
+## lnd
+
+To install and run `lnd` and its dependencies, the reader is recommended to follow the official [Lnd-Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md#installation). 
+
+Once this installation process is complete, you will need to create your own Lightning Network 
+configuration file.
+
+Start by creating the config file in the default location:
+
+```bash
+mkdir ~/.lnd && cd ~/.lnd
+touch lnd.conf
+```
+
+Open the `lnd.conf` file in your favorite editor and add the following details.
+The `alias` and `color` values can also be freely chosen by the node operator and can be used to
+distinguish and find the node on various public node maps.
+For additional config file options and details, see the following [sample file](https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf). 
+
+
+```bash
+[Application Options]
+debuglevel=info
+alias=<Fill with sudo name. This name helps identify the node on the network>
+color=<Fill with color value given in hex format, for example #00FF00>
+
+datadir=~/.lnd/data
+logdir=~/.lnd/logs
+tlscertpath=~/.lnd/tls.cert
+tlskeypath=~/.lnd/tls.key
+
+#Specify the interfaces to listen on for p2p connections
+listen=<localhost:9735>
+externalip=<localhost:9735>
+
+#Specify the interfaces to listen on for gRPC connections
+rpclisten=<localhost:10009>
+
+[Bitcoin]
+bitcoin.active=1
+bitcoin.mainnet=1
+bitcoin.node=bitcoind
+
+[Bitcoind]
+```
+
+## Running and wallet creation
+
+
+Once `lnd` is installed, it can be started by running the following command.
+Below we explicitly give the path to the `lnd.conf` file, however, by default it is created within the home directory
+
+```bash
+$cd $GOPATH/bin
+$./lnd --configfile=~/.lnd/lnd.conf
+```
+
+It is possible to run multiple instances of `lnd`, all connected to the same `bitcoind` to assist in testing.
+In which case, a separate `lnd.conf` file can be created for each instance in a separate folder, being careful to
+change the `listen`,`externapip`,`rpclisten`,`alias`,`color`,`datadir`,`logdir`,`tlscertpath`,`tlskeypath` values as appropriate, and
+starting the nodes like so
+
+```bash
+$./lnd --configfile=~/.lnd1/lnd.conf
+$./lnd --configfile=~/.lnd2/lnd.conf
+$./lnd --configfile=~/.lnd3/lnd.conf
+```
+
+For more information on possible command line arguments see the help option.
+
+```bash
+$./lnd --help
+```
+
+
+## Wallet creation
+
+During node startup the following output will appear, requesting the user to either `create` a new wallet or `unlock` and
+exiting wallet. 
+
+```bash
+$./lnd --configfile=~/.lnd/lnd.conf
+Attempting automatic RPC configuration to bitcoind
+Automatically obtained bitcoind's RPC credentials
+...
+2019-03-02 13:47:28.952 [INF] LTND: Waiting for wallet encryption password. Use `lncli create` to create a wallet, `lncli unlock` to unlock an existing wallet, or `lncli changepassword` to change the password of an existing wallet and unlock it.
+```
+
+At this point you will need to run `lncli create` and follow the instructions to generate a new wallet.
+Below is the explicit command listing the `lnddir` and `rpcserver` which may also be required. 
+
+```bash
+$./lncli --lnddir=~/.lnd --rpcserver=localhost:10009 create
+Input wallet password:
+Confirm wallet password:
+
+Do you have an existing cipher seed mnemonic you want to use? (Enter y/n): n
+
+Your cipher seed can optionally be encrypted.
+Input your passphrase if you wish to encrypt it (or press enter to proceed without a cipher seed passphrase):
+
+Generating fresh cipher seed...
+
+!!!YOU MUST WRITE DOWN THIS SEED TO BE ABLE TO RESTORE THE WALLET!!!
+
+---------------BEGIN LND CIPHER SEED---------------
+ 1. xxxxx      2. xxxxx    3. xxxxx     4. xxxxx
+ 5. xxxxx      6. xxxxx    7. xxxxx     8. xxxxx
+ 9. xxxxx     10. xxxxx   11. xxxxx    12. xxxxx
+13. xxxxx     14. xxxxx   15. xxxxx    16. xxxxx
+17. xxxxx     18. xxxxx   19. xxxxx    20. xxxxx
+21. xxxxx     22. xxxxx   23. xxxxx    24. xxxxx
+---------------END LND CIPHER SEED-----------------
+```
+
+Be sure to record the 24 word seed which is essential for wallet recovery.
+
+
+# Interacting with Lightning using qlnd
+
+The [qlnd](https://github.com/jlucid/qlnd) library enables a q process to communication with a locally running `lnd` node
+via the [LND REST API](https://api.lightning.community/rest/index.html#lnd-rest-api-reference). Moreover, the library makes
+use of the powerful [embedPy](https://code.kx.com/q/ml/embedpy/) interface, recently released by Kx, which allows the kdb+ interpreter to manipulate Python objects, call Python functions, and load Python libraries. This is particularly useful for this application given that the REST API Reference documentation has explicit and well tested examples using python. For readers interested in other
+applications of embedPy and kdb+, see [Machine-Learning](https://code.kx.com/q/interfaces/embedpy/) and kdb+.
+
+
+## EmbedPy setup
+
+EmbedPy is available on [GitHub](https://github.com/KxSystems/embedPy/blob/master/README.md) to use with kdb+ V3.5+ and Python 3.5 or higher, for macOS or Linux operating systems and Python 3.6 or higher on the Windows operating system. The installation directory also contains a README.txt about embedPy, and an example directory containing thorough examples.
+The reader is encouraged to follow the online documentation available on [Kx.com](https://code.kx.com/q/ml/embedpy/) to become familar with the functionality.
+
+
+## Running qlnd
+
+Once embedPy is installed, the `qlnd` library can be loaded into a q process as follows, from the command line.
+```bash
+$q qlnd.p
+```
+
+However, prior to loading, you may need to set the `LND_DIR` environmental variable to location of your `.lnd.conf` file,
+if it is not in the default location `$HOME/.lnd`.
+
+```bash
+  export LND_DIR=/path/to/my/.lnd
+```
+
+During library loading, this variable is used to set the location of both the TLS certificate and Macaroon token 
+which are used for authentication with the `lnd` node, noth of which are created on startup.
+
+In order to change the values of the `lnd` URL, TLS Certificate path and Macaroon token path post loading,
+the following functions are provided.
+
+* url: The host and port number of your `lnd` node. Where 8080 is the default port number for the REST API interface.
+* tls: Path the to tls.cert file which was created when your `lnd` node started. This allows for a TLS/SSL connection.
+* macaroon: Path to the macaroon token which was created when your `lnd` node started up. The macaroon is used for RPC authentication. 
+
+```q
+$q qlnd.p
+q).lnd.setURL "https://localhost:8080/v1/"
+q).lnd.setTLS "/new/path/to/.lnd/tls.cert"
+q).lnd.setMACAROON "/new/path/to/.lnd/data/chain/bitcoin/mainnet/admin.macaroon"
+```
+
+To confirm that everything is setup correctly, run [`.lnd.getInfo`](https://api.lightning.community/rest/index.html#v1-getinfo) to return some basic information from your node.
+
+```q
+q).lnd.getInfo[][`version]
+"0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858"
+
+q).lnd.getInfo[][`identity_pubkey]
+"This returns the public key identifier which is unique to your node"
+```
+
+## Fund your wallet
+
+With the node running, and the qlnd functions returning as expected, the first step towards creating a payment channel is to fund your lightning wallet with Bitcoin. To do this, first instruct the wallet to generate a new address with [`.lnd.newaddress`](https://api.lightning.community/rest/index.html#v1-newaddress).
+
+```q
+q).lnd.newaddress[]
+address| "bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73"
+
+
+q).lnd.newaddress["?type=0"]
+address| "bc1q2tng7hfrskjm0qqtzhghj2w6r9pza82khz5zzm"
+q).lnd.newaddress["?type=1"]
+address| "3Q2HUbyYNL6b64sMmWLHxLPNFkzYFRJwSc"
+```
+
+Next, send some funds to this address using your mobile, hardware or exchange wallet of choice. Alternatively, you can use the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) within the [qbitcoind](https://github.com/jlucid/qbitcoind) library if your bitcoin full node contains funds.
+
+
+```q
+q)toAddr:"bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73"
+q)amount:0.0106
+q).bitcoind.sendtoaddress[toAddr;amount]
+result|"df9e4987c8ea8a2dd5c41d8677d8151e02e3e69745ae102e75ae9b636c408706"
+error | 0n
+id    | 0f
+```
+
+Funds can be confirmed by checking the transaction details on your bitcoin full node or by checking against the `lnd` node by calling [`.lnd.walletBalance`](https://api.lightning.community/rest/index.html#v1-balance-blockchain), as shown below. A confirmed balance means the deposit is complete and the node is ready to open channels.
+
+```q
+// Confirm the transaction has been confirmed on the bitcoin network by
+// using the transaction ID outputted from the sendtoaddress function
+q)txid:"df9e4987c8ea8a2dd5c41d8677d8151e02e3e69745ae102e75ae9b636c408706"
+q).bitcoind.gettransaction[txid][`result]
+amount            | -0.0106
+fee               | -1.57e-05
+confirmations     | 2678f
+
+
+// Confirm funds on your lightning node
+// Funds are reported in Satoshis
+q).lnd.walletBalance[]
+total_balance    | "1060000"
+confirmed_balance| "1060000
+```
+
+Beware, that since `lnd` is a hot wallet, it should only control a small amount of funds at any one time.
+It is recommended to always keep larger sums in cold storage hardware wallets and only move funds to
+lightning when required.
+
+
+## Connecting to Peers
+
+Before a channel can be opened between lightning nodes, both nodes need to be able to communicate
+with one another securely. This can be achieved using the [`.lnd.connectPeer`](https://api.lightning.community/rest/index.html#v1-peers) API. This API requires the user to pass the Lightning node address, which is of the format <public key@host>, with a few examples 
+shown below
+
+```q
+Bitrefill           030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f@52.50.244.44:9735
+LivingRoomOfSatoshi 026b105ac13212c48714c6be9b11577a9ce10f10e1c88a45ce217e6331209faf8b@52.224.178.244:9735
+PeerNode            02e7c42ae2952d7a71398e23535b53ffc60deb269acbc7c10307e6b797b91b1e79@93.123.80.47:9735
+```
+
+Nodes can be found by browsing the node directory available at the various explorer services listed below. These explorers are akin to phone books for public lightning nodes.
+
+explorer                                               | 
+-------------------------------------------------------| 
+[https://1ml.com/](https://1ml.com/)                  |      
+[https://explorer.acinq.co/](https://explorer.acinq.co/)           |   
+[https://graph.lndexplorer.com](https://graph.lndexplorer.com)            |
+
+
+To open a connection with the Bitrefill node, listed above, pass `.lnd.connectPeer` a dictionary
+with keys `addr` and `perm`, where
+
+* `addr`: Value is a dictionary with keys `pubkey` and `host`, corresponding to the public key and host address
+* `perm`: Value is a boolean, where a value of 1b instructs the daemon to persistently 
+          connect to the target peer, whereas 0b will be synchronous and timeout if the node is not available.
+
+
+```q
+q)pukey:"030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f"; 
+q)host:"52.50.244.44:9735"
+q)result:.lnd.connectPeer[`addr`perm!(`pubkey`host!(pubkey;host);1b)]
+```
+
+Confirm the node was added as a connection by searching the list of connected peers using [`.lnd.listPeers`](https://api.lightning.community/rest/index.html#v1-peers).
+
+```q
+q)tbl:(uj/) enlist each .lnd.listPeers[][`peers]
+q)first select from tbl where pub_key like "*c14f"
+pub_key   | "030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f"
+address   | "52.50.244.44:9735"
+bytes_sent| "2098551"
+bytes_recv| "2104585"
+inbound   | 0b
+ping_time | "26761"
+sat_sent  | ""
+```
+
+For the demonstration in this paper, we will also form a connection with the node
+```q
+"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c@217.160.185.97:9736" 
+```
+which is the node associated with our `tickerplant` process.
+Additional node details can also be found by searching for `TICKERPLANT` in any of the
+previously mentioned node explorers.
+
+
+## Opening a channel
+
+Opening a channel is an on-chain event and needs to be confirmed by the Bitcoin network, so it can take a few minutes.
+To open a channel with the now connected tickerplant `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
+
+In the example below, we are opening a channel with just the following inputs
+* `node_pubkey_string`:  The hex encoded pubkey of the node to open a channel with. 
+* `local_funding amount`: The number of Satoshis the wallet should commit to the channel.
+* `push_sat`:  The number of satoshis to push to the remote side as part of the initial commitment state.
+               This option is useful in cases where the connecting party wishes to make a payment
+               at the same time as the channel is being opened.
+* `private`: Whether this channel should be private, not announced to the greater network.           
+
+```q
+q)node_pubkey_string:"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c”
+q)local_funding_amount:1000000
+q)push_sat:2000
+q)private:0b
+q).lnd.openChannel[`node_pubkey_string`local_funding_amount`push_sat`private!(node_pubkey_string;local_funding_amount;push_sat;private) ]
+funding_txid_bytes| "D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="
+output_index      | 1f
+```
+
+Opening a channel is an on-chain event, so it may take a few confirmations before the channel is open and ready for use.
+In the mean time, the channel details can be oberved using [`.lnd.pendingChannels`](https://api.lightning.community/rest/index.html#v1-channels-pending).
+
+```q
+q).lnd.pendingChannels[][`pending_open_channels][`channel]
+```
+
+Once the channel is opened, it should now appear on the list of opened channels maintained by the node.
+This list can be accessed using the [`.lnd.listChannels`](https://api.lightning.community/rest/index.html#v1-channels-transactions-route) API.
+
+```q
+q)tbl:(uj/) enlist@'.lnd.listChannels[][`channels]
+q)select from tbl where remote_pubkey like node_pubkey_string
+```
+
+Details of the channel opening transactions can also be found using [`.lnd.getTransactions`](https://api.lightning.community/rest/index.html#v1-transactions)
+
+```q
+q)first .lnd.getTransactions[][`transactions]
+tx_hash          | "df9e4987c8ea8a2dd5c41d8677d8151e02e3e69745ae102e75ae9b636c408706"
+amount           | "1060000"
+num_confirmations| 5571
+block_hash       | "000000000000000000064deab01fc92bbe597239ccf3315b62da29721ca475d8"
+block_height     | 560089
+time_stamp       | "1548448298"
+dest_addresses   | ("bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73";"bc1q4dxw8asnz9m0s7jaqwvgsm6x3c98me3n8ssug3")
+```
+
+
+
+
+## Creating an invoice
+
+In order to receive a payment, an invoice should be generated by the payee and sent to the payer.
+The [`.lnd.addInvoice`](https://api.lightning.community/rest/index.html#v1-payreq) API provides a simple way to generate invoices.
+In the example below, a dictionary containing three key-value pairs is passed.
+* memo: This is a simple message which can be used as a reference for the payment
+* value:  amount in Satoshis to send
+* expiry: Payment request expiry time in seconds. Default is 3600 (1 hour).
+
+```q
+q).lnd.addInvoice[`memo`value`expiry!("Test Invoice two";100;"3600")]
+r_hash         | "OVo3jUFmxR2US255C/DIYShMU/JCCSjQcfMUblFZfF0="
+payment_request| "lnbc1u1pw9yrznpp589dr0r2pvmz3m9ztdeushuxgvy5yc5ljggyj35r37v2xu52e03wsdq623jhxapqf9h8vmmfvdjjqarhducqzysxqrrssza7eywh4h9z3jakvpcmn7gjmt0jssdcfu9uww9he7upwngxdvdkrqdwj7zklm4cupdmj9vqdsjavmnmyu7864sucap887k0km5uxkegqp8chmk"
+add_index      | ,"2"
+```
+The resultant `payment_request` string is all the payer needs to send a payment
+
+## Making a payment
+
+Once the payer has received the `payment_request` string, they can first decode the message using [`.lnd.decodePayReq`](https://api.lightning.community/rest/index.html#v1-payreq), as shown below. 
+
+```q
+q).lnd.decodePayReq["lnbc1u1pw9yrznpp589dr0r2pvmz3m9ztdeushuxgvy5yc5ljggyj35r37v2xu52e03wsdq623jhxapqf9h8vmmfvdjjqarhducqzysxqrrssza7eywh4h9z3jakvpcmn7gjmt0jssdcfu9uww9he7upwngxdvdkrqdwj7zklm4cupdmj9vqdsjavmnmyu7864sucap887k0km5uxkegqp8chmk"]
+destination | "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9..
+payment_hash| "395a378d4166c51d944b6e790bf0c861284c53f2420928d071f3146e51597c..
+num_satoshis| "100"
+timestamp   | "1548880979"
+expiry      | "3600"
+description | "Test Invoice two"
+cltv_expiry | "144"
+```
+
+Once the payer is satisfied with the invoice details, the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) API can be used to pay the invoice over lightning.
+
+```q
+q).lnd.sendPayment[(enlist `payment_request)!(enlist "lnbc1u1pw9yrznpp589dr0r2pvmz3m9ztdeushuxgvy5yc5ljggyj35r37v2xu52e03wsdq623jhxapqf9h8vmmfvdjjqarhducqzysxqrrssza7eywh4h9z3jakvpcmn7gjmt0jssdcfu9uww9he7upwngxdvdkrqdwj7zklm4cupdmj9vqdsjavmnmyu7864sucap887k0km5uxkegqp8chmk")]
+payment_preimage| "KwaHlrIB1JEjJJg4DNtS9MzpQWz5z95U3yjBh+r9imM="
+payment_route   | `to-tal_time_lock`total_amt`hops`total_amt_msat!(560959f;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key!(,"616462084875288577";,"1000000";,"100";,560959f;,"100000";,"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");"100000")
+payment_hash    | "OVo3jUFmxR2US255C/DIYShMU/JCCSjQcfMUblFZfF0="
+```
+
+Both parties can continue making payments back and forth on this channel without any additional data footprint
+on the underlying bitcoin blockchain. This ability to create off-chain transactions, secured by the
+underlying base layer, helps scale transactions dramatically without impacting the energy requirements
+to secure the underlying blockchain. The above payment settles in miliseconds.
+
+
+# Creating a Lightning enabled tickerplant
+
+
+To demonstrate how lightning payments could be integrated into kdb+ based applications, below
+is an example which modifies a vanilla tickerplant, an application most kdb+ developers are familar with.
+
+kdb+ tickerplants are high-performance processes designed for the consumption 
+of real-time streaming data, and the publishing of that data to multiple downstream
+subscribers. Tickerplants operate within a pub/sub messaging model where subscriber processes request
+data from the tickerplant on a per topic basis and receive all messages relating to that topic, enabling event-driven architectures.
+
+A sample vanilla implementation of tickerplant subscribe and publish logic
+can be found at [kdb+-tick](https://github.com/KxSystems/kdb+-tick), and can be started
+easily from the command line using
+
+
+```text
+$q tick.q tableSchemas . -p 5010
+```
+For this example, the tableSchemas.q file, which should be present in the tick folder, will contain 
+the following table definition
+
+```q
+trade:([] 
+  time:`timespan$(); 
+  sym:`symbol$(); 
+  price:`float$(); 
+  size:`long$() 
+ )
+```
+
+The main library functions this tickerplant implementation uses are shown below, and they will
+form the basis for subsequent modifications. For a more indepth exploration of tickerplant technology, see [Building Realt Time tick subscribers](https://code.kx.com/q/wp/building_real_time_tick_subscribers.pdf).
+
+```q
+\d .u
+init:{w::t!(count t::tables`.)#()}
+
+del:{w[x]_:w[x;;0]?y};.z.pc:{del[;x]each t};
+
+sel:{$[`~y;x;select from x where sym in y]}
+
+pub:{[t;x]{[t;x;w]if[count x:sel[x]w 1;(neg first w)(`upd;t;x)]}[t;x]each w t}
+
+add:{$[(count w x)>i:w[x;;0]?.z.w;.[`.u.w;(x;i;1);union;y];w[x],:enlist(.z.w;y)];(x;$[99=type v:value x;sel[v]y;0#v])}
+
+sub:{if[x~`;:sub[;y]each t];if[not x in t;'x];del[x].z.w;add[x;y]}
+
+end:{(neg union/[w[;;0]])@\:(`.u.end;x)}
+```
+
+
+In the standard setup, subscribers make a synchronous request to the tickerplant, calling the `.u.sub` function
+and specifying their request topic. The `.u.sub` function takes two arguments, a table name and list of symbols, where for market
+data the symbols usually correspond to ticker symbols.
+For example, below a subscriber opens a handle to a tickerplant which is listening on port 5010, and requests data from
+the trade table for ticker symbols `AAPL` and `GOOGL`.
+
+```q
+q)h:hopen 5010;
+q)h".u.sub[`trade;`AAPL`GOOGL]"
+`trade
++`time`sym`price`size!(`timespan$();`g#`symbol$();`float$();`long$())
+```
+
+Above, the subscriber is returned a two element list containing the table name and the table schema which
+the subscriber should define in order for records to be received correctly and immediately.
+The subscribes request is registered on the tickerplant within the `.u.w` dictionary, which stores the
+users handle value and their request details, as shown below.
+
+```q
+q).u.w
+trade| 7i `AAPL`GOOGL
+```
+
+If the subscriber has set the table definition, along with a `upd` function (`upd:insert`) then data
+will be received for only the data subscribed to.
+A sample feed handler, which pushes mock market data to this tickerplant can be found here, [feed.q](https://github.com/jlucid/capi/blob/master/feed.q)
+
+
+## Diagramatic overview
+
+The diagram below shows the high level setup for enabling payments between a subscriber and tickerplant process. 
+Both the subscriber and tickerplant are communicating with their own `lnd` nodes, highlighted
+in blue. In this case, a direct channel is opened between the tickerplant and subsciber node for near instant
+and fee-less payments, however, a direct channel is not required. Transactions can also be made were 
+payments are routed via intermediate nodes which connect both, highlighted in grey.
+
+![](overviewDiagram.png)
+
+
+
+## Subscribe-Pay-Publish
+
+The integration of lightning will modify the standard sub/pub model to a sub/pay/pub model where
+subscribers requests for data will only be enabled after a lightning payment is received.
+For this, the first step will be to modify the `.u.sub` function such that it returns a lightning
+payment invoice, to the subscriber, indicating the amount to pay in satoshis for the data requested.
+While this payment is pending, the users request details will be stored in a table called
+`.u.pendingInvoices` before ultimately being added to the `.u.w` dictionary, shown previously.
+
+
+```q
+pendingInvoices:([] 
+ handle:`int$();
+ request:();
+ index:`long$();
+ settled:`boolean$()
+ );
+
+
+sub:{[tableName;symList]
+  if[tableName~`;
+    :sub[;symList] each t
+  ];
+
+  if[not tableName in t;
+   'tableName
+  ];
+
+  del[tableName].z.w;
+  delete from `.u.pendingInvoices where handle in .z.w;
+  add[tableName;symList]
+ }
+ 
+ add:{[tableName;symList]
+  memo:"Invoice:",.Q.s (!). enlist@'r:(tableName;symList);
+  invoice:.lnd.addInvoice[`memo`value`expiry!(memo;100*count symList;3600)];
+  insert[`.u.pendingInvoices;enlist@'(.z.w;r;"J"$invoice[`add_index];0b)];
+  (tableName;$[99=type v:value tableName;sel[v]symList;0#v];invoice)
+ }
+```
+
+In the above `.lnd.addInvoice` call, the amount argument is being determined by a simple calculation
+whereby the number of symbols being requested is multiplied by 1000 Satoshis.
+A small memo message is also being derived along with a request time of 1hr.
+With the above modifications the response message for a call to `.u.sub` contains a third
+element, the lightning payment invoice.
+
+
+```q
+q)h:hopen 5010
+q)result:h".u.sub[`trade;`AAPL`GOOGL]"
+q)result
+q)result
+`trade
++`time`sym`price`size!(`timespan$();`g#`symbol$();`float$();`long$())
+`r_hash`payment_request`add_index!("QZKFOR+nzeHwv53oPlnZTmZP7LmWKY3n4R1+wtemg4s=";"lnbc20n1pwxspr0pp5gxfg2wgl5lx7ru9lnh5rukwefenylm9ejc5cmelpr4lv94axsw9sdp2f9h8vmmfvdjn5arjv9jx2lpqg9q4qnpqga85736vpgcqzysxqrrssk8ae2lnee7ud4xxs7mwl4epaumdfvtzrh9kthpjhltj0xaya34238r0qwknsuz9rjzr956mae86h4hknkepj78ft4ejryxv3c2vazgsp799a5d";"27")
+```
+
+As shown previously, the subscriber can decode this invoice to see the payment details in plain text.
+
+```q
+q).lnd.decodePayReq (result[2])[`payment_request]
+destination | "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+payment_hash| "419285391fa7cde1f0bf9de83e59d94e664fecb996298de7e11d7ec2d7a6838b"
+num_satoshis| ,"2"
+timestamp   | "1550320751"
+expiry      | "3600"
+description | "Invoice:trade| AAPL GOOGL\n"
+cltv_expiry | "144"
+```
+
+On the tickerplant, the subscribers request details have been populated in the `.u.pendingInvoices`
+table, however, `.u.w` is still empty, pending payment
+
+```q
+q).u.pendingInvoices
+handle request            index settled
+---------------------------------------
+7      `trade `AAPL`GOOGL 27    0
+q).u.w
+trade|
+```
+
+## Subscriber: Making Payment
+
+On the subscriber end, making a payment is straight forward using the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) function
+
+
+```q
+q)result:.lnd.sendPayment[(enlist `payment_request)!(enlist (result[2])[`payment_request)]
+q)result
+payment_preimage| "EJClS1fuq9owXAe7rpgdjuyMPsIvNegsPLZ6Wz38cnw="
+payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(563411f;,"2";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key!(,"616462084875288577";,"1000000";,,"2";,563411f;,"2000";,"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");"2000")
+payment_hash    | "QZKFOR+nzeHwv53oPlnZTmZP7LmWKY3n4R1+wtemg4s="
+```
+
+the list of all past transactions can also be accessed using [`.lnd.listPayments`](https://api.lightning.community/rest/index.html#v1-payments).
+
+```q
+q)select value_sat, path from .lnd.listPayments[][`payments]
+value_sat path
+------------------------------------------------------------------------------
+"100"     "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"8"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"2"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"1"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"2"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+,"2"      "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+```
+
+
+## Tickerplant: Confirming Payment
+
+The lightning node API provides a [SubscribeInvoices](https://api.lightning.community/rest/index.html#v1-invoices-subscribe)
+option which returns a uni-directional stream from the `lnd` server to the client, which can be used to notify the client of newly added/settled invoices. By subscribing to this stream the tickerplant can be notified immediately of payment.
+However, because this is a blocking call, we will instead use a dedicated q process to listen and push events onto
+the tickerplant immediately.
+
+Below is shown the embedPy script and command to run this listener process. Notice that the `portnumber` (tickerplant), `authHeader`, `url` and TLS `cert` values have been hardcoded and should be changed if necessary.
+
+
+```python
+p)import base64, codecs, json, requests
+p)from qpython import qconnection
+p)url = 'https://localhost:8080/v1/'
+p)cert_path = '/home/btc/.lnd1/tls.cert'
+p)macaroon = codecs.encode(open('/home/btc/.lnd1/data/chain/bitcoin/mainnet/admin.macaroon', 'rb').read(), 'hex')
+p)headers = {'Grpc-Metadata-macaroon': macaroon}
+
+p)q = qconnection.QConnection(host='localhost', port=5010)
+p)q.open()
+
+p)def listener(data):
+  endpoint  = 'invoices/subscribe'
+  r = requests.get(url+endpoint, headers=headers, verify=cert_path, stream=True)
+  for raw_response in r.iter_lines():
+      json_response = json.loads(raw_response)
+      print"Invoice message event received"
+      print raw_response
+      q('.u.processInvoices', raw_response)
+
+q).lnd.listener:.p.get[`listener;<]
+```
+
+The program can be run using the following command
+```q
+$q listener.p
+q)listener[]
+
+// This first message is an invoice creation, generated when the tickerplant calls .lnd.addInvoice
+
+Invoice message event received: {"result":{"memo":"Invoice:trade| AAPL GOOGL\n","r_preimage":"EJClS1fuq9owXAe7rpgdjuyMPsIvNegsPLZ6Wz38cnw=","r_hash":"QZKFOR+nzeHwv53oPlnZTmZP7LmWKY3n4R1+wtemg4s=","value":"2","creation_date":"1550320751","payment_request":"lnbc20n1pwxspr0pp5gxfg2wgl5lx7ru9lnh5rukwefenylm9ejc5cmelpr4lv94axsw9sdp2f9h8vmmfvdjn5arjv9jx2lpqg9q4qnpqga85736vpgcqzysxqrrssk8ae2lnee7ud4xxs7mwl4epaumdfvtzrh9kthpjhltj0xaya34238r0qwknsuz9rjzr956mae86h4hknkepj78ft4ejryxv3c2vazgsp799a5d","expiry":"3600","cltv_expiry":"144","add_index":"27"}}
+
+
+// The second message is an invoice settlement, generated after the subscriber calls .lnd.sendPayment and the payment is confirmed by the tickerplant node
+
+Invoice message event received: {"result":{"memo":"Invoice:trade| AAPL GOOGL\n","r_preimage":"EJClS1fuq9owXAe7rpgdjuyMPsIvNegsPLZ6Wz38cnw=","r_hash":"QZKFOR+nzeHwv53oPlnZTmZP7LmWKY3n4R1+wtemg4s=","value":"2","settled":true,"creation_date":"1550320751","settle_date":"1550320834","payment_request":"lnbc20n1pwxspr0pp5gxfg2wgl5lx7ru9lnh5rukwefenylm9ejc5cmelpr4lv94axsw9sdp2f9h8vmmfvdjn5arjv9jx2lpqg9q4qnpqga85736vpgcqzysxqrrssk8ae2lnee7ud4xxs7mwl4epaumdfvtzrh9kthpjhltj0xaya34238r0qwknsuz9rjzr956mae86h4hknkepj78ft4ejryxv3c2vazgsp799a5d","expiry":"3600","cltv_expiry":"144","add_index":"27","settle_index":"11","amt_paid":"2000","amt_paid_sat":"2","amt_paid_msat":"2000","state":"SETTLED"}}
+```
+
+## Enabling subscriber
+
+Of note in the above code is the synchronous call to the kdb+ tickerplant which
+executes the function `.u.processInvoices` with the event message sent from the node.
+
+```q
+q('.u.processInvoices', raw_response)
+```
+
+On the tickerplant, this is a simple function which extracts the invoice
+index number and uses it to take records from `.u.pendingInvoices` table
+and adds them to `.u.w`.
+
+```q
+processInvoices:{[x]
+  msg:first .j.k x;   // Convert msg (string) into a kdb+ dictionary
+  if[`state in key msg; // If state key is present, then invoice is settled
+    settledIndex:"J"$msg[`add_index]; // Extract invoice index number
+    settled:select from .u.pendingInvoices where index=settledIndex;
+    .u.addPayes[;;]'[settled`handle;(settled`request)[;0];(settled`request)[;1]];
+    delete from `.u.pendingInvoices where index in settledIndex
+  ];
+ }
+ 
+addPayes:{[handle;tableName;symList]
+  $[(count w tableName)>i:w[tableName;;0]?handle;
+    .[`.u.w;(tableName;i;1);union;symList];
+    w[tableName],:enlist(handle;symList)
+  ];
+ }
+```
+
+Once a settled invoice is received the `.u.w` dictionary will be updated and the
+`.u.pendingInvoices` will be cleared
+
+```q
+q).u.w
+trade| 7i `AAPL`GOOGL
+q)delete from `.u.pendingInvoices
+`.u.pendingInvoices
+q).u.pendingInvoices
+handle request index settled
+----------------------------
+```
+From this moment on, the subscriber will begin receiving updates.
+
+
+## Closing the channel
+
+At any point, either participant in the channel can choose to close it.
+A channel closing event is an on-chain transaction where the multisig address
+spends the funds back to each party according to their agreed-upon channel amount.
+To close a channel you first need to identify the channel point shown below.
+
+```q
+q)last .lnd.listChannels[][`channels]
+active                 | 1b
+remote_pubkey          | "02d0d487572a10c1d4dc486f03f09205c657abc471d0f3258ce37b034b8c917797"
+channel_point          | "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f:1"
+chan_id                | "616462084875288577"
+capacity               | "1000000"
+local_balance          | "2120"
+remote_balance         | "994052"
+commit_fee             | "3828"
+commit_weight          | "724"
+fee_per_kw             | "5288"
+total_satoshis_received| "120"
+num_updates            | "488"
+csv_delay              | 144
+```
+```q
+q)result:.lnd.closeChannel["d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f";"1"]
+q)result
+-------------------------------------------------------------------------------
+(,`close_pending)!+(,`txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4zg="
+(,`chan_close)!+(,`closing_txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4..
+q).lnd.walletBalance[]
+total_balance    | "2120"
+confirmed_balance| "2120"
+
+q).lnd.sendCoins[`amount`addr`sat_per_byte!("2120";"bc1qlu6p55xfx8xvlzmrms73qzzqrp4f5a3c29dqvc";"1")]
+error| "insufficient funds available to construct transaction"
+code | 2
+
+```
+
+
+```q
+On the subscriber we see this
+q).lnd.pendingChannels[]
+total_limbo_balance   | "994052"
+waiting_close_channels| +`channel`limbo_balance!(,`remote_node_pub`channel_point`capacity`local_balance!("023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c";"d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f:1";"1000000";"994052");,"994052")
+
+q).lnd.channelBalance[]
+q)
+q).lnd.walletBalance[]
+total_balance      | "1053249"
+confirmed_balance  | "58519"
+unconfirmed_balance| "994730"
+
+```
+
+
+
+
+## Conclusion
+
+This paper described the basic workings of the lightning network from setting up lightning nodes, creating
+channels and making fast lightning payments. A practical example was provided to demonstrate how
+the qlnd library can be integrated into a vanilla tickerplant process to enable a pay-per-ticker
+publishing scheme. 
+
+
+## Authors
+
+Jeremy Lucid is a kdb+ consultant based in Belfast. 
+He has worked on real-time Best Execution projects for a major multinational 
+banking institution, and a _Kx for Surveillance_ implementation 
+at a leading options and futures exchange. 
+    
+
+# Appendix
+
+## Setting channel fees
+
+```q
+.lnd.updateChannelPolicy[`global`fee_rate`time_lock_delta!(1b;1000;6)]
+```
+
+## In-Direct routing
+
+As mentioned previously, it is not necessary for the subscriber node to have a direct channel with the tickerplant node,
+it can, instead, route the payment via a chain of connected codes.
+In order to do this, the node must first find an alternative route.
+
+
+## Finding a route
+
+To make a payment to another node on lightning, it is not required to have a direct channel to the node, instead the
+payment can be routed along a path of connected nodes instead.
+The `.lnd.queryRoutes` API can be used to determine if a path can be found to the destination node.
+
+```q
+q)result:.lnd.queryRoutes["030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f";"100"]
+q)result
+routes| +`total_time_lock`total_fees`total_amt`hops`total_fees_msat`total_amt..
+q)result[`routes]
+total_time_lock total_fees total_amt hops                                    ..
+-----------------------------------------------------------------------------..
+565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565514          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565514          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
+```
+
+The table output of this call can then be passed to the `.lnd.sendToRoute` API to make
+a payment using the determined path.
+
+```q
+q)result:.lnd.queryRoutes["02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb883752c8107c8f";"133270"]
+q)r:.lnd.sendToRoute[.j.j `payment_hash_string`routes!("b20eeab2bb13bba9b923a1c75d53553bcc2516b1d9b5f87e82315ff61d536562";result[`routes])]
+```
+
+
