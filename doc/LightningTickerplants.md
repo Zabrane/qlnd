@@ -21,7 +21,7 @@ In this paper, we will explore Lightning network technology, and describe how on
 to interact with a running Lighting node to create payment channels with peers, generate invoices for payment, 
 and route payments rapidly across the network. As an example of how lightning can be integrated into
 kdb+ based applications, this paper will describe how a standard kdb+ tickerplant can be easily modified 
-to accept payments for data on a per ticker basis, with near instant settlement and zero fees. 
+to accept payments for market data on a per ticker basis, with near instant settlement and zero fees. 
 
 All tests were carried out using
 
