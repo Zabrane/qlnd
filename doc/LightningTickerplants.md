@@ -863,25 +863,20 @@ q)result
 -------------------------------------------------------------------------------
 (,`close_pending)!+(,`txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4zg="
 (,`chan_close)!+(,`closing_txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4..
+```
+
+Once the channel close has completed, the wallet balance should display the received amount.
+
+
+```q
 q).lnd.walletBalance[]
 total_balance    | "2120"
 confirmed_balance| "2120"
 ```
 
-On the subscriber we see this
-
-```q
-q).lnd.pendingChannels[]
-total_limbo_balance   | "994052"
-waiting_close_channels| +`channel`limbo_balance!(,`remote_node_pub`channel_point`capacity`local_balance!("023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c";"d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f:1";"1000000";"994052");,"994052")
-
-q).lnd.channelBalance[]
-q)
-q).lnd.walletBalance[]
-total_balance      | "1053249"
-confirmed_balance  | "58519"
-unconfirmed_balance| "994730"
-```
+In summary, only two on-chain transactions were required, one to open the channel and one to close.
+All the intermediate transactions which occurred over the bi-directional payment channel have not
+hit the blockchain, and so not occurred any on-chain fees.
 
 
 ## Extension to multiple IoT devices
