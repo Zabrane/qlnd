@@ -38,7 +38,7 @@ Optional Software
    blogs and whitepapers; [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
 
 The reader should be aware that the above Lightning daemon software is a Beta version, and so, users 
-should be cautions when using, keeping funds held on Lightning payment channels to a minimum.
+should be cautious when using, keeping funds held on Lightning payment channels to a minimum.
 
 # Overview of the Lightning Network
 
