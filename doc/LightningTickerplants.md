@@ -660,14 +660,14 @@ sub:{[tableName;symList]
 In the above `.lnd.addInvoice` call, the amount argument is being determined by a simple calculation
 whereby the number of symbols being requested is multiplied by 1000 Satoshis.
 A small memo message is also being derived along with a request time of 1hr.
-With the above modifications the response message for a call to `.u.sub` contains a third
+
+With the above modifications, the response message returned from a synchronous call to `.u.sub` contains a third
 element, the Lightning payment invoice.
 
 
 ```q
 q)h:hopen 5010
 q)result:h".u.sub[`trade;`AAPL`GOOGL]"
-q)result
 q)result
 `trade
 +`time`sym`price`size!(`timespan$();`g#`symbol$();`float$();`long$())
