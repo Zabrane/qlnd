@@ -954,4 +954,7 @@ q)result:.lnd.queryRoutes["02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb8
 q)r:.lnd.sendToRoute[.j.j `payment_hash_string`routes!("b20eeab2bb13bba9b923a1c75d53553bcc2516b1d9b5f87e82315ff61d536562";result[`routes])]
 ```
 
+# Acknowledgments
 
+I would like to thank the Lightning Development Community for providing their insight and assistance on
+many technical queries and issues.
