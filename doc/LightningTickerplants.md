@@ -23,8 +23,7 @@ to interact with a running Lightning node, from within a q process, to create pa
 and route payments rapidly across the network. As an example of how Lightning can be integrated into
 kdb+ based applications, this paper will describe how a standard kdb+ tickerplant can be easily modified 
 to accept payments for market data on a per ticker basis, with near instant settlement and zero fees. 
-The paper will also discuss how multiple IoT devices can authenticate and communicate with a single Lightning node
-to generate invoices and receive payment settlement notifications.
+The paper will also discuss how multiple IoT devices, already runing kdb+ to process data quickly, can authenticate and communicate with a single Lightning node to generate invoices and receive payment settlement notifications.
 
 All tests were carried out using
 
