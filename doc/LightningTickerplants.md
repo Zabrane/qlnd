@@ -9,19 +9,22 @@ keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 
 # Introduction
 
-[Lightning](https://lightning.network/lightning-network-paper.pdf) is a technology designed to dramatically scale blockchains, like Bitcoin, by enabling payments to be performed rapidly, with greater privacy and without a trusted third party. It is a Layer 2 infastructure which builds upon the security and [smart contract](https://en.wikipedia.org/wiki/Smart_contract) functionality of the underlying base blockchain, analagous to how the HTTP application layer protocol builds on an underlying and reliable TCP layer. 
+[Lightning](https://lightning.network/lightning-network-paper.pdf) is a technology designed to dramatically scale blockchains, like Bitcoin, by enabling payments to be performed rapidly, with greater privacy and without a trusted third party. It is a layer two infastructure which builds upon the security and [smart contract](https://en.wikipedia.org/wiki/Smart_contract) functionality of the underlying base blockchain, analagous to how the HTTP application layer protocol builds on an underlying and reliable TCP layer. 
 Lightning succeeds by allowing payments to be made off-chain, meaning the entire underlying (Bitcoin) network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (hundreds of a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most [rapidly growing](https://1ml.com/statistics) networks in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
 
-Currently, many Lightning applications (LApps) are in the early stages of development but include [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micro-paymement paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators and [micro-payment tipping](https://tippin.me/) services (twitter).
-Lightning payments are also highly applicable to the IoT space, as the network can be used used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of its key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456). For crypto currency exchanges,
-integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, which allows end users to subscribe to streaming futures data from the BitMEX and Kraken exchanges with Lightning payments.
+Currently, many Lightning applications (LApps) are in the early stages of development but include [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micro-paymement paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators and [micro-payment tipping](https://tippin.me/) services (twitter). The micro-payment application, in particluar, has the potential to transform how online content
+is monetised, moving from an add based, or yearly subscription based model, to a microfee pay-per-view model. 
+Lightning payments are also highly applicable to the IoT space, as the network can be used used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of the networks key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456). For crypto currency exchanges,
+integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, which allows end users to subscribe to streaming futures data from the BitMEX and Kraken exchanges with Lightning micro-payments.
 
 
-In this paper, we will explore Lightning network technology, and describe how one can use the [qlnd](https://github.com/jlucid/qlnd) library 
-to interact with a running Lighting node to create payment channels with peers, generate invoices for payment, 
-and route payments rapidly across the network. As an example of how lightning can be integrated into
+With the above potential applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
+to interact with a running Lighting node, from within a q process, to create payment channels with peers, generate invoices for payment, 
+and route payments rapidly across the network. As an example of how Lightning can be integrated into
 kdb+ based applications, this paper will describe how a standard kdb+ tickerplant can be easily modified 
 to accept payments for market data on a per ticker basis, with near instant settlement and zero fees. 
+The paper will also discuss how multiple IoT devices can authenticate and communicate with a single Lightning node
+to generate invoices and receive payment settlement notifications.
 
 All tests were carried out using
 
@@ -31,11 +34,12 @@ All tests were carried out using
 * Lightning daemon (lnd) version 0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858
 
 Optional Software
- * [qbitcoind](https://github.com/jlucid/qbitcoind) A q library to interact with a bitcoin node.
-   Used here to transfer funds from a bitcoin core wallet to a lightning wallet. For more info see [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
+ * [qbitcoind](https://github.com/jlucid/qbitcoind) A q library designed to interact with a bitcoin core full node.
+   Used here to transfer funds from a bitcoin core wallet to a Lightning wallet. For more info on running a node, and using qbitcoind, see past
+   blogs and whitepapers; [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
 
-The reader should be aware that the above Lightning daemon software, while recent, is still a Beta version, so
-caution should be taken when using. That is to say, users should keep funds held on Lightning payment channels to a minimum.
+The reader should be aware that the above Lightning daemon software is a Beta version, and so, users 
+should be cautions when using, keeping funds held on Lightning payment channels to a minimum.
 
 # Overview of the Lightning Network
 
@@ -44,11 +48,11 @@ trustless instant payments, together with improved privacy features. It is a lay
 security and smart contract functionality of the base layer Bitcoin network to create a system where transactions can
 be performed off-chain, meaning transaction confimations are not limited by the base layer settlement time.
 Instead transaction confirmation times are limited primarily by the latency between participants in the network, and their
-processing power. Often lightning payment confirmations times are of the same order as message transfers over modern 
+processing power. Often Lightning payment confirmations times are of the same order as message transfers over modern 
 instant-messaging services.
 
 
-While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the lightning
+While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
 network allows for millions of transactions per second, including micro-payments of the order of thousands of a cent.
 This is accomplished through the creation of "payment-channels" between peers, wherein parties commit funds to the
 channel, and pay each other simply by updating the balance redeemable by each party.
@@ -56,7 +60,7 @@ channel, and pay each other simply by updating the balance redeemable by each pa
 
 Below is an image taken from a Lightning node block explorer showing the distribution of public nodes
 and the known channels between them. The network has seen a dramatic growth over the past year, with
-the value held on lightning increasing continuously.
+the value held on Lightning increasing continuously.
 
 ![](lightningMap.JPG)
 
@@ -66,7 +70,7 @@ the value held on lightning increasing continuously.
 There are currently multiple implementations of the Lightning protocol, including [lnd](https://github.com/lightningnetwork/lnd) from [Lightning Labs](https://lightning.engineering/), [eclair](https://github.com/ACINQ/eclair) from [ACINQ](https://acinq.co/) and [c-lightning](https://github.com/ElementsProject/lightning) from [Blockstream](https://blockstream.com/technology/). 
 To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to specialise in different aspects of the technology, like mobile integration, browser plugins, and enterprise products, while retaining cross-compatibility.
 
-While multiple lightning implementations exist, the [qlnd](https://github.com/jlucid/qlnd) library discussed here is designed specifically to communicate with the `lnd` daemon from Lightning Labs. Therefore, the steps described below correspond only to the installation of this implementation.
+While multiple Lightning implementations exist, the [qlnd](https://github.com/jlucid/qlnd) library discussed here is designed specifically to communicate with the `lnd` daemon from Lightning Labs. Therefore, the steps described below correspond only to the installation of this implementation.
 
 The steps are broken down into the following parts
 * Installation of the Bitcoin Core Full node, `bitcoind`  
@@ -76,7 +80,7 @@ The steps are broken down into the following parts
 ## bitcoind
 
 In order to run `lnd`, it is required that a bitcoin full node daemon be running on the same host. 
-This is because the lightning node needs a way to communicate with the underlying blockchain in order to send
+This is because the Lightning node needs a way to communicate with the underlying blockchain in order to send
 on-chain payments, create channel open/close transactions and monitor relevant transactions on the network. 
 While there are novel approaches which do not require a local full node, such as [Neutrino](https://github.com/lightninglabs/neutrino), these are outside the scope of this paper.
 
@@ -90,7 +94,7 @@ $sudo apt-get install bitcoind
 Before starting the daemon, a `bitcoin.conf` file should be created in the install folder (usually $HOME/.bitcoin),
 as described previously in the whitepaper [Storing and Exploring the Bitcoin Blockchain](https://code.kx.com/q/wp/blockchain/?_ga=2.31949815.87606725.1550512369-1296260280.1520717656#installing-a-bitcoin-full-node).
 However, the sample `bitcoin.conf` file presented in that whitepaper should now be extended, as shown below, to
-include the [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/master/doc/zmq.md) wrapper which will allow the lightning
+include the [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/master/doc/zmq.md) wrapper which will allow the Lightning
 node to be notified of events like the arrival of new blocks or transactions. Note that in the conf file below, the
 `rpcuser` and `rpcpassword` values need to be changed.
 
@@ -108,7 +112,7 @@ zmqpubrawtx=tcp://127.0.0.1:28332
 ```
 
 After starting `bitcoind`, using the command below, syncing the entire blockchain may take up to one 
-week depending on connectivity. Your lightning node should not be started until after the bitcoin node is in sync.
+week depending on connectivity. Your Lightning node should not be started until after the bitcoin node is in sync.
 
 ```bash
 $ bitcoind -daemon
@@ -313,7 +317,7 @@ q).lnd.getInfo[][`identity_pubkey]
 
 ## Fund your wallet
 
-With the node running, and the qlnd functions returning as expected, the first step towards creating a payment channel is to fund your lightning wallet with Bitcoin. To do this, first instruct the wallet to generate a new address with [`.lnd.newaddress`](https://api.lightning.community/rest/index.html#v1-newaddress).
+With the node running, and the qlnd functions returning as expected, the first step towards creating a payment channel is to fund your Lightning wallet with Bitcoin. To do this, first instruct the wallet to generate a new address with [`.lnd.newaddress`](https://api.lightning.community/rest/index.html#v1-newaddress).
 
 ```q
 q).lnd.newaddress[]
@@ -359,12 +363,12 @@ confirmed_balance| "1060000
 
 Beware, that since `lnd` is a hot wallet, it should only control a small amount of funds at any one time.
 It is recommended to always keep larger sums in cold storage hardware wallets and only move funds to
-lightning when required.
+Lightning when required.
 
 
 ## Connecting to Peers
 
-Before a channel can be opened between lightning nodes, both nodes need to be able to communicate
+Before a channel can be opened between Lightning nodes, both nodes need to be able to communicate
 with one another securely. This can be achieved using the [`.lnd.connectPeer`](https://api.lightning.community/rest/index.html#v1-peers) API. This API requires the user to pass the Lightning node address, which is of the format <public key@host>, with a few examples 
 shown below
 
@@ -374,7 +378,7 @@ LivingRoomOfSatoshi 026b105ac13212c48714c6be9b11577a9ce10f10e1c88a45ce217e633120
 PeerNode            02e7c42ae2952d7a71398e23535b53ffc60deb269acbc7c10307e6b797b91b1e79@93.123.80.47:9735
 ```
 
-Nodes can be found by browsing the node directory available at the various explorer services listed below. These explorers are akin to phone books for public lightning nodes.
+Nodes can be found by browsing the node directory available at the various explorer services listed below. These explorers are akin to phone books for public Lightning nodes.
 
 explorer                                               | 
 -------------------------------------------------------| 
@@ -506,7 +510,7 @@ description | "Test Invoice two"
 cltv_expiry | "144"
 ```
 
-Once the payer is satisfied with the invoice details, the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) API can be used to pay the invoice over lightning.
+Once the payer is satisfied with the invoice details, the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) API can be used to pay the invoice over Lightning.
 
 ```q
 q).lnd.sendPayment[(enlist `payment_request)!(enlist "lnbc1u1pw9yrznpp589dr0r2pvmz3m9ztdeushuxgvy5yc5ljggyj35r37v2xu52e03wsdq623jhxapqf9h8vmmfvdjjqarhducqzysxqrrssza7eywh4h9z3jakvpcmn7gjmt0jssdcfu9uww9he7upwngxdvdkrqdwj7zklm4cupdmj9vqdsjavmnmyu7864sucap887k0km5uxkegqp8chmk")]
@@ -524,7 +528,7 @@ to secure the underlying blockchain. The above payment settles in miliseconds.
 # Creating a Lightning enabled tickerplant
 
 
-To demonstrate how lightning payments could be integrated into kdb+ based applications, below
+To demonstrate how Lightning payments could be integrated into kdb+ based applications, below
 is an example which modifies a vanilla tickerplant, an application most kdb+ developers are familar with.
 
 kdb+ tickerplants are high-performance processes designed for the consumption 
@@ -606,7 +610,7 @@ A sample feed handler, which pushes mock market data to this tickerplant can be 
 The diagram below shows the high level setup for enabling payments between a subscriber and tickerplant process. 
 Both the subscriber and tickerplant are communicating with their own `lnd` nodes, highlighted
 in blue. In this case, a direct channel is opened between the tickerplant and subsciber node for near instant
-and fee-less payments, however, a direct channel is not required. Transactions can also be made were 
+and fee-less payments, however, a direct channel is not required. Transactions can also be made where 
 payments are routed via intermediate nodes which connect both, highlighted in grey.
 
 ![](overviewDiagram.png)
@@ -615,9 +619,9 @@ payments are routed via intermediate nodes which connect both, highlighted in gr
 
 ## Subscribe-Pay-Publish
 
-The integration of lightning will modify the standard sub/pub model to a sub/pay/pub model where
-subscribers requests for data will only be enabled after a lightning payment is received.
-For this, the first step will be to modify the `.u.sub` function such that it returns a lightning
+The integration of Lightning will modify the standard sub/pub model to a sub/pay/pub model where
+subscribers requests for data will only be enabled after a Lightning payment is received.
+For this, the first step will be to modify the `.u.sub` function such that it returns a Lightning
 payment invoice, to the subscriber, indicating the amount to pay in satoshis for the data requested.
 While this payment is pending, the users request details will be stored in a table called
 `.u.pendingInvoices` before ultimately being added to the `.u.w` dictionary, shown previously.
@@ -658,7 +662,7 @@ In the above `.lnd.addInvoice` call, the amount argument is being determined by 
 whereby the number of symbols being requested is multiplied by 1000 Satoshis.
 A small memo message is also being derived along with a request time of 1hr.
 With the above modifications the response message for a call to `.u.sub` contains a third
-element, the lightning payment invoice.
+element, the Lightning payment invoice.
 
 
 ```q
@@ -731,20 +735,21 @@ value_sat path
 
 ## Tickerplant: Confirming Payment
 
-The lightning node API provides a [SubscribeInvoices](https://api.lightning.community/rest/index.html#v1-invoices-subscribe)
+The Lightning node API provides a [SubscribeInvoices](https://api.lightning.community/rest/index.html#v1-invoices-subscribe)
 option which returns a uni-directional stream from the `lnd` server to the client, which can be used to notify the client of newly added/settled invoices. By subscribing to this stream the tickerplant can be notified immediately of payment.
 However, because this is a blocking call, we will instead use a dedicated q process to listen and push events onto
 the tickerplant immediately.
 
 Below is shown the embedPy script and command to run this listener process. Notice that the `portnumber` (tickerplant), `authHeader`, `url` and TLS `cert` values have been hardcoded and should be changed if necessary.
-
+The listener process also used the invoice.macaroon token, so can only access invoice related APIs.
 
 ```python
 p)import base64, codecs, json, requests
 p)from qpython import qconnection
 p)url = 'https://localhost:8080/v1/'
-p)cert_path = '/home/btc/.lnd1/tls.cert'
-p)macaroon = codecs.encode(open('/home/btc/.lnd1/data/chain/bitcoin/mainnet/admin.macaroon', 'rb').read(), 'hex')
+p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
+p)cert_path =  LND_DIR+'/tls.cert'
+p)macaroon = codecs.encode(open(LND_DIR+'/data/chain/bitcoin/mainnet/invoice.macaroon', 'rb').read(), 'hex')
 p)headers = {'Grpc-Metadata-macaroon': macaroon}
 
 p)q = qconnection.QConnection(host='localhost', port=5010)
@@ -829,7 +834,7 @@ From this moment on, the subscriber will begin receiving updates.
 At any point, either participant in the channel can choose to close it.
 A channel closing event is an on-chain transaction where the multisig address
 spends the funds back to each party according to their agreed-upon channel amount.
-To close a channel you first need to identify the channel point shown below.
+To close a channel you first need to identify the channel point associated with the channel, as shown below.
 
 ```q
 q)last .lnd.listChannels[][`channels]
@@ -847,6 +852,12 @@ total_satoshis_received| "120"
 num_updates            | "488"
 csv_delay              | 144
 ```
+
+The first part of this channel point value, before the colon, is the bitcoin transaction ID of the funding transaction, 
+and the second part, after the colon, is a zero-based index of the transaction output.
+Zero-based index means a value of 0 points to the first output of the transaction, and a value of 1 points to the second output.
+The transaction and index need to be passed to the `.lnd.closeChannel` API as shown below, to close the channel.
+
 ```q
 q)result:.lnd.closeChannel["d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f";"1"]
 q)result
@@ -856,16 +867,11 @@ q)result
 q).lnd.walletBalance[]
 total_balance    | "2120"
 confirmed_balance| "2120"
-
-q).lnd.sendCoins[`amount`addr`sat_per_byte!("2120";"bc1qlu6p55xfx8xvlzmrms73qzzqrp4f5a3c29dqvc";"1")]
-error| "insufficient funds available to construct transaction"
-code | 2
-
 ```
 
+On the subscriber we see this
 
 ```q
-On the subscriber we see this
 q).lnd.pendingChannels[]
 total_limbo_balance   | "994052"
 waiting_close_channels| +`channel`limbo_balance!(,`remote_node_pub`channel_point`capacity`local_balance!("023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c";"d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f:1";"1000000";"994052");,"994052")
@@ -876,18 +882,26 @@ q).lnd.walletBalance[]
 total_balance      | "1053249"
 confirmed_balance  | "58519"
 unconfirmed_balance| "994730"
-
 ```
 
+
+## Extension to multiple IoT devices
+
+The above approach can be extended to the use case of multiple IoT devices who are sending and receiving payments.
+Typically, a set of devices can authenticate and communicate with a single `lnd` node using just the TLS certificate
+file and invoice.macaroon, to generate invoices for subscribers. Similarly, the listener process can broadcast
+invoice settlement messages back to individual devices to release data to subscribers.
 
 
 
 ## Conclusion
 
-This paper described the basic workings of the lightning network from setting up lightning nodes, creating
-channels and making fast lightning payments. A practical example was provided to demonstrate how
+This paper described the basic workings of the Lightning network from setting up Lightning nodes, creating
+channels and making fast Lightning payments. A practical example was provided to demonstrate how
 the qlnd library can be integrated into a vanilla tickerplant process to enable a pay-per-ticker
-publishing scheme. 
+publishing scheme. This example can provide a template for how future machine to machine payments could
+be performed. It is hoped that as the technology develops, further enhancements to the library can be
+made to keep it up to date, and make the integration with kdb+ based applications even more streamlined.
 
 
 ## Authors
@@ -915,7 +929,7 @@ In order to do this, the node must first find an alternative route.
 
 ## Finding a route
 
-To make a payment to another node on lightning, it is not required to have a direct channel to the node, instead the
+To make a payment to another node on Lightning, it is not required to have a direct channel to the node, instead the
 payment can be routed along a path of connected nodes instead.
 The `.lnd.queryRoutes` API can be used to determine if a path can be found to the destination node.
 

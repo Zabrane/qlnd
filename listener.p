@@ -1,8 +1,9 @@
 p)import base64, codecs, json, requests
 p)from qpython import qconnection
 p)url = 'https://localhost:8080/v1/'
-p)cert_path = '/home/btc/.lnd1/tls.cert'
-p)macaroon = codecs.encode(open('/home/btc/.lnd1/data/chain/bitcoin/mainnet/admin.macaroon', 'rb').read(), 'hex')
+p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
+p)cert_path =  LND_DIR+'/tls.cert'
+p)macaroon = codecs.encode(open(LND_DIR+'/data/chain/bitcoin/mainnet/invoice.macaroon', 'rb').read(), 'hex')
 p)headers = {'Grpc-Metadata-macaroon': macaroon}
 
 p)q = qconnection.QConnection(host='localhost', port=5010)
