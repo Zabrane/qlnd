@@ -956,6 +956,43 @@ q)result:.lnd.queryRoutes["02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb8
 q)r:.lnd.sendToRoute[.j.j `payment_hash_string`routes!("b20eeab2bb13bba9b923a1c75d53553bcc2516b1d9b5f87e82315ff61d536562";result[`routes])]
 ```
 
+## Shopping
+
+Users can test the API by Buying small items on the Blockstram store, in which case, at checkout time,
+the store will present you with a payment request.
+Below is an example of such a payment request, and what it looks like decoded.
+
+
+```q
+q)paymentRequestFromBlockstream:"lnbc1252532570p1pwf84ldpp557ypsquf8lyvuwrytnjnykquk0upgkfufpayqycgmrsd3pz9mkzqdr2gfkx7cmtwd68yetpd5s9xar0wfjn5gp59cunjgz42dzzqen0wgszy3r0dcnhggz5wf6hxapwyptx2unfveujug3q2d6xjcmtv4ezq7pqxycqp2rzjqwryaup9lh50kkranzgcdnn2fgvx390wgj5jd07rwr3vxeje0glc7zyl6gqqvaqqqyqqqqlgqqqqqeqqjqs7y5vd3z4vlhp28ag06vy0wzdsejqjrm92e5lt59erjmhcvt2uwhls5d020hckwggdmkcamme44uy2tkre8x8udqqg7lmcwt9l4kq9qqn99c23"
+q).lnd.decodePayReq[paymentRequestFromBlockstream]
+destination | "02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb883752c8107c8f"
+payment_hash| "a7881803893fc8ce38645ce532581cb3f814593c487a401308d8e0d88445dd84"
+num_satoshis| "125253"
+timestamp   | "1553192941"
+expiry      | "3600"
+description | "Blockstream Store: 4.99 USD for \"Don't Trust. Verify.\" Sticker x 1"
+cltv_expiry | "10"
+route_hints | +(,`hop_hints)!,,+`node_id`chan_id`fee_base_msat`fee_proportional_millionths`cltv_expiry_delta!(,"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";,"621446171150516225";,1000;,100;,144)
+```
+
+As shown previously, payment can be made easily using the `.lnd.sendPayment`
+
+```q
+q)result:.lnd.sendPayment[(enlist `payment_request)!(enlist paymentRequestFromBlockstream)]
+```
+
+Notice that in the result message, the route hop information is also shown.
+Here we see that the payment was routed to the Blockstream `lnd` node through one intermediate node.
+
+```q
+q)result[`payment_route][`hops]
+`chan_id`chan_capacity`amt_to_forward`fee`expiry`amt_to_forward_msat`fee_msat`pub_key!("623480267613601793";"1000000";"125253";"13";568172;"125253257";"13525";"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f")
+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key!("621446171150516225";"16000000";"125253";568172;"125253257";"02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb883752c8107c8f")
+```
+
+
+
 # Acknowledgments
 
 I would like to thank the Lightning Development Community for providing their insight and assistance on
