@@ -341,7 +341,8 @@ error | 0n
 id    | 0f
 ```
 
-Funds can be confirmed by checking the transaction details on your bitcoin full node or by checking against the `lnd` node by calling [`.lnd.walletBalance`](https://api.lightning.community/rest/index.html#v1-balance-blockchain), as shown below. A confirmed balance means the deposit is complete and the node is ready to open channels.
+To track the status of this wallet funding transaction, we can query either the `bitcoind` node using `.bitcoind.gettransaction`, or the `lnd` node using [`.lnd.getTransactions`](https://api.lightning.community/rest/index.html#v1-transactions), as shown below.
+
 
 ```q
 // Confirm the transaction has been confirmed on the bitcoin network by
@@ -352,8 +353,23 @@ amount            | -0.0106
 fee               | -1.57e-05
 confirmations     | 2678f
 
+// Transaction details can also be confirmed on the lightning node
+q)tbl:(uj/) enlist@'.lnd.getTransactions[][`transactions]
+q)first select from tbl where tx_hash like txid
+tx_hash          | "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
+amount           | "-1001481"
+num_confirmations| 7470
+block_hash       | "0000000000000000002bb995ed3b5022aa4fd8fe73b8130296c5852634cd345d"
+block_height     | 560669
+time_stamp       | "1548795246"
+dest_addresses   | ("bc1q3zy2zdyp77er7rc40xn2udxj888x2qjdun9zdm";"bc1qa4gjgfsufcu8s3p7x5fpefz63m50uhesrpsd900anrj0677ha2yscwcqvy")
+total_fees       | "1481"
+```
 
-// Confirm funds on your lightning node
+Once enough confirmations are received, the Lightning Wallet will display the balance by calling [`.lnd.walletBalance`](https://api.lightning.community/rest/index.html#v1-balance-blockchain), as shown below. 
+A confirmed balance means the deposit is complete and the node is ready to open channels.
+
+```q
 // Funds are reported in Satoshis
 q).lnd.walletBalance[]
 total_balance    | "1060000"
@@ -460,20 +476,6 @@ This list can be accessed using the [`.lnd.listChannels`](https://api.lightning.
 q)tbl:(uj/) enlist@'.lnd.listChannels[][`channels]
 q)select from tbl where remote_pubkey like node_pubkey_string
 ```
-
-Details of the channel opening transactions can also be found using [`.lnd.getTransactions`](https://api.lightning.community/rest/index.html#v1-transactions)
-
-```q
-q)first .lnd.getTransactions[][`transactions]
-tx_hash          | "df9e4987c8ea8a2dd5c41d8677d8151e02e3e69745ae102e75ae9b636c408706"
-amount           | "1060000"
-num_confirmations| 5571
-block_hash       | "000000000000000000064deab01fc92bbe597239ccf3315b62da29721ca475d8"
-block_height     | 560089
-time_stamp       | "1548448298"
-dest_addresses   | ("bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73";"bc1q4dxw8asnz9m0s7jaqwvgsm6x3c98me3n8ssug3")
-```
-
 
 
 
