@@ -506,6 +506,8 @@ add_index      | ,"2"
 ```
 The resultant `payment_request` string is all the payer needs to send a payment
 
+![](invoice.jpg)
+
 ## Making a payment
 
 Once the payer has received the `payment_request` string, they can first decode the message using [`.lnd.decodePayReq`](https://api.lightning.community/rest/index.html#v1-payreq), as shown below. 
