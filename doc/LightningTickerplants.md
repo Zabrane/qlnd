@@ -462,6 +462,16 @@ funding_txid_bytes| "D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="
 output_index      | 1f
 ```
 
+The above `funding_txid_bytes` value needs to be converted to the base32 txid
+
+```q
+q).lnd.decodeTxid["D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="]
+"d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
+```
+
+Which can then be tracked on a [block explorer](https://www.blockchain.com/btc/tx/d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f)
+
+
 Opening a channel is an on-chain event, so it may take a few confirmations before the channel is open and ready for use.
 In the mean time, the channel details can be oberved using [`.lnd.pendingChannels`](https://api.lightning.community/rest/index.html#v1-channels-pending).
 
@@ -865,6 +875,14 @@ q)result
 -------------------------------------------------------------------------------
 (,`close_pending)!+(,`txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4zg="
 (,`chan_close)!+(,`closing_txid)!,,"qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4..
+```
+
+As shown perviously, the `txid` value above needs to undergo a conversion in order
+to retrieve the `txid` in the appropriate format to enable searching in a [block explorer](https://www.blockchain.com/btc/tx/38e3c0e32bb2334d293e9ad706dffdea60b4fd17eb2448306b5297ca868e0ca8).
+
+```q
+q).lnd.decodeTxid["qAyOhsqXUmswSCTrF/20YOr93wbXmj4pTTOyK+PA4zg="]
+"38e3c0e32bb2334d293e9ad706dffdea60b4fd17eb2448306b5297ca868e0ca8"
 ```
 
 Once the channel close has completed, the wallet balance should display the received amount.

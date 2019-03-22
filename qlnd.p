@@ -27,6 +27,9 @@ p)def getInfo():
   r = requests.get(url+endpoint, headers=headers, verify=cert_path)
   return r.json()
 
+p)def decodeTxid(funding_txid):
+  return base64.b64decode(funding_txid)[::-1].hex()
+
 p)def forwardingHistory(data): 
   endpoint  = 'switch'
   r = requests.post(url+endpoint, headers=headers, verify=cert_path, data=json.dumps(data))
@@ -79,10 +82,10 @@ p)def closedChannels(queryParameters=''):
 
 p)def closeChannel(funding_txid_str,output_index):
   endpoint = 'channels/'+funding_txid_str+'/'+output_index
-  r = requests.delete(url+endpoint, headers=headers, verify=cert_path, stream=True)
   items = []
+  r = requests.delete(url+endpoint, headers=headers, verify=cert_path, stream=True)
   for raw_response in r.iter_lines():
-    items.append(json.loads(str(raw_response)))
+    items.append(json.loads(raw_response))
   return items
 
 p)def connectPeer(data): 
@@ -227,6 +230,7 @@ p)def encoder(Str):
 
 q).lnd.encoder:.p.get[`encoder;<]
 q).lnd.decoder:.p.get[`decoder;<]
+q).lnd.decodeTxid:.p.get[`decodeTxid;<]
 q).lnd.setURL:.p.get[`setURL;<]
 q).lnd.setTLS:.p.get[`setTLS;<]
 q).lnd.setMACAROON:.p.get[`setMACAROON;<]
