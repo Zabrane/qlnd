@@ -288,7 +288,7 @@ if it is not in the default location `$HOME/.lnd`.
 ```
 
 During library loading, this variable is used to set the location of both the TLS certificate and Macaroon token 
-which are used for authentication with the `lnd` node, noth of which are created on startup.
+which are used for authentication with the `lnd` node, both of which are created on startup.
 
 In order to change the values of the `lnd` URL, TLS Certificate path and Macaroon token path post loading,
 the following functions are provided.
