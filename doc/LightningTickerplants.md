@@ -541,7 +541,7 @@ on the underlying bitcoin blockchain. This ability to create off-chain transacti
 underlying base layer, helps scale transactions dramatically without impacting the energy requirements
 to secure the underlying blockchain. The above payment settles in miliseconds.
 
-<img src="paidInvoice3.jpg" alt="drawing" width="100" class="center" />
+<img align="right" width="100" height="100" src="paidInvoice3.jpg">
 
 
 # Creating a Lightning enabled tickerplant
