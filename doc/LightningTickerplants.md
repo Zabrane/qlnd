@@ -506,7 +506,8 @@ add_index      | ,"2"
 ```
 The resultant `payment_request` string is all the payer needs to send a payment
 
-![](invoice.jpg =100x20)
+![](invoice.jpg)
+<img src="invoice.jpg" alt="drawing" width="200"/>
 
 ## Making a payment
 
