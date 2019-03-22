@@ -535,7 +535,7 @@ payment_preimage| "KwaHlrIB1JEjJJg4DNtS9MzpQWz5z95U3yjBh+r9imM="
 payment_route   | `to-tal_time_lock`total_amt`hops`total_amt_msat!(560959f;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key!(,"616462084875288577";,"1000000";,"100";,560959f;,"100000";,"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");"100000")
 payment_hash    | "OVo3jUFmxR2US255C/DIYShMU/JCCSjQcfMUblFZfF0="
 ```
-<img align="right" width="200" height="200" src="paidInvoice3.jpg">
+<img align="right" width="160" height="160" src="paidInvoice3.jpg">
 
 Both parties can continue making payments back and forth on this channel without any additional data footprint
 on the underlying bitcoin blockchain. This ability to create off-chain transactions, secured by the
