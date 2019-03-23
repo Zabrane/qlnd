@@ -10,7 +10,7 @@ keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 # Introduction
 
 [Lightning](https://lightning.network/lightning-network-paper.pdf) is a technology designed to dramatically scale blockchains, like Bitcoin, by enabling high transaction throughput with greater privacy, and while preserving decentralized qualities. It is a layer two infastructure which builds upon the security and [smart contract](https://en.wikipedia.org/wiki/Smart_contract) functionality of the underlying base blockchain, analagous to how the HTTP application layer protocol builds on an underlying and reliable TCP layer. 
-Lightning succeeds by allowing payments to be made off-chain, meaning the underlying (Bitcoin) network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (hundreds of a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most [rapidly growing](https://1ml.com/statistics) networks in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
+Lightning succeeds by allowing payments to be made off-chain through the technology of bidirectional [payment channels](#What-are-payment-channels), wherein the underlying (Bitcoin) network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (hundreds of a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most [rapidly growing](https://1ml.com/statistics) networks in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
 
 Currently, many Lightning applications (LApps) are in the early stages of development but include [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micro-paymement paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators and [micro-payment tipping](https://tippin.me/) services (twitter). The micro-payment application, in particluar, has the potential to transform how online content
 is monetised, moving from an add based, or yearly subscription based model, to a microfee pay-per-view model. 
@@ -40,7 +40,7 @@ Optional Software
 The reader should be aware that the above Lightning daemon software is a Beta version, and so, users 
 should be cautious when using, keeping funds held on Lightning payment channels to a minimum.
 
-# Overview of the Lightning Network
+# What are payment channels
 
 The Lightning Network is a scaling solution being applied to Bitcoin, and other compatible blockchains, which enables
 trustless instant payments, together with improved privacy features. It is a layer-two solution which leverages the 
