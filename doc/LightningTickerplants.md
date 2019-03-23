@@ -472,7 +472,7 @@ q).lnd.decodeTxid["D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="]
 "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
 ```
 
-This ID can then be tracked on a [block explorer](https://www.blockchain.com/btc/tx/d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f) or, as shown previously, by using `.lng.getTransactions`.
+This ID can then be tracked on a [block explorer](https://www.blockchain.com/btc/tx/d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f) or, as shown previously, by using `.lnd.getTransactions`.
 
 
 Opening a channel is an on-chain event, so it may take a few confirmations before the channel is open and ready for use.
