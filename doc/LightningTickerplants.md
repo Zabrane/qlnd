@@ -633,9 +633,7 @@ in blue. In this case, a direct channel is opened between the tickerplant and su
 and fee-less payments, however, a direct channel is not required. Transactions can also be made where 
 payments are routed via intermediate nodes which connect both, highlighted in grey.
 
-![](overviewDiagram.png)
-
-
+<img src="overviewDiagram.png" alt="drawing" class="center"/>
 
 ## Subscribe-Pay-Publish
 
