@@ -445,10 +445,11 @@ ping_time | "476"
 
 ## Opening a channel: Funding transaction
 
-Opening a channel is an on-chain event and needs to be confirmed by the Bitcoin network, so it can take a few minutes.
-To open a channel with the now connected tickerplant `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
+Opening a channel is an on-chain event and needs to be confirmed by the Bitcoin network, so completion of
+the follwing step can take a few minutes.
+To open a channel with the now connected **TICKERPLANT** `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
 
-In the example below, we are opening a channel with just the following inputs
+In the example below, a channel can be opened by passing a dictionary with the following key-value pairs.
 * `node_pubkey_string`:  The hex encoded pubkey of the node to open a channel with. 
 * `local_funding amount`: The number of Satoshis the wallet should commit to the channel.
 * `push_sat`:  The number of satoshis to push to the remote side as part of the initial commitment state.
