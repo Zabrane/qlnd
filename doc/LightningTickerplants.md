@@ -387,10 +387,6 @@ total_balance    | "1060000"
 confirmed_balance| "1060000
 ```
 
-Beware, that since `lnd` is a hot wallet, it should only control a small amount of funds at any one time.
-It is recommended to always keep larger sums in cold storage hardware wallets and only move funds to
-Lightning when required.
-
 
 ## Connecting to Peers
 
@@ -450,7 +446,7 @@ Additional node details can also be found by searching for `TICKERPLANT` in any 
 previously mentioned node explorers.
 
 
-## Opening a channel
+## Opening a channel: Funding transaction
 
 Opening a channel is an on-chain event and needs to be confirmed by the Bitcoin network, so it can take a few minutes.
 To open a channel with the now connected tickerplant `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
@@ -523,7 +519,7 @@ Here the `payment_request` string is presented along with its associated QR code
 <img src="invoice.jpg" alt="drawing" width="800" class="center" style="max-width:95%;border:3px solid black;"/>
 
 
-## Making a payment
+## Making a payment: Commitment transaction
 
 Once the payer has received the `payment_request` string, the message can be decoded using [`.lnd.decodePayReq`](https://api.lightning.community/rest/index.html#v1-payreq), as shown below. 
 
@@ -856,7 +852,7 @@ handle request index settled
 From this moment on, the subscriber will begin receiving updates.
 
 
-## Closing a channel
+## Closing a channel: Settlement transaction
 
 At any point, either participant in the channel can choose to close it.
 A channel closing event is an on-chain transaction where the multisig address
