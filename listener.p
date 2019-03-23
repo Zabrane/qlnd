@@ -1,6 +1,6 @@
 p)import base64, codecs, json, requests, os
 p)from qpython import qconnection
-p)url = 'https://localhost:8081/v1/'
+p)url = 'https://localhost:8080/v1/'
 p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
 p)cert_path =  LND_DIR+'/tls.cert'
 p)macaroon = codecs.encode(open(LND_DIR+'/data/chain/bitcoin/mainnet/invoice.macaroon', 'rb').read(), 'hex')
