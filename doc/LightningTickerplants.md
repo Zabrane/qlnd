@@ -35,26 +35,39 @@ Optional Software
    Used here to transfer funds from a bitcoin core wallet to a Lightning wallet. For more info on running a node, and using qbitcoind, see past
    blogs and whitepapers; [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
 
-The reader should be aware that the above Lightning daemon software is a Beta version, and so, users 
-should be cautious when using, keeping funds held on Lightning payment channels to a minimum.
+The reader should be aware that the above Lightning daemon software is a Beta version, and the technology
+is relatively new, so caution should be taken when using, keeping funds held on lightning to a minimum.
 
 # What are payment channels
 
-The Lightning Network is a scaling solution being applied to Bitcoin, and other compatible blockchains, which enables
-trustless instant payments, together with improved privacy features. It is a layer-two solution which leverages the 
-security and smart contract functionality of the base layer Bitcoin network to create a system where transactions can
-be performed off-chain, meaning transaction confimations are not limited by the base layer settlement time.
-Instead transaction confirmation times are limited primarily by the latency between participants in the network, and their
-processing power. Often Lightning payment confirmations times are of the same order as message transfers over modern 
-instant-messaging services.
+** UNDER CONSTRUCTION **
+
+The central component, or building block, of the Lightning Network is the bidirectional payment channel.
+A payment channel is constructed between two participants by creating a multisignature wallet on the
+blockchain which requires both participants signatures for funds to be spent. This first on-chain transaction,
+which determines the balance (or capacity) of the channel is referred to as the **funding transaction**.
+In the diagram below, Alice opens a channel with Bob of 1BTC. The 1 BTC on Alice's end is known as
+Alice's outbound capacity, and is the amount she is able to spend.
 
 
+Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
+to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
+So for example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances.
+These transactions, however, are not broadcast to the Bitcoin blockchain, allowing thousands of 
+such transactions to be performed per seconds. The speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
 network allows for millions of transactions per second, including micro-payments of the order of thousands of a cent.
+
+Only when the channel closes will the most recent transaction be broadcast to the blockchain, this is
+known as the **settlement transaction**, where the funds held on the multi-signature wallet are spent
+to the wallet addresses of the participants.
+
+
+Transactions can be made between peers who share a payment channel, or across peers by routing
+payments along multiple interconnected payment channnels.
+
 This is accomplished through the creation of "payment-channels" between peers, wherein parties commit funds to the
 channel, and pay each other simply by updating the balance redeemable by each party.
-
-
 Below is an image taken from a Lightning node block explorer showing the distribution of public nodes
 and the known channels between them. The network has seen a dramatic growth over the past year, with
 the value held on Lightning increasing continuously.
