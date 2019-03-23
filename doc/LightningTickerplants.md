@@ -364,8 +364,8 @@ Transaction details can also be confirmed on the Lightning node. Below, all tran
 are first converted into a more convenient kdb+ table format to make for easier selection.
 
 ```q
-q)tbl:(uj/) enlist@'.lnd.getTransactions[][`transactions]
-q)first select from tbl where tx_hash like txid
+q)t:(uj/) enlist@'.lnd.getTransactions[][`transactions]
+q)first select from t where tx_hash like txid
 tx_hash          | "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
 amount           | "-1001481"
 num_confirmations| 7470
@@ -433,7 +433,6 @@ are first converted into a more convenient kdb+ table format to make for easier 
 ```q
 q)t:(uj/) enlist each .lnd.listPeers[][`peers]
 q)first select from t where pub_key like tp_pubkey
-q)first select from t where pub_key like tp_pubkey
 pub_key   | "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
 address   | "217.160.185.97:9736"
 bytes_sent| "2163151"
@@ -445,8 +444,6 @@ ping_time | "476"
 
 ## Opening a channel: Funding transaction
 
-Opening a channel is an on-chain event and needs to be confirmed by the Bitcoin network, so completion of
-the follwing step can take a few minutes.
 To open a channel with the now connected **TICKERPLANT** `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
 
 In the example below, a channel can be opened by passing a dictionary with the following key-value pairs.
@@ -458,7 +455,7 @@ In the example below, a channel can be opened by passing a dictionary with the f
 * `private`: Whether this channel should be private, not announced to the greater network.           
 
 ```q
-q)node_pubkey_string:"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+q)node_pubkey_string:tp_pubkey
 q)local_funding_amount:1000000
 q)push_sat:2000
 q)private:0b
@@ -467,14 +464,15 @@ funding_txid_bytes| "D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="
 output_index      | 1f
 ```
 
-The above `funding_txid_bytes` value needs to be converted to the base32 txid
+In order to track the **funding transaction** on a block explorer, the `funding_txid_bytes` value (above) 
+needs to be converted to a base32 txid. The library provides a convenience function to perform this conversion, `.lnd.decodeTxid`.
 
 ```q
 q).lnd.decodeTxid["D0qR7aU8bxzVXwtRSwe2GmgaZgyCnj+u0HNpQ8OvHdY="]
 "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
 ```
 
-Which can then be tracked on a [block explorer](https://www.blockchain.com/btc/tx/d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f)
+This ID can then be tracked on a [block explorer](https://www.blockchain.com/btc/tx/d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f) or, as shown previously, by using `.lng.getTransactions`.
 
 
 Opening a channel is an on-chain event, so it may take a few confirmations before the channel is open and ready for use.
@@ -484,12 +482,12 @@ In the mean time, the channel details can be oberved using [`.lnd.pendingChannel
 q).lnd.pendingChannels[][`pending_open_channels][`channel]
 ```
 
-Once the channel is opened, it should now appear on the list of opened channels maintained by the node.
+Once the channel is opened, it should appear on the list of opened channels maintained by the node.
 This list can be accessed using the [`.lnd.listChannels`](https://api.lightning.community/rest/index.html#v1-channels-transactions-route) API.
 
 ```q
-q)tbl:(uj/) enlist@'.lnd.listChannels[][`channels]
-q)select from tbl where remote_pubkey like node_pubkey_string
+q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
+q)select from t where remote_pubkey like tp_pubkey
 ```
 
 
