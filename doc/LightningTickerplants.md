@@ -907,7 +907,7 @@ confirmed_balance| "2120"
 
 In summary, only two on-chain transactions were required, one to open the channel and one to close.
 All the intermediate transactions which occurred over the bi-directional payment channel have not
-hit the blockchain, and so not occurred any on-chain fees.
+hit the blockchain, and so have not incurred any on-chain fees.
 
 
 ## Extension to multiple IoT devices
