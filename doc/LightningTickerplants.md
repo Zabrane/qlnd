@@ -76,7 +76,7 @@ The steps are broken down into the following parts
 * Installation of the `lnd` daemon
 * Running `lnd` and creating a wallet
 
-## bitcoind
+## Installing bitcoind
 
 In order to run `lnd`, it is required that a bitcoin full node daemon be running on the same host. 
 This is because the Lightning node needs a way to communicate with the underlying blockchain in order to send
@@ -140,8 +140,7 @@ id    | 0
 ```
 
 
-
-## lnd
+## Installing lnd
 
 To install and run `lnd` and its dependencies, the reader is recommended to follow the official [Lnd-Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/INSTALL.md#installation). 
 
@@ -187,7 +186,7 @@ bitcoin.node=bitcoind
 [Bitcoind]
 ```
 
-## Running and wallet creation
+## Running a Lightning node
 
 
 Once `lnd` is installed, it can be started by running the following command.
@@ -216,7 +215,7 @@ $./lnd --help
 ```
 
 
-## Wallet creation
+## Creating a wallet
 
 During node startup the following output will appear, requesting the user to either `create` a new wallet or `unlock` and
 exiting wallet. 
@@ -314,7 +313,7 @@ q).lnd.getInfo[][`identity_pubkey]
 "This returns the public key identifier which is unique to your node"
 ```
 
-## Fund your wallet
+## Funding a Lightning wallet
 <img src="fundWallet.png" alt="drawing" width="150" align="right" />
 
 With the node running, and the qlnd functions returning as expected, the first step towards creating a payment channel is to fund your Lightning wallet with Bitcoin. To do this, first instruct the wallet to generate a new address with [`.lnd.newaddress`](https://api.lightning.community/rest/index.html#v1-newaddress).
@@ -487,7 +486,6 @@ This list can be accessed using the [`.lnd.listChannels`](https://api.lightning.
 q)tbl:(uj/) enlist@'.lnd.listChannels[][`channels]
 q)select from tbl where remote_pubkey like node_pubkey_string
 ```
-
 
 
 ## Creating an invoice
@@ -800,7 +798,7 @@ Invoice message event received: {"result":{"memo":"Invoice:trade| AAPL GOOGL\n",
 Invoice message event received: {"result":{"memo":"Invoice:trade| AAPL GOOGL\n","r_preimage":"EJClS1fuq9owXAe7rpgdjuyMPsIvNegsPLZ6Wz38cnw=","r_hash":"QZKFOR+nzeHwv53oPlnZTmZP7LmWKY3n4R1+wtemg4s=","value":"2","settled":true,"creation_date":"1550320751","settle_date":"1550320834","payment_request":"lnbc20n1pwxspr0pp5gxfg2wgl5lx7ru9lnh5rukwefenylm9ejc5cmelpr4lv94axsw9sdp2f9h8vmmfvdjn5arjv9jx2lpqg9q4qnpqga85736vpgcqzysxqrrssk8ae2lnee7ud4xxs7mwl4epaumdfvtzrh9kthpjhltj0xaya34238r0qwknsuz9rjzr956mae86h4hknkepj78ft4ejryxv3c2vazgsp799a5d","expiry":"3600","cltv_expiry":"144","add_index":"27","settle_index":"11","amt_paid":"2000","amt_paid_sat":"2","amt_paid_msat":"2000","state":"SETTLED"}}
 ```
 
-## Enabling subscriber
+## Tickerplant: Enabling subscriber
 
 Of note in the above code is the synchronous call to the kdb+ tickerplant which
 executes the function `.u.processInvoices` with the event message sent from the node.
@@ -847,7 +845,7 @@ handle request index settled
 From this moment on, the subscriber will begin receiving updates.
 
 
-## Closing the channel
+## Closing a channel
 
 At any point, either participant in the channel can choose to close it.
 A channel closing event is an on-chain transaction where the multisig address
@@ -909,10 +907,9 @@ hit the blockchain, and so not occurred any on-chain fees.
 ## Extension to multiple IoT devices
 
 The above approach can be extended to the use case of multiple IoT devices who are sending and receiving payments.
-Typically, a set of devices can authenticate and communicate with a single `lnd` node using just the TLS certificate
-file and invoice.macaroon, to generate invoices for subscribers. Similarly, the listener process can broadcast
+A set of devices can authenticate and communicate with a single `lnd` node using just the TLS certificate
+file and invoice.macaroon in order to generate invoices for subscribers. Similarly, the listener process can broadcast
 invoice settlement messages back to individual devices to release data to subscribers.
-
 
 
 ## Conclusion
@@ -944,8 +941,7 @@ at a leading options and futures exchange.
 ## In-Direct routing
 
 As mentioned previously, it is not necessary for the subscriber node to have a direct channel with the tickerplant node,
-it can, instead, route the payment via a chain of connected codes.
-In order to do this, the node must first find an alternative route.
+it can, instead, route the payment via a chain of connected nodes. In order to do this, the node must first find an alternative route.
 
 
 ## Finding a route
