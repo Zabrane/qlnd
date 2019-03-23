@@ -334,12 +334,6 @@ With the node running, and the qlnd functions returning as expected, the first s
 ```q
 q).lnd.newaddress[]
 address| "bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73"
-
-
-q).lnd.newaddress["?type=0"]
-address| "bc1q2tng7hfrskjm0qqtzhghj2w6r9pza82khz5zzm"
-q).lnd.newaddress["?type=1"]
-address| "3Q2HUbyYNL6b64sMmWLHxLPNFkzYFRJwSc"
 ```
 
 Next, send some funds to this address using your mobile, hardware or exchange wallet of choice. Alternatively, you can use the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) within the [qbitcoind](https://github.com/jlucid/qbitcoind) library if your bitcoin full node contains funds.
@@ -365,8 +359,12 @@ q).bitcoind.gettransaction[txid][`result]
 amount            | -0.0106
 fee               | -1.57e-05
 confirmations     | 2678f
+```
 
-// Transaction details can also be confirmed on the lightning node
+Transaction details can also be confirmed on the Lightning node. Below, all transaction details
+are first converted into a more convenient kdb+ table format to make for easier selection.
+
+```q
 q)tbl:(uj/) enlist@'.lnd.getTransactions[][`transactions]
 q)first select from tbl where tx_hash like txid
 tx_hash          | "d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f"
