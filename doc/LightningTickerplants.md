@@ -458,7 +458,7 @@ In the example below, a channel can be opened by passing a dictionary with the f
 * `private`: Whether this channel should be private, not announced to the greater network.           
 
 ```q
-q)node_pubkey_string:"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c”
+q)node_pubkey_string:"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
 q)local_funding_amount:1000000
 q)push_sat:2000
 q)private:0b
