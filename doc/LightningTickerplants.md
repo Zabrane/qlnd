@@ -18,10 +18,9 @@ Lightning payments are also highly applicable to the IoT space, as the network c
 integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, where users can subscribe to streaming futures data from the BitMEX and Kraken exchanges using Lightning micro-payments.
 
 With the above potential applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
-to interact with a running Lightning node, from within a q process, to create payment channels with peers, generate invoices for payment, 
-and route payments rapidly across the network. As an example of how Lightning can be integrated into
-kdb+ based applications, this paper will describe how a standard kdb+ tickerplant can be easily modified 
-to accept payments for market data on a per ticker basis, with near instant settlement and zero fees. 
+to interact with a running Lightning node, from within a q process, to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
+kdb+ based applications, this paper will describe how a kdb+ tickerplant can be easily modified 
+to accept payments for market or sensor data on a per ticker basis, with near instant settlement and zero fees. 
 The paper will also discuss how multiple IoT devices, already running kdb+ to process data quickly, can authenticate and communicate with a single Lightning node to generate invoices and receive payment settlement notifications.
 
 All tests were carried out using
