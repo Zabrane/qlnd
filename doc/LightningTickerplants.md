@@ -40,14 +40,13 @@ is relatively new, so caution should be taken when using, keeping funds held on 
 
 # What are payment channels
 
-** UNDER CONSTRUCTION **
-
 The central component, or building block, of the Lightning Network is the bidirectional payment channel.
 A payment channel is constructed between two participants by creating a multisignature wallet on the
 blockchain which requires both participants signatures for funds to be spent. This first on-chain transaction,
 which determines the balance (or capacity) of the channel is referred to as the **funding transaction**.
-In the diagram below, Alice opens a channel with Bob of 1BTC. The 1 BTC on Alice's end is known as
-Alice's outbound capacity, and is the amount she is able to spend.
+In the diagram below, Alice opens a channel to Bob with a 1 BTC channel capacity. The 1 BTC on Alice's end is 
+referred to as Alice's outbound capacity, and is the amount she is able to spend.
+
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
 to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
