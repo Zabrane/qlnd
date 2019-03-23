@@ -328,7 +328,6 @@ q).lnd.getInfo[][`identity_pubkey]
 ```
 
 ## Funding a Lightning wallet
-<img src="fundWallet.png" alt="drawing" width="150" align="right" />
 
 With the node running, and the qlnd functions returning as expected, the first step towards creating a payment channel is to fund your Lightning wallet with Bitcoin. To do this, first instruct the wallet to generate a new address with [`.lnd.newaddress`](https://api.lightning.community/rest/index.html#v1-newaddress).
 
