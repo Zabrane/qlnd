@@ -49,7 +49,6 @@ which determines the balance (or capacity) of the channel is referred to as the 
 In the diagram below, Alice opens a channel with Bob of 1BTC. The 1 BTC on Alice's end is known as
 Alice's outbound capacity, and is the amount she is able to spend.
 
-
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
 to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
 So for example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances.
@@ -62,17 +61,21 @@ Only when the channel closes will the most recent transaction be broadcast to th
 known as the **settlement transaction**, where the funds held on the multi-signature wallet are spent
 to the wallet addresses of the participants.
 
+While single payment channels between pairs of peers are very useful, the innovation of the Lightning
+network is to then enable payments to be routed between parties who do not have a direct payment
+channel between them, by passing payments along a network of channels. This is achieved by
+the use of smary contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way.
 
-Transactions can be made between peers who share a payment channel, or across peers by routing
-payments along multiple interconnected payment channnels.
-
-This is accomplished through the creation of "payment-channels" between peers, wherein parties commit funds to the
-channel, and pay each other simply by updating the balance redeemable by each party.
 Below is an image taken from a Lightning node block explorer showing the distribution of public nodes
 and the known channels between them. The network has seen a dramatic growth over the past year, with
 the value held on Lightning increasing continuously.
 
 ![](lightningMap.JPG)
+
+For more detailed explanation of how Lightning works see the following resources
+
+* [Payment Channels Explained](https://medium.com/softblocks/lightning-network-in-depth-part-1-payment-channels-b943607950dd)
+* [Lightning Network Resources](https://lopp.net/lightning.html)
 
 
 # Installing and Configuring a Lightning node
