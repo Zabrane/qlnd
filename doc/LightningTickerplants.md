@@ -530,7 +530,7 @@ description | "Test Invoice two"
 cltv_expiry | "144"
 ```
 
-Once the payer is satisfied with the invoice details, the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) API can be used to pay the invoice over Lightning. The below payment settles in miliseconds.
+If the payer is satisfied with the invoice details, the [`.lnd.sendPayment`](https://api.lightning.community/rest/index.html#v1-channels-transactions) API can be used to pay the invoice over Lightning. The below payment settles in miliseconds.
 
 ```q
 q).lnd.sendPayment[(enlist `payment_request)!(enlist "lnbc1u1pw9yrznpp589dr0r2pvmz3m9ztdeushuxgvy5yc5ljggyj35r37v2xu52e03wsdq623jhxapqf9h8vmmfvdjjqarhducqzysxqrrssza7eywh4h9z3jakvpcmn7gjmt0jssdcfu9uww9he7upwngxdvdkrqdwj7zklm4cupdmj9vqdsjavmnmyu7864sucap887k0km5uxkegqp8chmk")]
