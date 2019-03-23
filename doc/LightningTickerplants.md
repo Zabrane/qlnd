@@ -407,8 +407,13 @@ explorer                                               |
 [https://explorer.acinq.co/](https://explorer.acinq.co/)           |   
 [https://graph.lndexplorer.com](https://graph.lndexplorer.com)            |
 
+For the purposes of this paper, a connection will be made with the node whose alias is **TICKERPLANT**, and
+whose details are as follows.
+```q
+TICKERPLANT         023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c@217.160.185.97:9736
+```
 
-To open a connection with the Bitrefill node, listed above, pass `.lnd.connectPeer` a dictionary
+To open a connection with the TICKERPLANT node, listed above, pass `.lnd.connectPeer` a dictionary
 with keys `addr` and `perm`, where
 
 * `addr`: Value is a dictionary with keys `pubkey` and `host`, corresponding to the public key and host address
@@ -417,32 +422,25 @@ with keys `addr` and `perm`, where
 
 
 ```q
-q)pukey:"030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f"; 
-q)host:"52.50.244.44:9735"
-q)result:.lnd.connectPeer[`addr`perm!(`pubkey`host!(pubkey;host);1b)]
+q)tp_pubkey:"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"; 
+q)host:"217.160.185.97:9736"
+q).lnd.connectPeer[`addr`perm!(`pubkey`host!(tp_pubkey;host);1b)]
 ```
 
-Confirm the node was added as a connection by searching the list of connected peers using [`.lnd.listPeers`](https://api.lightning.community/rest/index.html#v1-peers).
+Confirm the node was added as a connection by searching the list of connected peers using [`.lnd.listPeers`](https://api.lightning.community/rest/index.html#v1-peers). Below, the peer details
+are first converted into a more convenient kdb+ table format to make for easier selection.
 
 ```q
-q)tbl:(uj/) enlist each .lnd.listPeers[][`peers]
-q)first select from tbl where pub_key like "*c14f"
-pub_key   | "030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f"
-address   | "52.50.244.44:9735"
-bytes_sent| "2098551"
-bytes_recv| "2104585"
+q)t:(uj/) enlist each .lnd.listPeers[][`peers]
+q)first select from t where pub_key like tp_pubkey
+q)first select from t where pub_key like tp_pubkey
+pub_key   | "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c"
+address   | "217.160.185.97:9736"
+bytes_sent| "2163151"
+bytes_recv| "2120034"
 inbound   | 0b
-ping_time | "26761"
-sat_sent  | ""
+ping_time | "476"
 ```
-
-For the demonstration in this paper, we will also form a connection with the node
-```q
-"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c@217.160.185.97:9736" 
-```
-which is the node associated with our `tickerplant` process.
-Additional node details can also be found by searching for `TICKERPLANT` in any of the
-previously mentioned node explorers.
 
 
 ## Opening a channel: Funding transaction
