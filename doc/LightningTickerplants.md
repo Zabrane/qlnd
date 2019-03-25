@@ -47,6 +47,7 @@ which determines the balance (or capacity) of the channel is referred to as the 
 In the diagram below, Alice opens a channel to Bob with a 1 BTC channel capacity. The 1 BTC on Alice's end is 
 referred to as Alice's outbound capacity, and is the amount she is able to spend.
 
+![](AliceAndBobOpening.png)
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
 to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
