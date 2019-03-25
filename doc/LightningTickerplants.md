@@ -733,7 +733,7 @@ On the subscriber end, making a payment is straight forward using the [`.lnd.sen
 
 
 ```q
-q)result:.lnd.sendPayment[(enlist `payment_request)!(enlist (result[2])[`payment_request)]
+q)result:.lnd.sendPayment[(enlist `payment_request)!(enlist (result[2])[`payment_request])]
 q)result
 payment_preimage| "EJClS1fuq9owXAe7rpgdjuyMPsIvNegsPLZ6Wz38cnw="
 payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(563411f;,"2";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key!(,"616462084875288577";,"1000000";,,"2";,563411f;,"2000";,"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");"2000")
