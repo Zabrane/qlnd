@@ -33,7 +33,7 @@ code to reside
 The library can then be loaded directly into a q session either on startup, using the command below, 
 
 ```C++
-    $q qlnd.p
+    $q qlnd.q
 ```
 
 Or by using the \l command while within a session
