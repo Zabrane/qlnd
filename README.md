@@ -58,7 +58,7 @@ can be changed using`.lnd.setTLS` and `.lnd.setMACAROON` functions, respectively
 The hostname and listening port of the `lnd` instance can also be changed easily using `.lnd.setURL`.
 
 ```C++
-    $q qlnd.p
+    $q qlnd.q
     q)LND_DIR:getenv[`LND_DIR]
     q).lnd.setURL "https://localhost:8080/v1"
     q).lnd.setTLS LND_DIR,"/tls.cert"
