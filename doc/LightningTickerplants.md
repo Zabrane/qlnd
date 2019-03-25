@@ -63,7 +63,7 @@ Only when the channel closes will the most recent transaction be broadcast to th
 known as the **settlement transaction**, where the funds held on the multi-signature wallet are spent
 to the wallet addresses of the participants.
 
-![](AliceAndBobActiveChannelClose.png)
+![](AliceAndBobChannelClose.png)
 
 While single payment channels between pairs of peers are very useful, the innovation of the Lightning
 network is to then enable payments to be routed between parties who do not have a direct payment
