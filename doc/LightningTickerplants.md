@@ -19,7 +19,7 @@ Lightning payments are also highly applicable to the **IoT** space, as the netwo
 
 
 For cryptocurrency exchanges,
-integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, where users can subscribe to streaming futures data from the BitMEX and Kraken exchanges using Lightning micro-payments.
+integrating Lightning has the advantage of allowing users to more rapidly deposit and withdraw funds, and can enable exchanges to monetise market data in a completely new way, as seen in a recent [surebits](https://suredbits.com/) application, where customers  subscribe to streaming futures data from the BitMEX and Kraken exchanges using Lightning micro-payments.
 
 With the above potential applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
 to interact with a running Lightning node, from within a q process, to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
