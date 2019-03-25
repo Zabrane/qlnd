@@ -57,6 +57,8 @@ such transactions to be performed per seconds. The speed is only limited by the 
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
 network allows for millions of transactions per second, including micro-payments of the order of thousands of a cent.
 
+![](AliceAndBobActiveChannel.png)
+
 Only when the channel closes will the most recent transaction be broadcast to the blockchain, this is
 known as the **settlement transaction**, where the funds held on the multi-signature wallet are spent
 to the wallet addresses of the participants.
