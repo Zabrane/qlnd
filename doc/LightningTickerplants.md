@@ -50,7 +50,7 @@ blockchain which requires both participants signatures for funds to be spent. Th
 which determines the balance (or capacity) of the channel is referred to as the **funding transaction**.
 In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The 1.0 BTC on Alice's end is 
 referred to as Alice's outbound capacity, and is the amount she is able to spend. The 0.1 BTC on Bob end is
-referred to as inbound capacity. This inbound capacity determines how much Alice can reeive.
+referred to as inbound capacity. This inbound capacity determines how much Alice can receive.
 
 ![](AliceAndBobOpening.png)
 
