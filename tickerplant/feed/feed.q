@@ -1,5 +1,5 @@
 h:hopen 5010
-syms:`VOD`IBM`APL`AAPL`GOOG
+syms:`VOD`IBM`APL`AAPL`GOOGL
 
 publishtrade:{[]
    nrow:first 1?1+til 4;
