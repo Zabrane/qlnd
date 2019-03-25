@@ -774,11 +774,11 @@ option which returns a uni-directional stream from the `lnd` server to the clien
 However, because this is a blocking call, we will instead use a dedicated q process to listen and push events onto
 the tickerplant immediately.
 
-Below is shown the embedPy script and command to run this listener process. Notice that the `portnumber` (tickerplant), `authHeader`, `url` and TLS `cert` values have been hardcoded and should be changed if necessary.
+Below is shown the embedPy script and command to run this listener process (see [invoiceListener.q](https://github.com/jlucid/qlnd/blob/master/invoiceListener.q)). Notice that the `portnumber` (tickerplant), `authHeader`, `url` and TLS `cert` values have been hardcoded and should be changed if necessary.
 The listener process also used the invoice.macaroon token, so can only access invoice related APIs.
 
 ```python
-p)import base64, codecs, json, requests
+p)import base64, codecs, json, requests, os
 p)from qpython import qconnection
 p)url = 'https://localhost:8080/v1/'
 p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
@@ -789,16 +789,17 @@ p)headers = {'Grpc-Metadata-macaroon': macaroon}
 p)q = qconnection.QConnection(host='localhost', port=5010)
 p)q.open()
 
-p)def listener(data):
-  endpoint  = 'invoices/subscribe'
+p)def listener(queryParameters=''):
+  endpoint  = 'invoices/subscribe'+queryParameters
   r = requests.get(url+endpoint, headers=headers, verify=cert_path, stream=True)
   for raw_response in r.iter_lines():
       json_response = json.loads(raw_response)
-      print"Invoice message event received"
-      print raw_response
+      print("Invoice message event received")
+      print(raw_response)
       q('.u.processInvoices', raw_response)
 
 q).lnd.listener:.p.get[`listener;<]
+q).lnd.listener[]
 ```
 
 The program can be run using the following command
