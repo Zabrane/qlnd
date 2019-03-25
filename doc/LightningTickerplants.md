@@ -804,8 +804,8 @@ q).lnd.listener[]
 
 The program can be run using the following command
 ```q
-$q listener.p
-q)listener[]
+$q invoiceListener.q
+
 
 // This first message is an invoice creation, generated when the tickerplant calls .lnd.addInvoice
 
