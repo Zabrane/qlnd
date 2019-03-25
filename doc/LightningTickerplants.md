@@ -44,18 +44,19 @@ The central component, or building block, of the Lightning Network is the bidire
 A payment channel is constructed between two participants by creating a multisignature wallet on the
 blockchain which requires both participants signatures for funds to be spent. This first on-chain transaction,
 which determines the balance (or capacity) of the channel is referred to as the **funding transaction**.
-In the diagram below, Alice opens a channel to Bob with a 1 BTC channel capacity. The 1 BTC on Alice's end is 
-referred to as Alice's outbound capacity, and is the amount she is able to spend.
+In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The 1.0 BTC on Alice's end is 
+referred to as Alice's outbound capacity, and is the amount she is able to spend. The 0.1 BTC on Bob end is
+referred to as inbound capacity. This inbound capacity determines how much Alice can reeive.
 
 ![](AliceAndBobOpening.png)
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
 to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
-So for example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances.
-These transactions, however, are not broadcast to the Bitcoin blockchain, allowing thousands of 
+So for example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances, as shown below.
+These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
 such transactions to be performed per seconds. The speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
-network allows for millions of transactions per second, including micro-payments of the order of thousands of a cent.
+network allows for millions of transactions per second.
 
 ![](AliceAndBobActiveChannel.png)
 
@@ -66,9 +67,11 @@ to the wallet addresses of the participants.
 ![](AliceAndBobChannelClose.png)
 
 While single payment channels between pairs of peers are very useful, the innovation of the Lightning
-network is to then enable payments to be routed between parties who do not have a direct payment
+network is that it enables payments to be routed between parties who do not have a direct payment
 channel between them, by passing payments along a network of channels. This is achieved by
-the use of smary contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way.
+the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. Therefore, if a customer wished to pay a service provider, then do not need to
+have a direct channel open with the provider, but can instead route payments along
+a network of connected channels.
 
 Below is an image taken from a Lightning node block explorer showing the distribution of public nodes
 and the known channels between them. The network has seen a dramatic growth over the past year, with
