@@ -76,7 +76,8 @@ channel between them, by passing payments along a network of chained payment cha
 the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. Therefore, if a customer wished to pay a service provider, then do not need to
 have a direct channel open with the provider, but can instead route payments along
 a network of connected channels. Below is an illustration of this idea, where Alice has a choice
-of multiple payment paths to Bob.
+of multiple payment paths to Bob. A real word example of a Lightning payment being routed through intermediate
+nodes can also be seen in the [Appendix - Shopping](#Shopping).
 
 ![](ChainedChannels.png)
 
