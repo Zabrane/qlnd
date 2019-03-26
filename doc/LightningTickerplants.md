@@ -78,7 +78,7 @@ have a direct channel open with the provider, but can instead route payments alo
 a network of connected channels. Below is an illustration of this idea, where Alice has a choice
 of multiple payment paths to Bob.
 
-![](PaymentRouting.png)
+![](ChainedChannels.png)
 
 The following image is taken from a Lightning node block explorer and shows the geographic distribution of public Lightning nodes
 and the known channels between them. The network has seen a dramatic growth over the past year, with
