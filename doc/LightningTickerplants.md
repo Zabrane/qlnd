@@ -960,45 +960,6 @@ at a leading options and futures exchange.
 .lnd.updateChannelPolicy[`global`fee_rate`time_lock_delta!(1b;1000;6)]
 ```
 
-## In-Direct routing
-
-As mentioned previously, it is not necessary for the subscriber node to have a direct channel with the tickerplant node,
-it can, instead, route the payment via a chain of connected nodes. In order to do this, the node must first find an alternative route.
-
-
-## Finding a route
-
-To make a payment to another node on Lightning, it is not required to have a direct channel to the node, instead the
-payment can be routed along a path of connected nodes instead.
-The `.lnd.queryRoutes` API can be used to determine if a path can be found to the destination node.
-
-```q
-q)result:.lnd.queryRoutes["030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f";"100"]
-q)result
-routes| +`total_time_lock`total_fees`total_amt`hops`total_fees_msat`total_amt..
-q)result[`routes]
-total_time_lock total_fees total_amt hops                                    ..
------------------------------------------------------------------------------..
-565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565682          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565514          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565514          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-565658          ,"1"       "101"     (`chan_id`chan_capacity`amt_to_forward`f..
-```
-
-The table output of this call can then be passed to the `.lnd.sendToRoute` API to make
-a payment using the determined path.
-
-```q
-q)result:.lnd.queryRoutes["02df5ffe895c778e10f7742a6c5b8a0cefbe9465df58b92fadeb883752c8107c8f";"133270"]
-q)r:.lnd.sendToRoute[.j.j `payment_hash_string`routes!("b20eeab2bb13bba9b923a1c75d53553bcc2516b1d9b5f87e82315ff61d536562";result[`routes])]
-```
-
 ## Shopping
 
 Users can test the API by buying small items on the various Lightning-enabled stores. 
@@ -1027,7 +988,7 @@ q)result:.lnd.sendPayment[(enlist `payment_request)!(enlist paymentRequestFromBl
 
 The message returned by the API, for the successful payment, includes the route hop information.
 Here we see that the payment was routed to the Blockstream `lnd` node through one intermediate node.
-This is an example of an in-direct payment where a direct payment channel did not exist.
+This is an example of an in-direct payment where funds were routed to the destination through an intermediate node.
 
 ```q
 q)result[`payment_route][`hops]
