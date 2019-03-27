@@ -45,7 +45,7 @@ is relatively new, so caution should be taken when using, keeping funds held on 
 
 
 One of the primary building blocks of the Lightning Network are bidirectional (two-way) payment channels.
-Payment channels allow users to make multiple Bitcoin transactions without committing (or broadcasting) all of the transactions to the Bitcoin blockchain.
+Payment channels allow users to make millions of Bitcoin transactions without committing (or broadcasting) all of the transactions to the Bitcoin blockchain.
 In a typical payment channel, only two transactions are added to the block chain but an unlimited or nearly unlimted number of payments can be made between the participants.
 
 Payment channels can be opened between Lightning network peers, or **nodes**, who are running the Lightning protocol software.
