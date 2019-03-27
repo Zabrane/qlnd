@@ -4,7 +4,7 @@ authors:
 date: December 2018
 keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 ---
-# Lightning Tickerplants: Pay-per-ticker with micro-payments on the Lightning network
+# Lightning Tickerplants: Pay-per-ticker with micropayments on the Lightning network
 
 
 # Introduction
@@ -12,13 +12,13 @@ keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 [Lightning](https://lightning.network/lightning-network-paper.pdf) is a technology designed to dramatically scale blockchains, like Bitcoin, by enabling high transaction throughput with greater privacy while preserving decentralized qualities. It is a layer two infastructure which builds upon the security and [smart contract](https://en.wikipedia.org/wiki/Smart_contract) functionality of the underlying base blockchain, analagous to how the HTTP application layer protocol builds on an underlying and reliable TCP layer. 
 Lightning succeeds by allowing payments to be made off-chain through the technology of bidirectional [payment channels](#What-are-payment-channels), wherein the underlying network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (less than a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most rapidly growing networks (see [Stats](https://1ml.com/statistics)) in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
 
-Lightning application (LApp) development is also progressing quickly and includes [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micro-payment paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators, [micro-payment tipping](https://tippin.me/) services (twitter), and multiple Custodial and Non-Custodial [wallet](https://lopp.net/lightning.html) implementations. The micro-payment application, in particular, has the potential to transform how online content
-is monetised by facilitating a micro-fee pay-per-view model, as oppossed to an add based or yearly subscription model.
+Lightning application (LApp) development is also progressing quickly and includes [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micropayment paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators, [micropayment tipping](https://tippin.me/) services (twitter), and multiple Custodial and Non-Custodial [wallet](https://lopp.net/lightning.html) implementations. The micropayment application, in particular, has the potential to transform how online content
+is monetised by facilitating a microfee pay-per-view model, as oppossed to an add based or yearly subscription model.
 Lightning payments are also highly applicable to the **IoT space**, as the network can be used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of the networks key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456), [Bitcoin Payment-Channels for Resource Limited IoT Devices](https://arxiv.org/pdf/1812.10345.pdf) and [Micropayments between IoT devices](http://www.diva-portal.org/smash/get/diva2:1272048/FULLTEXT01.pdf).
 
 
 For cryptocurrency exchanges,
-integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds between exchanges. Increasing the velocity of value transfer should in turn lead to greater market efficiency and reduce arbitrage opportunities. Lighting can also enable exchanges to monetise market data in a completely new way, as showcased in a recent [surebits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges can be made available to users on-the-fly with Lightning micro-payments.
+integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds between exchanges. Increasing the velocity of value transfer should in turn lead to greater market efficiency and reduce arbitrage opportunities. Lightning can also enable exchanges to monetise market data in a completely new way, as showcased in a recent [surebits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges can be made available to users on-the-fly with Lightning micropayments.
 
 With the above applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
 to communicate with a Lightning node to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
@@ -43,20 +43,27 @@ is relatively new, so caution should be taken when using, keeping funds held on 
 
 # What are payment channels
 
-The primary building block of the Lightning Network are bidirectional payment channels.
-Payment channels are opened between Lightning network peers, or **nodes**, who are running the Lightning protocol software.
-A payment channel is constructed between two participants by creating ai 2-of-2 multisignature address on the
+
+One of the primary building blocks of the Lightning Network are bidirectional (two-way) payment channels.
+Payment channels allow users to make multiple Bitcoin transactions without committing (or broadcasting) all of the transactions to the Bitcoin blockchain.
+In a typical payment channel, only two transactions are added to the block chain but an unlimited or nearly unlimted number of payments can be made between the participants.
+
+Payment channels can be opened between Lightning network peers, or **nodes**, who are running the Lightning protocol software.
+A payment channel is constructed between two participants by creating a 2-of-2 multisignature address on the
 blockchain which requires both participants signatures for funds to be spent. This first on-chain transaction,
-which determines the balance (or capacity) of the channel is referred to as the **funding transaction**.
-In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The 1.0 BTC on Alice's end is 
+which determines the balance (or capacity) of the channel is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel:-Funding-transaction).
+In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The opening balance is
+1.0 BTC on Alice's end and 0.1 BTC on Bob's end. The 1.0 BTC on Alice's end is 
 referred to as Alice's outbound capacity, and is the amount she is able to spend. The 0.1 BTC on Bob's end is
 referred to as inbound capacity. This inbound capacity determines how much Alice can receive.
 
 ![](AliceAndBobOpening.png)
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
-to exchange mutually signed **commitment transactions** that modify the initial balance of the channel. 
-So for example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances, as shown below.
+to transact by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment:-Commitment-transaction).
+These two-way channels enable instant transactions between users, as long as the amount being sent does not exceed the
+senders outbound balance. 
+For example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances, as shown below.
 These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
 such transactions to be performed per seconds. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
@@ -64,12 +71,13 @@ network allows for millions of transactions per second.
 
 ![](AliceAndBobActiveChannel.png)
 
-Only when the channel closes will the most recent transaction be broadcast to the blockchain, this is
+Only when the channel closes will the most recent transaction, and latest balance, be broadcast to the blockchain. This is
 known as the **settlement transaction**, where the funds held on the multisignature address are spent
-to the wallet addresses of the participants.
+to the wallet addresses of the participants, see [Section: Closing a channel](#Closing-a-channel:-Settlement-transaction).
 
 ![](AliceAndBobChannelClose.png)
 
+Channels are secured by smart contracts, logic that makes sure any malicious behavior leads to penalties for the offender.
 While single payment channels between pairs of peers are very useful, the major innovation of the Lightning
 network is that it enables payments to be routed between parties who do not have a direct bidirectional payment
 channel between them, by passing payments along a network of chained payment channels. This is achieved by
@@ -86,6 +94,7 @@ and the known channels between them. The network has seen a dramatic growth over
 the value held on Lightning increasing continuously.
 
 ![](lightningMap.JPG)
+*World map of the lightning network. Source: https://explorer.acinq.co*
 
 For more detailed explanation of how Lightning works see the following resources
 
