@@ -961,6 +961,10 @@ at a leading options and futures exchange.
 
 ## Setting channel fees
 
+Lightning node operators can charge a fee for routing payments for other peers. 
+The [`.lnd.updateChannelPolicy`](https://api.lightning.community/rest/index.html#v1-chanpolicy) API can be used to set the fee rate.
+For more info on the economics of fees on Lightning, see recent article from [BitMEX research](https://blog.bitmex.com/the-lightning-network-part-2-routing-fee-economics/).
+
 ```q
 .lnd.updateChannelPolicy[`global`fee_rate`time_lock_delta!(1b;1000;6)]
 ```
