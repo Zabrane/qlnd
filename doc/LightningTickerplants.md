@@ -77,7 +77,7 @@ to the wallet addresses of the participants, see [Section: Closing a channel](#C
 While single payment channels between pairs of peers are very useful, the major innovation of the Lightning
 network was enabling payments to be routed between parties who do not have a direct bidirectional payment
 channel between them, by passing payments along a network of chained payment channels. This is achieved by
-the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. Therefore, if a customer wished to make a retail payment, then do not require a direct channel open with the retailer, but can instead route payments along
+the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. For example, if a customer wishes to make a retail payment, but doesnt have a direct channel open with the retailer, they can instead route the payment along
 a network of connected channels. Below is an illustration of this idea, where Alice has a choice
 of multiple payment paths to Bob. A real word example of a Lightning payment being routed through intermediate
 nodes can also be seen in the [Appendix - Shopping](#Shopping).
