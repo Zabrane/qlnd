@@ -49,7 +49,7 @@ Payment channels allow users to make millions of Bitcoin transactions without br
 
 A payment channel is constructed between two Lightning network peers, or nodes, by creating a 2-of-2 multisignature address on the
 Bitcoin blockchain, which requires both participants signatures for funds to be spent. This first on-chain transaction,
-determines the balance (or capacity) of the channel, and is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel:-Funding-transaction).
+determines the balance (or capacity) of the channel, and is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel-Funding-transaction).
 
 In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The opening balance is
 1.0 BTC on Alice's end and 0.1 BTC on Bob's end. The 1.0 BTC on Alice's end is 
@@ -462,7 +462,7 @@ ping_time | "476"
 ```
 
 
-## Opening a channel: Funding transaction
+## Opening a channel Funding transaction
 
 To open a channel with the now connected **TICKERPLANT** `lnd` node, we can use the [`.lnd.openChannel`](https://api.lightning.community/rest/index.html#v1-channels) API.
 
