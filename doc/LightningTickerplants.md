@@ -17,7 +17,7 @@ is monetised by facilitating a microfee pay-per-view model, as oppossed to an ad
 Lightning payments are also highly applicable to the **IoT space**, as the network can be used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of the networks key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456), [Bitcoin Payment-Channels for Resource Limited IoT Devices](https://arxiv.org/pdf/1812.10345.pdf) and [Micropayments between IoT devices](http://www.diva-portal.org/smash/get/diva2:1272048/FULLTEXT01.pdf).
 
 
-For cryptocurrency exchanges,
+For **cryptocurrency exchanges**,
 integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds seamlessly between exchanges. Increasing the velocity of value transfer should, in turn, lead to greater market efficiency and reduce arbitrage opportunities. The exchange [ZebPay](https://blog.zebpay.com/zebpay-launches-lightning-network-payments-44cfaad0b1c7) has become the first to begin integrating the payment system. Lightning can also enable exchanges to monetise market data in a completely new way, as showcased in a recent [surebits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges can be made available to users on-the-fly with Lightning micropayments.
 
 With the above applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
