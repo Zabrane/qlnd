@@ -20,7 +20,7 @@ Lightning payments are also highly applicable to the **IoT space**, as the netwo
 For **cryptocurrency exchanges**,
 integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds seamlessly between exchanges. Increasing the velocity of value transfer should, in turn, lead to greater market efficiency and reduce arbitrage opportunities. The exchange [ZebPay](https://blog.zebpay.com/zebpay-launches-lightning-network-payments-44cfaad0b1c7) has become the first to begin integrating the payment system. Lightning can also enable exchanges to monetise market data in a completely new way, as showcased in a recent [surebits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges can be made available to users on-the-fly with Lightning micropayments.
 
-With the above applications in mind, this paper will explore Lightning network technology, and describe how the [qlnd](https://github.com/jlucid/qlnd) library can be used 
+With the above applications in mind, this paper will explore Lightning network technology, and describe how the [kdb+ qlnd](https://github.com/jlucid/qlnd) library can be used 
 to communicate with a Lightning node to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
 kdb+ based applications, this paper will illustrate how a kdb+ tickerplant can be easily modified 
 to accept payments for market or sensor data on a per ticker basis, with fast settlement and zero fees. 
