@@ -45,13 +45,12 @@ is relatively new, so caution should be taken when using, keeping funds held on 
 
 
 One of the primary building blocks of the Lightning Network are bidirectional (two-way) payment channels.
-Payment channels allow users to make millions of Bitcoin transactions without committing (or broadcasting) all of the transactions to the Bitcoin blockchain.
-In a typical payment channel, only two transactions are added to the block chain but an unlimited or nearly unlimted number of payments can be made between the participants.
+Payment channels allow users to make millions of Bitcoin transactions without broadcasting all of them to the Bitcoin network.
 
-Payment channels can be opened between Lightning network peers, or **nodes**, who are running the Lightning protocol software.
-A payment channel is constructed between two participants by creating a 2-of-2 multisignature address on the
-blockchain which requires both participants signatures for funds to be spent. This first on-chain transaction,
-which determines the balance (or capacity) of the channel is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel:-Funding-transaction).
+A payment channel is constructed between two Lightning network peers, or nodes, by creating a 2-of-2 multisignature address on the
+Bitcoin blockchain, which requires both participants signatures for funds to be spent. This first on-chain transaction,
+determines the balance (or capacity) of the channel, and is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel:-Funding-transaction).
+
 In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The opening balance is
 1.0 BTC on Alice's end and 0.1 BTC on Bob's end. The 1.0 BTC on Alice's end is 
 referred to as Alice's outbound capacity, and is the amount she is able to spend. The 0.1 BTC on Bob's end is
@@ -60,29 +59,25 @@ referred to as inbound capacity. This inbound capacity determines how much Alice
 ![](AliceAndBobOpening.png)
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
-to transact by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment:-Commitment-transaction).
-These two-way channels enable instant transactions between users, as long as the amount being sent does not exceed the
-senders outbound balance. 
+to transact instantly by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment:-Commitment-transaction). 
 For example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances, as shown below.
 These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
 such transactions to be performed per seconds. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
-network allows for millions of transactions per second.
+network allows for millions of transactions per second using this approach.
 
 ![](AliceAndBobActiveChannel.png)
 
-Only when the channel closes will the most recent transaction, and latest balance, be broadcast to the blockchain. This is
+Channels can be close between peers at any time, at which point the most recent transaction, and latest balance, will be broadcast to the blockchain. This is
 known as the **settlement transaction**, where the funds held on the multisignature address are spent
 to the wallet addresses of the participants, see [Section: Closing a channel](#Closing-a-channel:-Settlement-transaction).
 
 ![](AliceAndBobChannelClose.png)
 
-Channels are secured by smart contracts, logic that makes sure any malicious behavior leads to penalties for the offender.
 While single payment channels between pairs of peers are very useful, the major innovation of the Lightning
-network is that it enables payments to be routed between parties who do not have a direct bidirectional payment
+network was enabling payments to be routed between parties who do not have a direct bidirectional payment
 channel between them, by passing payments along a network of chained payment channels. This is achieved by
-the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. Therefore, if a customer wished to pay a service provider, then do not need to
-have a direct channel open with the provider, but can instead route payments along
+the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. Therefore, if a customer wished to make a retail payment, then do not require a direct channel open with the retailer, but can instead route payments along
 a network of connected channels. Below is an illustration of this idea, where Alice has a choice
 of multiple payment paths to Bob. A real word example of a Lightning payment being routed through intermediate
 nodes can also be seen in the [Appendix - Shopping](#Shopping).
@@ -237,7 +232,7 @@ $./lnd --configfile=~/.lnd/lnd.conf
 
 It is possible to run multiple instances of `lnd`, all connected to the same `bitcoind` to assist in testing.
 In which case, a separate `lnd.conf` file can be created for each instance in a separate folder, being careful to
-change the `listen`,`externapip`,`rpclisten`,`alias`,`color`,`datadir`,`logdir`,`tlscertpath`,`tlskeypath` values as appropriate, and
+change the `listen`,`externalip`,`rpclisten`,`alias`,`color`,`datadir`,`logdir`,`tlscertpath`,`tlskeypath` values as appropriate, and
 starting the nodes like so
 
 ```bash
