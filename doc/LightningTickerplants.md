@@ -13,7 +13,7 @@ keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 Lightning succeeds by allowing payments to be made off-chain through the technology of bidirectional [payment channels](#What-are-payment-channels), wherein the underlying network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (less than a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most rapidly growing networks (see [Stats](https://1ml.com/statistics)) and adopted technologies in the cryptocurrency space, and is at the cutting edge of blockchain innovation.
 
 Lightning application (LApp) development is progressing quickly and includes [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micropayment paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators, [micropayment tipping](https://tippin.me/) services (twitter), and multiple Custodial and Non-Custodial [wallet](https://lopp.net/lightning.html) implementations. The micropayment application, in particular, has the potential to transform how online content
-is monetised by facilitating a microfee pay-per-view model, as oppossed to an add based or yearly subscription model.
+is monetised by facilitating a microfee pay-per-view model, as opposed to an ad based or yearly subscription model.
 Lightning payments are also highly applicable to the **IoT space**, as the network can be used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of the networks key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456), [Bitcoin Payment-Channels for Resource Limited IoT Devices](https://arxiv.org/pdf/1812.10345.pdf) and [Micropayments between IoT devices](http://www.diva-portal.org/smash/get/diva2:1272048/FULLTEXT01.pdf).
 
 
@@ -60,7 +60,7 @@ referred to as inbound capacity. This inbound capacity determines how much Alice
 
 Once this funding transaction is confirmed by the Bitcoin network, both participants are then free
 to transact instantly by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment-with-a-Commitment-transaction). 
-For example, Alice can send 0.1 BTC to Bob over lightning, updating their respective balances, as shown below.
+For example, Alice can send 0.1 BTC to Bob over Lightning, updating their respective balances, as shown below.
 These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
 such transactions to be performed per seconds. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
@@ -68,7 +68,7 @@ network allows for millions of transactions per second using this approach.
 
 ![](AliceAndBobActiveChannel.png)
 
-Channels can be close between peers at any time, at which point the most recent transaction, and latest balance, will be broadcast to the blockchain. This is
+Channels can be closed between peers at any time, at which point the most recent transaction, and latest balance, will be broadcast to the blockchain. This is
 known as the **settlement transaction**, where the funds held on the multisignature address are spent
 to the wallet addresses of the participants, see [Section: Closing a channel](#Closing-a-channel-with-a-Settlement-transaction).
 
@@ -77,7 +77,7 @@ to the wallet addresses of the participants, see [Section: Closing a channel](#C
 While single payment channels between pairs of peers are very useful, the major innovation of the Lightning
 network was enabling payments to be routed between parties who do not have a direct bidirectional payment
 channel between them, by passing payments along a network of chained payment channels. This is achieved by
-the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trust less way. For example, if a customer wishes to make a retail payment, but doesnt have a direct channel open with the retailer, they can instead route the payment along
+the use of smart contract technology, namely [HTLC](https://medium.com/softblocks/lightning-network-in-depth-part-2-htlc-and-payment-routing-db46aea445a8) (Hash-TimeLock-Contracts), which ensures funds can be transferred in a trustless way. For example, if a customer wishes to make a retail payment, but doesnt have a direct channel open with the retailer, they can instead route the payment along
 a network of connected channels. Below is an illustration of this idea, where Alice has a choice
 of multiple payment paths to Bob. A real word example of a Lightning payment being routed through intermediate
 nodes can also be seen in the [Appendix - Shopping](#Shopping).
@@ -251,7 +251,7 @@ $./lnd --help
 ## Creating a wallet
 
 During node startup the following output will appear, requesting the user to either `create` a new wallet or `unlock` and
-exiting wallet. 
+existing wallet. 
 
 ```bash
 $./lnd --configfile=~/.lnd/lnd.conf
@@ -293,9 +293,9 @@ Be sure to record the 24 word seed which is essential for wallet recovery.
 
 # Interacting with Lightning using qlnd
 
-The [qlnd](https://github.com/jlucid/qlnd) library enables a q process to communication with a locally running `lnd` node
+The [qlnd](https://github.com/jlucid/qlnd) library enables a q process to communicate with a locally running `lnd` node
 via the [LND REST API](https://api.lightning.community/rest/index.html#lnd-rest-api-reference). Moreover, the library makes
-use of the powerful [embedPy](https://code.kx.com/q/ml/embedpy/) interface, recently released by Kx, which allows the kdb+ interpreter to manipulate Python objects, call Python functions, and load Python libraries. This is particularly useful for this application given that the REST API Reference documentation has explicit and well tested examples using python. For readers interested in other
+use of the powerful [embedPy](https://code.kx.com/q/ml/embedpy/) interface, recently released by Kx, which allows the kdb+ interpreter to manipulate Python objects, call Python functions and load Python libraries. This is particularly useful for this application given that the REST API Reference documentation has explicit and well tested examples using python. For readers interested in other
 applications of embedPy and kdb+, see [Machine-Learning](https://code.kx.com/q/interfaces/embedpy/) and kdb+.
 
 
@@ -312,7 +312,7 @@ Once embedPy is installed, the `qlnd` library can be loaded into a q process as 
 $q qlnd.p
 ```
 
-However, prior to loading, you may need to set the `LND_DIR` environmental variable to location of your `.lnd.conf` file,
+However, prior to loading, you may need to set the `LND_DIR` environmental variable to the location of your `.lnd.conf` file,
 if it is not in the default location `$HOME/.lnd`.
 
 ```bash
