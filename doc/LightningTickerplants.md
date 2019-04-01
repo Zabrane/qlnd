@@ -23,7 +23,7 @@ integrating Lightning has the advantage of allowing clients to more rapidly depo
 With the above applications in mind, this paper will explore Lightning network technology, and describe how the [kdb+ qlnd](https://github.com/jlucid/qlnd) library can be used 
 to communicate with a Lightning node to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
 kdb+ based applications, this paper will illustrate how a kdb+ tickerplant can be easily modified 
-to accept payments for market or sensor data on a per ticker basis, with fast settlement and zero fees. 
+to accept payments for market or sensor data on a per request (ticker) basis, with fast settlement and zero fees. 
 The paper will also discuss how multiple IoT devices, already running kdb+ for data processing, can authenticate and communicate with a single Lightning node to generate invoices and receive payment settlement notifications.
 
 All tests were carried out using
