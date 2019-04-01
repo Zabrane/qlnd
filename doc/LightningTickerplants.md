@@ -48,8 +48,8 @@ One of the primary building blocks of the Lightning Network are bidirectional (t
 Payment channels allow users to make millions of Bitcoin transactions without broadcasting all of them to the Bitcoin network.
 
 A payment channel is constructed between two Lightning network peers, or nodes, by creating a 2-of-2 multisignature address on the
-Bitcoin blockchain, which requires both participants signatures for funds to be spent. This first on-chain transaction,
-determines the balance (or capacity) of the channel, and is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel-with-a-Funding-transaction).
+Bitcoin blockchain, which requires both participants signatures for funds to be spent. This first on-chain transaction
+determines the balance (or capacity) of the channel and is referred to as the **funding transaction**, see [Section: Opening a channel](#Opening-a-channel-with-a-Funding-transaction).
 
 In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The opening balance is
 1.0 BTC on Alice's end and 0.1 BTC on Bob's end. The 1.0 BTC on Alice's end is 
