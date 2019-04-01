@@ -320,15 +320,16 @@ if it is not in the default location `$HOME/.lnd`.
   export LND_DIR=/path/to/my/.lnd
 ```
 
-During library loading, this variable is used to set the location of both the TLS certificate and Macaroon token 
-which are used for authentication with the `lnd` node, both of which are created on startup.
+During library loading, this environmental variable is used to set the location of both the TLS certificate, used for
+secure communication with `lnd`, and the Macaroon token, used to authenicate with `lnd` and control API access.
+By default, the `qlnd.q` script tries to load the `admin.macaroon`, which is full access without caveats. For applications
+requiring lower priviledged access, a invoice.macaroon and readonly.macaroon are also available, see [macaroons](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
+
+
+https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md
 
 In order to change the values of the `lnd` URL, TLS Certificate path and Macaroon token path post loading,
-the following functions are provided.
-
-* url: The host and port number of your `lnd` node. Where 8080 is the default port number for the REST API interface.
-* tls: Path the to tls.cert file which was created when your `lnd` node started. This allows for a TLS/SSL connection.
-* macaroon: Path to the macaroon token which was created when your `lnd` node started up. The macaroon is used for RPC authentication. 
+the following to the macaroon token which was created when your `lnd` node started up. The macaroon is used for RPC authentication. 
 
 ```q
 $q qlnd.p
