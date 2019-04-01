@@ -126,7 +126,7 @@ Before starting the daemon, a `bitcoin.conf` file should be created in the insta
 as described previously in the whitepaper [Storing and Exploring the Bitcoin Blockchain](https://code.kx.com/q/wp/blockchain/?_ga=2.31949815.87606725.1550512369-1296260280.1520717656#installing-a-bitcoin-full-node).
 However, the sample `bitcoin.conf` file presented in that whitepaper should now be extended, as shown below, to
 include the [ZeroMQ](https://github.com/bitcoin/bitcoin/blob/master/doc/zmq.md) wrapper which will allow the Lightning
-node to be notified of events like the arrival of new blocks or transactions. Note that in the conf file below, the
+node to be notified of events like the arrival of new blocks or transactions. Note that in the configuration file below, the
 `rpcuser` and `rpcpassword` values need to be changed.
 
 ```python
