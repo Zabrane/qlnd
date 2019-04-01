@@ -251,7 +251,7 @@ $./lnd --help
 
 ## Creating a wallet
 
-During node startup the following output will appear, requesting the user to either `create` a new wallet or `unlock` and
+During node startup the following output will appear, requesting the user to either `create` a new wallet or `unlock` an
 existing wallet. 
 
 ```bash
