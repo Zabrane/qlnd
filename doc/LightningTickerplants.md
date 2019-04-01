@@ -369,7 +369,7 @@ error | 0n
 id    | 0f
 ```
 
-To track the status of this wallet funding transaction, we can query either the `bitcoind` node using `.bitcoind.gettransaction`, or the `lnd` node using [`.lnd.getTransactions`](https://api.lightning.community/rest/index.html#v1-transactions), as shown below.
+To track the status of this wallet funding transaction, we can query either the `bitcoind` node using [`.bitcoind.gettransaction`](https://github.com/jlucid/qbitcoind/wiki/Transaction-IDs), or the `lnd` node using [`.lnd.getTransactions`](https://api.lightning.community/rest/index.html#v1-transactions), as shown below.
 
 
 ```q
