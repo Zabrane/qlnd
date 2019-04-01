@@ -325,7 +325,8 @@ and Macaroon token, both of which will be created by `lnd` on startup, and are u
 authentication, respectively.
 
 By default, the `qlnd.q` script tries to load the `admin.macaroon`, which gives full API access without caveats. For applications
-requiring lower priviledged access, an `invoice.macaroon` and `readonly.macaroon` are also available, see [Macaroons Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
+requiring lower priviledged access, an `invoice.macaroon` and `readonly.macaroon` are also available, 
+see [Macaroons Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
 
 
 https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md
