@@ -328,9 +328,6 @@ By default, the `qlnd.q` script tries to load the `admin.macaroon`, which gives 
 requiring lower priviledged access, an `invoice.macaroon` and `readonly.macaroon` are also available, 
 see [Macaroons Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
 
-
-https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md
-
 In order to change the values of the `lnd` URL, TLS Certificate path or Macaroon token path post script loading,
 the following methods are available,.
 
