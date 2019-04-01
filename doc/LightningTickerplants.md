@@ -53,8 +53,7 @@ determines the balance (or capacity) of the channel and is referred to as the **
 
 In the diagram below, Alice opens a channel to Bob with a channel capacity of 1.1 BTC. The opening balance is
 1.0 BTC on Alice's end and 0.1 BTC on Bob's end. The 1.0 BTC on Alice's end is 
-referred to as Alice's outbound capacity, and is the amount she is able to spend. The 0.1 BTC on Bob's end is
-referred to as inbound capacity. This inbound capacity determines how much Alice can receive.
+referred to as Alice's outbound capacity, and is the amount she is able to spend or, send to Bob. The 0.1 BTC on Bob's end of the channel is referred to as Alice's inbound capacity. This inbound capacity determines how much Alice can receive.
 
 ![](AliceAndBobOpening.png)
 
