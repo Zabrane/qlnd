@@ -225,7 +225,7 @@ bitcoin.node=bitcoind
 
 
 Once `lnd` is installed, it can be started by running the following command.
-Below we explicitly give the path to the `lnd.conf` file, however, by default `lnd` will look for it in the home directory.
+Below we explicitly give the path to the `lnd.conf` file, however, by default `lnd` will look for it in the home directory if not specified.
 
 ```bash
 $cd $GOPATH/bin
