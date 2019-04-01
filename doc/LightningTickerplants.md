@@ -207,6 +207,9 @@ tlskeypath=~/.lnd/tls.key
 listen=<localhost:9735>
 externalip=<localhost:9735>
 
+#Specify the interfaces to listen on for REST connections.
+restlisten=0.0.0.0:8080
+
 #Specify the interfaces to listen on for gRPC connections
 rpclisten=<localhost:10009>
 
