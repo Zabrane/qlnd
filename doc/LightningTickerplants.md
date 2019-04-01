@@ -225,7 +225,7 @@ bitcoin.node=bitcoind
 
 
 Once `lnd` is installed, it can be started by running the following command.
-Below we explicitly give the path to the `lnd.conf` file, however, by default it is created within the home directory
+Below we explicitly give the path to the `lnd.conf` file, however, by default `lnd` will look for it in the home directory.
 
 ```bash
 $cd $GOPATH/bin
@@ -234,8 +234,7 @@ $./lnd --configfile=~/.lnd/lnd.conf
 
 It is possible to run multiple instances of `lnd`, all connected to the same `bitcoind` to assist in testing.
 In which case, a separate `lnd.conf` file can be created for each instance in a separate folder, being careful to
-change the `listen`,`externalip`,`rpclisten`,`alias`,`color`,`datadir`,`logdir`,`tlscertpath`,`tlskeypath` values as appropriate, and
-starting the nodes like so
+change the `listen`,`externalip`,`restlisten`,`rpclisten`,`alias`,`color`,`datadir`,`logdir`,`tlscertpath`,`tlskeypath` values as appropriate, and starting the nodes as follows
 
 ```bash
 $./lnd --configfile=~/.lnd1/lnd.conf
