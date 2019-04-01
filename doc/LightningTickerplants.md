@@ -320,16 +320,18 @@ if it is not in the default location `$HOME/.lnd`.
   export LND_DIR=/path/to/my/.lnd
 ```
 
-During library loading, this environmental variable is used to set the location of both the TLS certificate, used for
-secure communication with `lnd`, and the Macaroon token, used to authenicate with `lnd` and control API access.
-By default, the `qlnd.q` script tries to load the `admin.macaroon`, which is full access without caveats. For applications
-requiring lower priviledged access, a invoice.macaroon and readonly.macaroon are also available, see [macaroons](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
+During library loading, this environmental variable is used to set read location a TLS certificate
+and Macaroon token, both of which will be created by `lnd` on startup, and are used for secure communication and
+authentication, respectively.
+
+By default, the `qlnd.q` script tries to load the `admin.macaroon`, which gives full API access without caveats. For applications
+requiring lower priviledged access, an `invoice.macaroon` and `readonly.macaroon` are also available, see [Macaroons Guide](https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md).
 
 
 https://github.com/lightningnetwork/lnd/blob/master/docs/macaroons.md
 
-In order to change the values of the `lnd` URL, TLS Certificate path and Macaroon token path post loading,
-the following to the macaroon token which was created when your `lnd` node started up. The macaroon is used for RPC authentication. 
+In order to change the values of the `lnd` URL, TLS Certificate path or Macaroon token path post script loading,
+the following methods are available,.
 
 ```q
 $q qlnd.p
@@ -345,7 +347,7 @@ q).lnd.getInfo[][`version]
 "0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858"
 
 q).lnd.getInfo[][`identity_pubkey]
-"This returns the public key identifier which is unique to your node"
+"This returns the public key identifier which is unique to the node"
 ```
 
 ## Funding a Lightning wallet
