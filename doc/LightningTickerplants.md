@@ -308,7 +308,7 @@ The reader is encouraged to follow the online documentation available on [Kx.com
 
 ## Running qlnd
 
-Once embedPy is installed, the `qlnd` library can be loaded into a q process as follows, from the command line.
+Once embedPy is installed, the `qlnd` library can be loaded into a q process as follows.
 ```bash
 $q qlnd.p
 ```
