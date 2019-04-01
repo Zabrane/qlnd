@@ -110,7 +110,7 @@ The steps are broken down into the following parts
 
 ## Installing bitcoind
 
-In order to run `lnd`, it is required that a bitcoin full node daemon be running on the same host. 
+In order to run `lnd`, it is required that a bitcoin full node daemon be running and available, preferably, on the same host. 
 This is because the Lightning node needs a way to communicate with the underlying blockchain in order to send
 on-chain payments, create channel open/close transactions and monitor relevant transactions on the network. 
 While there are novel approaches which do not require a local full node, such as [Neutrino](https://github.com/lightninglabs/neutrino), these are outside the scope of this paper.
