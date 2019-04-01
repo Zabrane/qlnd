@@ -942,13 +942,15 @@ invoice settlement messages back to individual devices to release data to subscr
 
 ## Conclusion
 
-This paper described the basic workings of the Lightning network from setting up Lightning nodes, creating
-channels and making fast Lightning payments. A practical example was provided to demonstrate how
-the qlnd library can be integrated into a vanilla tickerplant process to enable a pay-per-ticker
-publishing scheme. This example can provide a template for how future machine to machine payments could
-be performed. It is hoped that as the technology develops, further enhancements to the library can be
-made to keep it up to date, and make the integration with kdb+ based applications even more streamlined.
-
+This paper described the basic workings of the Lightning network, a technology with the potential
+to help scale Bitcoin, and other compatible blockchains, and facilitate the construction of new innovative applications.
+Topic covered included setting up a Lightning node, and using thq `qlnd` library to create channels with peers
+and make fast payments over the network. A practical example was provided to demonstrate how a vanilla tickerplant 
+process could be easily modified to enable a pay-per-request publishing scheme using micropayments. 
+This example provides a simple template for how market data, or sensor data, could be monitised using the technology,
+and how machine to machine payments could be facilitated in the future. 
+It is hoped that as the technology develops, further enhancements to the library can be
+made to keep it up to date, and make the integration with kdb+ based applications even more streamlined and performant.
 
 ## Authors
 
