@@ -99,7 +99,7 @@ For more detailed explanation of how Lightning works see the following resources
 # Installing and Configuring a Lightning node
 
 There are currently multiple implementations of the Lightning protocol, including [lnd](https://github.com/lightningnetwork/lnd) from [Lightning Labs](https://lightning.engineering/), [eclair](https://github.com/ACINQ/eclair) from [ACINQ](https://acinq.co/) and [c-lightning](https://github.com/ElementsProject/lightning) from [Blockstream](https://blockstream.com/technology/). 
-To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to specialise in different aspects of the technology, like mobile integration, browser plugins, and enterprise products, while retaining cross-compatibility.
+To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to work and specialise on different aspects of the technology, like mobile integration, browser plugins and enterprise products, while retaining cross-compatibility.
 
 While multiple Lightning implementations exist, the [qlnd](https://github.com/jlucid/qlnd) library discussed here is designed specifically to communicate with the `lnd` daemon from Lightning Labs. Therefore, the steps described below correspond only to the installation of this implementation.
 
