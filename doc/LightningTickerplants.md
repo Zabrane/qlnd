@@ -899,8 +899,7 @@ csv_delay              | 144
 ```
 
 The first part of this channel point value, before the colon, is the bitcoin transaction ID of the funding transaction, 
-and the second part, after the colon, is a zero-based index of the transaction output.
-Zero-based index means a value of 0 points to the first output of the transaction, and a value of 1 points to the second output.
+and the second part, after the colon, is the index of the transaction output.
 The transaction and index need to be passed to the `.lnd.closeChannel` API as shown below, to close the channel.
 
 ```q
