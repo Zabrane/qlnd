@@ -419,6 +419,7 @@ shown below
 Bitrefill           030c3f19d742ca294a55c00376b3b355c3c90d61c6b6b39554dbc7ac19b141c14f@52.50.244.44:9735
 LivingRoomOfSatoshi 026b105ac13212c48714c6be9b11577a9ce10f10e1c88a45ce217e6331209faf8b@52.224.178.244:9735
 PeerNode            02e7c42ae2952d7a71398e23535b53ffc60deb269acbc7c10307e6b797b91b1e79@93.123.80.47:9735
+BitMEX Research     0395033b252c6f40e3756984162d68174e2bd8060a129c0d3462a9370471c6d28f@86.162.11.249:9735
 ```
 
 Nodes can be found by browsing the node directory available at the various explorer services listed below. These explorers are akin to phone books for public Lightning nodes.
