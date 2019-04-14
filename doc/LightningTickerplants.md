@@ -39,7 +39,7 @@ Optional Software
    blogs and whitepapers; [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
 
 The reader should be aware that the above Lightning daemon software is a Beta version and the technology
-is relatively new, so caution should be taken when using, keeping funds held on lightning to a minimum.
+is still relatively new and experimental. Therefore, it is advised to keep funds held on lightning to a minimum. 
 
 # What are payment channels
 
@@ -943,15 +943,14 @@ invoice settlement messages back to individual devices to release data to subscr
 
 ## Conclusion
 
-This paper described the basic workings of the Lightning network, a technology with the potential
-to help scale Bitcoin, and other compatible blockchains, and facilitate the construction of new innovative applications.
-Topic covered include setting up a Lightning node and using the `qlnd` library to create channels with peers
-and make fast payments over the network. A practical example was provided to demonstrate how a vanilla tickerplant 
-process could be easily modified to enable a pay-per-request publishing scheme using micropayments. 
-This example provides a simple template for how market data, or sensor data, could be monetised using the technology,
-and how machine to machine payments could be facilitated in the future. 
+The technology of Bitcoin, and layer-two solutions like Lightning, opens up the possibility for arbitrary applications
+to interact directly with a payment network by simply sending text messages over TCP/IP in a peer-to-peer fashion. 
+This ability to easily send and receive payments, especially micro-payments, will likely enable the construction of 
+new innovative applications, removing the friction associated with third party services. 
+For example, this paper provided a simple template for how market data, or sensor data, could be monetised 
+using the technology, and how machine to machine payments could be facilitated in the future. 
 It is hoped that as the technology develops, further enhancements to the library can be
-made to keep it up to date, and make the integration with kdb+ based applications even more streamlined and performant.
+made to keep it up to date and make the integration with kdb+ based applications even more streamlined and performant.
 
 ## Authors
 
