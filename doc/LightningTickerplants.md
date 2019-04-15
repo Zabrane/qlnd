@@ -23,8 +23,8 @@ integrating Lightning has the advantage of allowing clients to more rapidly depo
 With the above applications in mind, this paper will explore Lightning network technology, and describe how the [kdb+ qlnd](https://github.com/jlucid/qlnd) library can be used 
 to communicate with a Lightning node to **create payment channels** with peers, **generate invoices** for payment, and **route payments** rapidly across the network. As an example of how Lightning can be integrated into
 kdb+ based applications, this paper will illustrate how a kdb+ tickerplant can be easily modified 
-to accept payments for market or sensor data on a per request (ticker) basis, with a fast settlement and zero fees. 
-The paper will also discuss how multiple IoT devices, already running kdb+ for data processing, can authenticate and communicate with a single Lightning node to generate invoices and receive payment settlement notifications.
+to communicate with a lightning node to accept payments for market, or sensor data, on a per request (ticker) basis, with a fast settlement and zero fees. 
+The paper will also discuss briefly how this setup can be extended to the case of multiple IoT devices exchanging data for payment.
 
 All tests were carried out using
 
@@ -61,7 +61,7 @@ Once this funding transaction is confirmed by the Bitcoin network, both particip
 to transact instantly by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment-with-a-Commitment-transaction). 
 For example, Alice can send 0.1 BTC to Bob over Lightning, updating their respective balances, as shown below.
 These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
-such transactions to be performed per seconds. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
+such transactions to be performed per seconds, without incurring a mining fee. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
 network allows for millions of transactions per second using this approach.
 
@@ -928,14 +928,34 @@ total_balance    | "2120"
 confirmed_balance| "2120"
 ```
 
-In summary, only two on-chain transactions were required, one to open the channel and one to close.
+In summary, only two on-chain transactions were required, one to open the channel and one to close it.
 All the intermediate transactions which occurred over the bi-directional payment channel have not
-hit the blockchain, and so have not incurred any on-chain fees.
+hit the blockchain and did not incur any on-chain fees.
+
+## Channel Management
+
+It is important to look at channels as being analogous to rechargable Batteries, in that their full value
+is only extracted with multiple, not with single use, because there is a financial overhead
+associated with their creation and distruction. There is also a wait time associated with
+opening and closing channels in order to received the desired number of on-chain confimations.
+
+Therefore, proper channel managment is required to keep channels balanced to ensure funds can keep flowing bi-directionally.
+For example, in the case of a subscriber sending payments to a tickerplant via a direct 
+payment channel, eventually all funds will accumulate on the tickerplant (receiving) end
+of the channel which will prevent the tickerplant side from receiving more funds due to 
+depleted inbound capacity. At this point, either party could close the existing channel and
+reopen a new channel with a new channel capacity, but this can be avoided by re-balancing channel funds.
+
+One way to cash-out accumulated outbound capacity and rebalance is use a service like [`loop`](https://github.com/lightninglabs/loop) ([Blog-post](https://blog.lightning.engineering/posts/2019/03/20/loop.html)) 
+where channel outbound capacity can be exchanged for on-chain funds while topping up the inbound (or receiving) capacity.
+Details on how this can be performed are outside of the scope of this paper and, for now, are let
+to the reader as an exercise. It is hoped that future follow-up papers will explore this aspect
+in more details.
 
 
 ## Extension to multiple IoT devices
 
-The above approach can be extended to the use case of multiple IoT devices who are sending and receiving payments.
+The approach followed for the tickerplant and subscriber setup can be extended to the use case of multiple IoT devices who are sending and receiving payments.
 A set of devices can authenticate and communicate with a single `lnd` node using just the TLS certificate
 file and invoice.macaroon in order to generate invoices for subscribers. Similarly, the listener process can broadcast
 invoice settlement messages back to individual devices to release data to subscribers.
@@ -943,22 +963,24 @@ invoice settlement messages back to individual devices to release data to subscr
 
 ## Conclusion
 
-The technology of Bitcoin, and layer-two solutions like Lightning, opens up the possibility for arbitrary applications
-to interact directly with a payment network by simply sending text messages over TCP/IP in a peer-to-peer fashion. 
-This ability to easily send and receive payments, especially micro-payments, will likely enable the construction of 
-new innovative applications, removing the friction associated with third party services. 
-For example, this paper provided a simple template for how market data, or sensor data, could be monetised 
-using the technology, and how machine to machine payments could be facilitated in the future. 
-It is hoped that as the technology develops, further enhancements to the library can be
-made to keep it up to date and make the integration with kdb+ based applications even more streamlined and performant.
+The technology of Bitcoin and layer-two solutions like Lightning opens up the possibility for applications
+to interact directly with a decentralised peer-to-peer payments layer through the use of simple APIs, where value 
+transfer reduces to the exchange of encoded text messages over TCP/IP.
+ 
+This ability to easily send and receive payments in a peer-to-peer fashion, especially micro-payments, has the potential 
+to enable the construction of new innovative applications not hindered by third-party friction.
+The speed of value transfer should also lead to greater market efficiency and price discovery. 
+
+The tickerplant example, showcased above, serves as a simple template for how market data, or sensor data, could be monetised 
+in a new way using the technology, and how machine to machine payments could be facilitated in the future. 
+With Kx playing a growing role in the technology of cryptocurrency exchanges and as a facilitating technology
+for IoT and the growing market of IoT data 
+
 
 ## Authors
 
-Jeremy Lucid is a kdb+ consultant based in Belfast. 
-He has worked on real-time Best Execution projects for a major multinational 
-banking institution and a _Kx for Surveillance_ implementation 
-at a leading options and futures exchange. 
-    
+Jeremy Lucid is a kdb+ consultant, based in Ireland, who has worked on real-time Best Execution projects for a major multinational 
+banking institution and a _Kx for Surveillance_ implementation at a leading options and futures exchange. 
 
 # Appendix
 
