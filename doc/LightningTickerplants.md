@@ -636,8 +636,8 @@ q)h".u.sub[`trade;`AAPL`GOOGL]"
 
 Above, the subscriber is returned a two-element list containing the table name and the table schema which
 the subscriber should define in order for records to be received correctly and immediately.
-The subscribes request is registered on the tickerplant within the `.u.w` dictionary, which stores the
-users handle value and their request details, as shown below.
+The subscriber details are registered on the tickerplant within the `.u.w` dictionary, which stores the
+users handle value and their request information, as shown below.
 
 ```q
 q).u.w
@@ -646,7 +646,7 @@ trade| 7i `AAPL`GOOGL
 
 If the subscriber has set the table definition, along with a `upd` function (`upd:insert`) the data
 will be received for only the data subscribed to.
-A sample feed handler, which pushes mock market data to this tickerplant can be found here, [feed.q](https://github.com/jlucid/capi/blob/master/feed.q)
+A sample feed handler which pushes mock market data to this tickerplant can be found here, [feed.q](https://github.com/jlucid/capi/blob/master/feed.q)
 
 
 ## Diagrammatic overview
