@@ -934,19 +934,19 @@ hit the blockchain and did not incur any on-chain fees.
 
 ## Channel Management
 
-It is important to look at channels as being analogous to rechargeable Batteries, in that their full value
-is only extracted with multiple, not with single use, because there is a financial overhead
-associated with their creation and distruction. There is also a wait time associated with
-opening and closing channels in order to received the desired number of on-chain confimations.
+It is important to look at channels as being analogous to Rechargeable Batteries, in that their full value
+is only extracted with multiple use, not with single-use because there is a financial overhead
+associated with their creation and destruction. There is also a wait time associated with
+opening and closing channels in order to receive the desired number of on-chain confirmations.
 
-Therefore, proper channel managment is required to keep channels balanced to ensure funds can keep flowing bi-directionally.
+Therefore, proper channel management is required to keep channels balanced to ensure funds can keep flowing bi-directionally.
 For example, in the case of a subscriber sending payments to a tickerplant via a direct 
 payment channel, eventually all funds will accumulate on the tickerplant (receiving) end
 of the channel which will prevent the tickerplant side from receiving more funds due to 
 depleted inbound capacity. At this point, either party could close the existing channel and
 reopen a new channel with a new channel capacity, but this can be avoided by re-balancing channel funds.
 
-One way to cash-out accumulated outbound capacity and rebalance is use a service like [`loop`](https://github.com/lightninglabs/loop) ([Blog-post](https://blog.lightning.engineering/posts/2019/03/20/loop.html)) 
+One way to cash-out accumulated outbound capacity and rebalance is to use a service like [`loop`](https://github.com/lightninglabs/loop) ([Blog-post](https://blog.lightning.engineering/posts/2019/03/20/loop.html)) 
 where channel outbound capacity can be exchanged for on-chain funds while topping up the inbound (or receiving) capacity.
 Details on how this can be performed are outside of the scope of this paper and, for now, are let
 to the reader as an exercise. It is hoped that future follow-up papers will explore this aspect
@@ -964,14 +964,14 @@ invoice settlement messages back to individual devices to release data to subscr
 ## Conclusion
 
 The technology of Bitcoin and layer-two solutions like Lightning opens up the possibility for applications
-to interact directly with a decentralised peer-to-peer payments layer through the use of simple APIs, where value 
+to interact directly with a decentralised peer-to-peer payments layer through the use of simple APIs, where the value 
 transfer reduces to the exchange of encoded text messages over TCP/IP.
  
 This ability to easily send and receive payments in a peer-to-peer fashion, especially micro-payments, has the potential 
 to enable the construction of new innovative applications not hindered by third-party friction.
 The speed of value transfer should also lead to greater market efficiency and price discovery. 
 
-The tickerplant example, showcased above, serves as a simple template for how market data, or sensor data, could be monetised 
+The tickerplant example showcased above serves as a simple template for how market data, or sensor data, could be monetised 
 in a new way using the technology, and how machine to machine payments could be facilitated in the future. 
 With Kx playing a growing role in the technology of cryptocurrency exchanges and as a facilitating technology
 for IoT and the growing market of IoT data 
