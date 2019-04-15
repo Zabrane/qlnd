@@ -32,11 +32,11 @@ All tests were carried out using
 
 Optional Software
  * [qbitcoind](https://github.com/jlucid/qbitcoind) A q library designed to interact with a bitcoin core full node.
-   Used here to transfer funds from a bitcoin core wallet to a Lightning wallet. For more info on running a node, and using qbitcoind, see past
+   This library is used herein to transfer funds from a bitcoin core wallet to a Lightning wallet. For more information on running a node, and using qbitcoind, see past
    blogs and whitepapers; [kdb+ Securing Digital Assets](https://kx.com/blog/securing-digital-assets-a-bitcoin-full-node-api-for-kdb/) and [kdb+ Storing and Exploring the bitcoin blockchain](https://kx.com/blog/kdb-storing-and-exploring-the-bitcoin-blockchain/).
 
 The reader should be aware that the above Lightning daemon software is a Beta version and the technology
-is still relatively new and experimental. Therefore, it is advised to keep funds held on lightning to a minimum. 
+is still relatively new and experimental. Therefore, it is advised to keep funds held on Lightning to a minimum. 
 
 # What are payment channels
 
