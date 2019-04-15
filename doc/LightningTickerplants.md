@@ -307,7 +307,7 @@ The reader is encouraged to follow the online documentation available on [Kx.com
 
 Once embedPy is installed, the `qlnd` library can be loaded into a q process as follows.
 ```bash
-$q qlnd.p
+$q qlnd.q
 ```
 
 However, prior to loading, you may need to set the `LND_DIR` environmental variable to the location of your `.lnd.conf` file,
