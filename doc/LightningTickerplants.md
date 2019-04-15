@@ -973,7 +973,7 @@ could be monetised with the creation of a pay-per-request system utilising Light
 
 While Lightning remains an experimental and rapidly changing technology at this stage, it is hoped that this paper has at
 least helped explain some of the key concepts and techniques, and also showcased some synergies between the technology
-and kdb+ and potential for integrations.
+and kdb+ for potential integrations.
 
 
 ## Authors
