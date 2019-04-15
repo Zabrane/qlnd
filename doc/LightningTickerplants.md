@@ -961,18 +961,19 @@ invoice settlement messages back to individual devices to release data to subscr
 
 ## Conclusion
 
-The technology of Bitcoin and layer-two solutions like Lightning opens up the possibility for applications
+The technology of Bitcoin and layer-two solutions like Lightning open up the possibility for applications
 to interact directly with a decentralised peer-to-peer payments layer through the use of simple APIs, where the value 
 transfer reduces to the exchange of encoded text messages over TCP/IP.
  
 This ability to easily send and receive payments in a peer-to-peer fashion, especially micro-payments, has the potential 
 to enable the construction of new innovative applications not hindered by third-party friction.
-The speed of value transfer should also lead to greater market efficiency and price discovery. 
 
-The tickerplant example showcased above serves as a simple template for how market data, or sensor data, could be monetised 
-in a new way using the technology, and how machine to machine payments could be facilitated in the future. 
-With Kx playing a growing role in the technology of cryptocurrency exchanges and as a facilitating technology
-for IoT and the growing market of IoT data 
+In the tickerplant example, a simple template was provided to demonstrate how market data, or any other form of streaming data, 
+could be monetised with the creation of a pay-per-request system utilising Lightning micropayments.
+
+While Lightning remains an experimental and rapidly changing technology at this stage, it is hoped that this paper has at
+least helped explain some of the key concepts and techniques, and also showcased some synergies between the technology
+and kdb+ and potential for integrations.
 
 
 ## Authors
