@@ -335,7 +335,7 @@ q).lnd.setTLS "/new/path/to/.lnd/tls.cert"
 q).lnd.setMACAROON "/new/path/to/.lnd/data/chain/bitcoin/mainnet/admin.macaroon"
 ```
 
-To confirm that everything is set up correctly, run [`.lnd.getInfo`](https://api.lightning.community/rest/index.html#v1-getinfo) to return some basic information from your node.
+To confirm that everything is set up correctly, run [`.lnd.getInfo`](https://api.lightning.community/rest/index.html#v1-getinfo) to return some basic information from the node.
 
 ```q
 q).lnd.getInfo[][`version]
