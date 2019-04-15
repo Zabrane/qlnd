@@ -329,7 +329,7 @@ In order to change the values of the `lnd` URL, TLS Certificate path or Macaroon
 the following methods are available.
 
 ```q
-$q qlnd.p
+$q qlnd.q
 q).lnd.setURL "https://localhost:8080/v1/"
 q).lnd.setTLS "/new/path/to/.lnd/tls.cert"
 q).lnd.setMACAROON "/new/path/to/.lnd/data/chain/bitcoin/mainnet/admin.macaroon"
