@@ -58,7 +58,7 @@ Once this funding transaction is confirmed by the Bitcoin network, both particip
 to transact instantly by exchanging mutually signed **commitment transactions** that modify the initial balance of the channel, see [Section: Making a payment](#Making-a-payment-with-a-Commitment-transaction). 
 For example, Alice can send 0.1 BTC to Bob over Lightning, updating their respective balances, as shown below.
 These commitment transactions are not broadcast to the Bitcoin blockchain, allowing thousands of 
-such transactions to be performed per seconds, without incurring a mining fee. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
+such transactions to be performed per seconds without incurring a mining fee. The transaction settlement speed is only limited by the time needed by the parties to create, sign and send each other commitment transactions.
 While the Bitcoin blockchain can process anywhere between 3-7 transactions per second, the Lightning
 network allows for millions of transactions per second using this approach.
 
