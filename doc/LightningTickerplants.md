@@ -318,8 +318,8 @@ if it is not in the default location `$HOME/.lnd`.
 ```
 
 During library loading this environmental variable is used to locate and read the TLS certificate
-and Macaroon token created by `lnd` on startup, and are used for secure communication and
-authentication, respectively.
+and Macaroon token created by `lnd` on startup, which are used for secure communication and
+authentication with the node, respectively.
 
 By default, the `qlnd.q` script tries to load the `admin.macaroon`, which gives full API access without caveats. For applications
 requiring lower privileged access, an `invoice.macaroon` and `readonly.macaroon` are also available, 
