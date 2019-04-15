@@ -317,8 +317,8 @@ if it is not in the default location `$HOME/.lnd`.
   export LND_DIR=/path/to/my/.lnd
 ```
 
-During library loading, this environmental variable is used to set read location a TLS certificate
-and Macaroon token, both of which will be created by `lnd` on startup, and are used for secure communication and
+During library loading this environmental variable is used to locate and read the TLS certificate
+and Macaroon token created by `lnd` on startup, and are used for secure communication and
 authentication, respectively.
 
 By default, the `qlnd.q` script tries to load the `admin.macaroon`, which gives full API access without caveats. For applications
