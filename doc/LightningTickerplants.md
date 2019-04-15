@@ -899,7 +899,7 @@ csv_delay              | 144
 
 The first part of this channel point value, before the colon, is the bitcoin transaction ID of the funding transaction, 
 and the second part, after the colon, is the index of the transaction output.
-The transaction and index need to be passed to the `.lnd.closeChannel` API as shown below, to close the channel.
+The transaction and index need to be passed to the `.lnd.closeChannel` API to close the channel.
 
 ```q
 q)result:.lnd.closeChannel["d61dafc3436973d0ae3f9e820c661a681ab6074b510b5fd51c6f3ca5ed914a0f";"1"]
