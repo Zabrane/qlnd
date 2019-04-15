@@ -664,7 +664,7 @@ payments are routed via intermediate nodes which connect both, highlighted in gr
 The integration of Lightning will modify the standard sub/pub model to a sub/pay/pub model where
 subscribers requests for data will only be enabled after a Lightning payment is received.
 For this, the first step will be to modify the `.u.sub` function such that it returns a Lightning
-payment invoice, to the subscriber, indicating the amount to pay in satoshis for the data requested.
+payment invoice to the subscriber indicating the amount to pay in satoshis for the data requested.
 While this payment is pending, the users request details will be stored in a table called
 `.u.pendingInvoices` before ultimately being added to the `.u.w` dictionary, shown previously.
 
