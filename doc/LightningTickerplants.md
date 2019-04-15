@@ -184,7 +184,7 @@ touch lnd.conf
 ```
 
 Open the `lnd.conf` file in your favorite editor and add the following details.
-The `alias` and `color` values can also be freely chosen by the node operator and can be used to
+The `alias` and `color` values can be freely chosen by the node operator and can be used to
 distinguish and find the node on various [public node explorers](#Connecting-to-Peers).
 For additional configuration file options and details, see the following [sample file](https://github.com/lightningnetwork/lnd/blob/master/sample-lnd.conf). 
 
