@@ -934,7 +934,7 @@ hit the blockchain and did not incur any on-chain fees.
 
 ## Channel Management
 
-It is important to look at channels as being analogous to rechargable Batteries, in that their full value
+It is important to look at channels as being analogous to rechargeable Batteries, in that their full value
 is only extracted with multiple, not with single use, because there is a financial overhead
 associated with their creation and distruction. There is also a wait time associated with
 opening and closing channels in order to received the desired number of on-chain confimations.
