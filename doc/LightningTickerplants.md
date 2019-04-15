@@ -64,8 +64,8 @@ network allows for millions of transactions per second using this approach.
 
 ![](AliceAndBobActiveChannel.png)
 
-Channels can be closed between peers at any time, at which point the most recent transaction, and latest balance, will be broadcast to the blockchain. This is
-known as the **settlement transaction**, where the funds held on the multisignature address are spent
+Channels can be closed between peers at any time. At which point, the most recent transaction specifying the latest balances is broadcast to the Bitcoin network. This is
+known as the **settlement transaction**, and is when the funds held on the multisignature address are spent
 to the wallet addresses of the participants, see [Section: Closing a channel](#Closing-a-channel-with-a-Settlement-transaction).
 
 ![](AliceAndBobChannelClose.png)
