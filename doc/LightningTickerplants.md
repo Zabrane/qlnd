@@ -783,7 +783,8 @@ However, because this is a blocking call, we will instead use a dedicated q proc
 the tickerplant immediately.
 
 Below is shown the embedPy script and command to run this listener process (see [invoiceListener.q](https://github.com/jlucid/qlnd/blob/master/invoiceListener.q)). Notice that the `portnumber` (tickerplant), `authHeader`, `url` and TLS `cert` values have been hardcoded and should be changed if necessary.
-The listener process also used the invoice.macaroon token so can only access invoice related APIs.
+A listening process like this one would only require a (least privilege) invoice.macaroon token when making requests
+so that access is limited to only invoice related APIs.
 
 ```python
 p)import base64, codecs, json, requests, os
