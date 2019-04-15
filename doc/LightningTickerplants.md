@@ -731,7 +731,7 @@ cltv_expiry | "144"
 ```
 
 On the tickerplant, the subscribers request details have been populated in the `.u.pendingInvoices`
-table, however, `.u.w` is still empty, pending payment
+table, however, `.u.w` is still empty, pending payment.
 
 ```q
 q).u.pendingInvoices
