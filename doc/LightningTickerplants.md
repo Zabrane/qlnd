@@ -354,7 +354,7 @@ q).lnd.newaddress[]
 address| "bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73"
 ```
 
-Next, send some funds to this address using your mobile, hardware or exchange wallet of choice. Alternatively, you can use the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) within the [qbitcoind](https://github.com/jlucid/qbitcoind) library if your bitcoin full node contains funds.
+Next, send some funds to this address using a mobile, hardware or exchange wallet of choice. Alternatively, the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) function within the [qbitcoind](https://github.com/jlucid/qbitcoind) library can be used to transfer funds directly from the internal [`bitcoind`] node wallet.
 
 
 ```q
@@ -395,7 +395,7 @@ dest_addresses   | ("bc1q3zy2zdyp77er7rc40xn2udxj888x2qjdun9zdm";"bc1qa4gjgfsufc
 total_fees       | "1481"
 ```
 
-Once enough confirmations are received, the Lightning Wallet will display the balance by calling [`.lnd.walletBalance`](https://api.lightning.community/rest/index.html#v1-balance-blockchain), as shown below. 
+Once enough confirmations are received, the Lightning Wallet can be instructed to display the balance by calling [`.lnd.walletBalance`](https://api.lightning.community/rest/index.html#v1-balance-blockchain), as shown below. 
 A confirmed balance means the deposit is complete and the node is ready to open channels.
 
 ```q
