@@ -13,14 +13,14 @@ keywords: bitcoin, lightning, blockchain, kdb+, q, tickerplant
 Lightning succeeds by allowing payments to be made off-chain through the technology of bidirectional [payment channels](#What-are-payment-channels), wherein the underlying network of nodes do not need to validate and record every transaction. Consequently, peer-to-peer payments made over the Lightning network can be performed in high volume, with micro value (less than a cent), with low or zero fees and with near instant settlement times. Today, Lightning is one of the most rapidly growing networks (see [Real-time Network Statistics](https://1ml.com/statistics)) and adopted technologies in the cryptocurrency space and is at the cutting edge of blockchain innovation.
 
 Lightning application (LApp) development is progressing quickly and includes [eCommerce integrations](https://blockstream.com/2018/01/16/lightning-charge/), [micropayment paywalls](https://github.com/ElementsProject/wordpress-lightning-publisher) for content creators, [micropayment tipping](https://tippin.me/) services (Twitter), and multiple Custodial and Non-Custodial [wallet](https://lopp.net/lightning.html) implementations. The micropayment application, in particular, has the potential to transform how online content
-is monetised by facilitating a micro fee pay-per-view model, as opposed to an ad based or yearly subscription model.
+is monetized by facilitating a micro fee pay-per-view model, as opposed to an ad based or yearly subscription model.
 Lightning payments are also highly applicable to the **IoT space**, as the network can be used to implement a decentralized peer-to-peer payment layer for transactions between IoT devices, utilizing all of the networks key features, see [IoT and Lightning](https://medium.com/meetbitfury/the-internet-of-things-and-the-lightning-network-41b93dbb8456), [Bitcoin Payment-Channels for Resource Limited IoT Devices](https://arxiv.org/pdf/1812.10345.pdf) and [Micropayments between IoT devices](http://www.diva-portal.org/smash/get/diva2:1272048/FULLTEXT01.pdf).
 
 
 For **cryptocurrency exchanges**,
-integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds seamlessly between exchanges. Increasing the velocity of value transfer should, in turn, lead to greater market efficiency and reduce arbitrage opportunities. The exchange [ZebPay](https://blog.zebpay.com/zebpay-launches-lightning-network-payments-44cfaad0b1c7) has become the first to begin integrating the payment system. Lightning can also enable exchanges to monetise market data in a completely new way, as showcased in a recent [Suredbits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges was made available to users on-the-fly with Lightning micropayments.
+integrating Lightning has the advantage of allowing clients to more rapidly deposit and withdraw funds, or move funds seamlessly between exchanges. Increasing the velocity of value transfer should, in turn, lead to greater market efficiency and reduce arbitrage opportunities. The exchange [ZebPay](https://blog.zebpay.com/zebpay-launches-lightning-network-payments-44cfaad0b1c7) has become the first to begin integrating the payment system. Lightning can also enable exchanges to monetize market data in a completely new way, as showcased in a recent [Suredbits](https://suredbits.com/) POC application, where streaming futures data from the BitMEX and Kraken exchanges was made available to users on-the-fly with Lightning micropayments.
 
-This paper will explore Lightning network technology in the context of its application to the **monetisation of streaming data**. 
+This paper will explore Lightning network technology in the context of its application to the **monetization of streaming data**. 
 As an example of how Lightning can be integrated into kdb+ based applications, this paper will illustrate how a kdb+ tickerplant can be easily modified to communicate with a Lightning node to accept payments for market, or sensor data, on a per request (ticker) basis, with a fast settlement and zero fees. In particular, the paper will describe how the [kdb+ qlnd](https://github.com/jlucid/qlnd) library can be used to communicate with a Lightning node to **create payment channels** with peers, **generate invoices** for payment and **route payments** rapidly across the network. The paper will also discuss briefly how this setup can be extended to the case of multiple IoT devices exchanging data for payment.
 
 All tests were carried out using
@@ -96,7 +96,7 @@ For a more detailed explanation of how Lightning works see the following resourc
 # Installing and Configuring a Lightning node
 
 There are currently multiple implementations of the Lightning protocol, including [lnd](https://github.com/lightningnetwork/lnd) from [Lightning Labs](https://lightning.engineering/), [eclair](https://github.com/ACINQ/eclair) from [ACINQ](https://acinq.co/) and [c-lightning](https://github.com/ElementsProject/lightning) from [Blockstream](https://blockstream.com/technology/). 
-To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to work and specialise on different aspects of the technology, like mobile integration, browser plugins, and enterprise products, while retaining cross-compatibility.
+To ensure interoperability between implementations, the community of developers have created the Basis of Lightning Technology ([BOLT](https://github.com/lightningnetwork/lightning-rfc)) specification. This enables development teams to work and specialize on different aspects of the technology, like mobile integration, browser plugins, and enterprise products, while retaining cross-compatibility.
 
 While multiple Lightning implementations exist, the [qlnd](https://github.com/jlucid/qlnd) library discussed here is designed specifically to communicate with the `lnd` daemon from Lightning Labs. Therefore, the steps described below correspond only to the installation of this implementation.
 
@@ -317,7 +317,7 @@ if it is not in the default location `$HOME/.lnd`.
   export LND_DIR=/path/to/my/.lnd
 ```
 
-During library loading this environmental variable is used to locate and read the TLS certificate
+During library loading, this environment variable is used to locate and read the TLS certificate
 and Macaroon token created by `lnd` on startup, which are used for secure communication and
 authentication with the node, respectively.
 
@@ -933,7 +933,7 @@ hit the blockchain and did not incur any on-chain fees.
 ## Channel Management
 
 It is important to look at channels as being analogous to Rechargeable Batteries, in that their full value
-is realised with multiple usage, not with single-use, because there is a financial overhead
+is realized with multiple usages, not with single-use because there is a financial overhead
 associated with their creation and destruction. There is also a wait time associated with
 opening and closing channels in order to receive the desired number of on-chain confirmations.
 
@@ -962,14 +962,14 @@ invoice settlement messages back to individual devices to release data to subscr
 ## Conclusion
 
 The technology of Bitcoin and layer-two solutions like Lightning open up the possibility for applications
-to interact directly with a decentralised peer-to-peer payments layer through the use of simple APIs, where the value 
+to interact directly with a decentralized peer-to-peer payments layer through the use of simple APIs, where the value 
 transfer reduces to the exchange of encoded text messages over TCP/IP.
  
 This ability to easily send and receive payments in a peer-to-peer fashion, especially micro-payments, has the potential 
 to enable the construction of new innovative applications not hindered by third-party friction.
 
 In the tickerplant example, a simple template was provided to demonstrate how market data, or any other form of streaming data, 
-could be monetised with the creation of a pay-per-request system utilising Lightning micropayments.
+could be monetized with the creation of a pay-per-request system utilizing Lightning micropayments.
 
 While Lightning remains an experimental and rapidly changing technology at this stage, it is hoped that this paper has at
 least helped explain some of the key concepts and techniques, and also showcased some synergies between the technology
