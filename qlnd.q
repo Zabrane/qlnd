@@ -32,6 +32,11 @@ p)def exportAllChannelBackups():
   r = requests.get(url+endpoint, headers=headers, verify=cert_path)
   return r.json()
 
+p)def restoreChannelBackups(queryParameters=''):
+  endpoint = 'channels/backup/restore'+queryParameters
+  r = requests.post(url+endpoint, headers=headers, verify=cert_path)
+  return r.json()
+
 p)def decodeTxid(funding_txid):
   return base64.b64decode(funding_txid)[::-1].hex()
 
@@ -256,6 +261,7 @@ q).lnd.feeReport:.p.get[`feeReport;<]
 q).lnd.listUnspent:.p.get[`listUnspent;<]
 q).lnd.getInfo:.p.get[`getInfo;<]
 q).lnd.exportAllChannelBackups:.p.get[`exportAllChannelBackups;<]
+q).lnd.restoreChannelBackups:.p.get[`restoreChannelBackups;<]
 q).lnd.updateChannelPolicy:.p.get[`updateChannelPolicy;<]
 q).lnd.signmessage:.p.get[`signmessage;<]
 q).lnd.addInvoice:.p.get[`addInvoice;<]
