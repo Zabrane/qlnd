@@ -28,7 +28,8 @@ All tests were carried out using
 * kdb+ version 3.5 (2017.03.15) 
 * python 3.7.0
 * Bitcoin Core daemon version v0.17.1.0-gef70f9b52b851c7997a9f1a0834714e3eebc1fd8.
-* Lightning daemon (lnd) version 0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858
+* Lightning daemon (lnd) version 0.6.0-beta commit=v0.6.0-beta-41-g1c22474ad31b5f7fe18f9cc8df7c08cd445eaacb"
+
 
 Optional Software
  * [qbitcoind](https://github.com/jlucid/qbitcoind) A q library designed to interact with a bitcoin core full node.
@@ -339,7 +340,7 @@ To confirm that everything is set up correctly, run [`.lnd.getInfo`](https://api
 
 ```q
 q).lnd.getInfo[][`version]
-"0.5.2-99-beta commit=v0.5.1-beta-835-ge0886ff1f56f4c5f92c7feaf941420d7a5751858"
+"0.6.0-beta commit=v0.6.0-beta-41-g1c22474ad31b5f7fe18f9cc8df7c08cd445eaacb"
 
 q).lnd.getInfo[][`identity_pubkey]
 "This returns the public key identifier which is unique to the node"
