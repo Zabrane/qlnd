@@ -27,6 +27,11 @@ p)def getInfo():
   r = requests.get(url+endpoint, headers=headers, verify=cert_path)
   return r.json()
 
+p)def exportAllChannelBackups():
+  endpoint = 'channels/backup'
+  r = requests.get(url+endpoint, headers=headers, verify=cert_path)
+  return r.json()
+
 p)def decodeTxid(funding_txid):
   return base64.b64decode(funding_txid)[::-1].hex()
 
@@ -250,6 +255,7 @@ q).lnd.getTransactions:.p.get[`getTransactions;<]
 q).lnd.feeReport:.p.get[`feeReport;<]
 q).lnd.listUnspent:.p.get[`listUnspent;<]
 q).lnd.getInfo:.p.get[`getInfo;<]
+q).lnd.exportAllChannelBackups:.p.get[`exportAllChannelBackups;<]
 q).lnd.updateChannelPolicy:.p.get[`updateChannelPolicy;<]
 q).lnd.signmessage:.p.get[`signmessage;<]
 q).lnd.addInvoice:.p.get[`addInvoice;<]
