@@ -25,7 +25,7 @@ As an example of how Lightning can be integrated into kdb+ based applications, t
 
 All tests were carried out using
 
-* kdb+ version 3.5 (2017.03.15) 
+* kdb+ version 3.5+ 
 * python 3.7.0
 * Bitcoin Core daemon version v0.17.1.0-gef70f9b52b851c7997a9f1a0834714e3eebc1fd8.
 * Lightning daemon (lnd) version 0.6.0-beta commit=v0.6.0-beta-41-g1c22474ad31b5f7fe18f9cc8df7c08cd445eaacb"
