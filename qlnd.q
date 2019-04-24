@@ -192,6 +192,11 @@ p)def sendCoins(data):
   r = requests.post(url+endpoint, headers=headers, verify=cert_path, data=json.dumps(data))
   return r.json()
 
+p)def estimateFee(queryParameters=''):
+  endpoint = 'transactions/fee'+queryParameters
+  r = requests.get(url+endpoint, headers=headers, verify=cert_path)
+  return r.json()
+
 p)def sendToRoute(inputs):
   endpoint = 'channels/transactions/route'
   r = requests.post(url+endpoint, headers=headers, verify=cert_path, data=inputs)
@@ -274,6 +279,7 @@ q).lnd.addInvoice:.p.get[`addInvoice;<]
 q).lnd.listPeers:.p.get[`listPeers;<]
 q).lnd.listInvoices:.p.get[`listInvoices;<]
 q).lnd.listPayments:.p.get[`listPayments;<]
+q).lnd.estimateFee:.p.get[`estimateFee;<]
 q).lnd.deleteAllPayments:.p.get[`deleteAllPayments;<]
 q).lnd.newaddress:.p.get[`newaddress;<]
 q).lnd.walletBalance:.p.get[`walletBalance;<]
