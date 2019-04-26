@@ -428,7 +428,7 @@ explorer                                               |
 [https://explorer.acinq.co/](https://explorer.acinq.co/)           |   
 [https://graph.lndexplorer.com](https://graph.lndexplorer.com)            |
 
-For the purposes of this paper, a connection will be made with the node whose alias is **TICKERPLANT**, and
+For the purposes of this paper, a connection will be made with the node whose alias is [**TICKERPLANT**](https://1ml.com/node/023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c), and
 whose details are as follows.
 ```q
 TICKERPLANT         023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c@217.160.185.97:9736
