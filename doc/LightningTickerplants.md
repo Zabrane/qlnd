@@ -355,7 +355,7 @@ q).lnd.newaddress[]
 address| "bc1qajll8zl8ycflv42rczj5erpt83vzr2ky429t73"
 ```
 
-Next, send some funds to this address using a mobile, hardware or exchange wallet of choice. Alternatively, the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) function within the [qbitcoind](https://github.com/jlucid/qbitcoind) library can be used to transfer funds directly from the internal [`bitcoind`] node wallet.
+Next, send some funds to this address using a mobile, hardware or exchange wallet of choice. Alternatively, the [`.bitcoind.sendtoaddress`](https://github.com/jlucid/qbitcoind/wiki/Sending-from-a-Hot-Wallet) function within the [qbitcoind](https://github.com/jlucid/qbitcoind) library can be used to transfer funds directly from the internal `bitcoind` node wallet.
 
 
 ```q
