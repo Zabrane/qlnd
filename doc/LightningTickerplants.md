@@ -933,32 +933,38 @@ hit the blockchain and did not incur any on-chain fees.
 
 ## Channel Management
 
-It is important to look at channels as being analogous to rechargeable batteries, in that their full value
+Currently, one of the main technical challenges within Lightning is around channel management and the
+maintenance of sufficient inbound and outbound capacity to facilitate payments. Channels can be thought
+of as being analogous to rechargeable batteries, in that their full value
 is realized with multiple usages, not with single-use because there is a financial overhead
 associated with their creation and destruction. There is also a wait time associated with
-opening and closing channels in order to receive the desired number of on-chain confirmations.
+channel creation and channel closing due to the need for multiple on-chain confirmations.
 
-Therefore, proper channel management is required to keep channels balanced and ensure funds can keep flowing bi-directionally.
+Therefore, proper channel management is required to keep channels opened and balanced 
+to ensure funds can keep flowing bi-directionally.
 For example, in the case of a subscriber sending payments to a tickerplant via a direct 
 payment channel, eventually all funds will accumulate on the tickerplant (receiving) end
 of the channel which will prevent the tickerplant side from receiving more funds due to 
 depleted inbound capacity. At this point, either party could close the existing channel and
 reopen a new channel with a new channel capacity, but this can be avoided by re-balancing channel funds instead.
 
-One way to cash-out accumulated outbound capacity and rebalance is to use a service like [`loop`](https://github.com/lightninglabs/loop) ([Blog-post](https://blog.lightning.engineering/posts/2019/03/20/loop.html)) 
+One way for the receiving side to cash-out accumulated outbound capacity, without closing, is to use a service like [`loop`](https://github.com/lightninglabs/loop) ([Blog-post](https://blog.lightning.engineering/posts/2019/03/20/loop.html)) 
 where channel outbound capacity can be exchanged for on-chain funds while topping up the inbound (or receiving) capacity.
 Details on how this can be performed are outside of the scope of this paper and, for now, are left
 to the reader as an exercise. It is hoped that future follow-up papers will explore this aspect
-in more details.
+in more details. For further insights into channel managment best practices see the following online
+[`resource`](https://www.youtube.com/watch?v=HlPIB6jt6ww).
 
 
 ## Extension to multiple IoT devices
 
-The approach followed for the tickerplant and subscriber setup can be extended to the use case of multiple IoT devices who are sending and receiving payments.
+The approach followed for the tickerplant and subscriber setup can be extended to the use case of multiple IoT devices 
+that are sending and receiving payments.
 A set of devices can authenticate and communicate with a single `lnd` node using just the TLS certificate
-file and invoice.macaroon in order to generate invoices for subscribers. Similarly, the listener process can broadcast
+file and an invoice.macaroon in order to generate invoices for subscribers. From a security perspective, the invoice.macaroon
+limits `lnd` node access to just the required functionality. Similarly, the listener process can broadcast
 invoice settlement messages back to individual devices to release data to subscribers.
-
+In this way, individual devices do not need to run their own node or store Bitcoin private keys.
 
 ## Conclusion
 
@@ -966,15 +972,14 @@ The technology of Bitcoin and layer-two solutions like Lightning open up the pos
 to interact directly with a decentralized peer-to-peer payments layer through the use of simple APIs, where the value 
 transfer reduces to the exchange of encoded text messages over TCP/IP.
  
-This ability to easily send and receive payments in a peer-to-peer fashion, especially micro-payments, has the potential 
+This ability to easily send and receive payments in a peer-to-peer fashion, especially micropayments, has the potential 
 to enable the construction of new innovative applications not hindered by third-party friction.
 
 In the tickerplant example, a simple template was provided to demonstrate how market data, or any other form of streaming data, 
 could be monetized with the creation of a pay-per-request system utilizing Lightning micropayments.
 
-While Lightning remains an experimental and rapidly changing technology at this stage, it is hoped that this paper has at
-least helped explain some of the key concepts and techniques, and also showcased some synergies between the technology
-and kdb+ for potential integrations.
+While Lightning remains an experimental and rapidly changing technology, with many outstanding challenges, 
+it is hoped that this paper has at least helped explain some of the key concepts and techniques, and also showcased some synergies between the technology and kdb+ for potential integrations.
 
 
 ## Authors
