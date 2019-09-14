@@ -6,6 +6,7 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 ---
 # Lightning: Loop In and Loop Out 
 
+
 # Introduction
 
 
@@ -22,6 +23,8 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 ```bash
 $./loop monitor
 ```
+
+# Loop In
 
 ## List Channel
 
