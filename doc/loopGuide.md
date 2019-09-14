@@ -9,23 +9,39 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 
 # Introduction
 
-[Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. The purpose of
-loop is to provide a way for lightning network participants to easily rebalance or refill their payment channels
+[Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
+way for lightning network participants to easily rebalance or refill their payment channels
 without having to close them. When a channel is open it has the potential to facilitate payments and earn fees which
 a closed channel cannot. In addition, the act of closing a channel incurs a financial penalty, because it requires
 an on-chain transaction fee be paid, and a time penalty because it requires on-chain confirmations. 
 
-In the guide below, the two different types of swaps will be examained 
+In this guide, the following types of swaps will be examained 
 
 * Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
 * Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
 
 
-## Run loop
+## Setup and Installation
+
+### loop and loopd
+
+To install both the loop client and daemon, please following instructions as detailed on main [repository](https://github.com/lightninglabs/loop).
+The Loop daemon, loopd, exposes a gRPC API (defaults to port 11010) and a REST API (defaults to port 8081).
+Once installation is complete, run the daemon with sample command line instruction shown below.
 
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
 ```
+
+### kdb+: qloopd.q
+
+To interact with the daemon from q, load the qloopd.q script, and call the `terms` API to confirm you can communicate
+
+```q
+$q qloopd.q
+q).loopd.getTerms[]
+```
+
 
 
 ## Monitor
