@@ -17,8 +17,8 @@ an on-chain transaction fee be paid, and a time penalty because it requires on-c
 
 In the guide below, the two different types of swaps will be examained 
 
-(1) Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
-(2) Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
+* Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
+* Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
 
 
 ## Run loop
