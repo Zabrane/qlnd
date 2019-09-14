@@ -81,6 +81,9 @@ q)ret
 txid| "f83d7c47615b18e512b040eaea814caedbd042d4bab08a97dd8edf71f89c7688"
 ```
 
+![](ChannelAfterLoop.png)
+
+![](ChannelBeforeLoop.png)
 
 ```q
 q)first select from t where remote_pubkey like "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f", remote_balance like "564690"
