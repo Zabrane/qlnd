@@ -81,3 +81,26 @@ q)ret
 txid| "f83d7c47615b18e512b040eaea814caedbd042d4bab08a97dd8edf71f89c7688"
 ```
 
+
+```q
+q)first select from t where remote_pubkey like "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f", remote_balance like "564690"
+active                 | 1b
+remote_pubkey          | "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
+channel_point          | "f5a250d0548d466e1bce11ba2dde7a1f535d850845f83b85ec2485a101c7fc1d:0"
+chan_id                | "649448533229961216"
+capacity               | "1000000"
+remote_balance         | "564690"
+commit_fee             | "3468"
+commit_weight          | "724"
+fee_per_kw             | "4789"
+num_updates            | "119"
+csv_delay              | 720
+chan_status_flags      | "ChanStatusDefault"
+local_chan_reserve_sat | "10000"
+remote_chan_reserve_sat| "10000"
+local_balance          | "431842"
+initiator              | 1b
+total_satoshis_received| "298970"
+total_satoshis_sent    | "663660"
+```
+
