@@ -184,7 +184,7 @@ $./loop monitor
 
 ## Select channel for loop out
 
-![](ChannelBeforeLoopOut.png]
+![](ChannelBeforeLoopOut.PNG]
 
 
 
