@@ -211,6 +211,13 @@ total_satoshis_received| ""
 total_satoshis_sent    | ""
 ```
 
+```q
+q).loopd.loopOutQuote["1500000"]
+swap_fee  | "1750"
+prepay_amt| "1337"
+miner_fee | "2704"
+```
+
 ## Perform Loop out
 
 
