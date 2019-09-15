@@ -154,3 +154,56 @@ total_satoshis_received| "298970"
 total_satoshis_sent    | "663660"
 ```
 
+# Loop Out
+
+
+## Generate an on-chain address
+
+```q
+q).lnd.newaddress[]
+address| "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
+```
+
+## Check loop-out terms
+
+```q
+q).loopd.loopOutTerms[]
+swap_fee_base  | "1000"
+swap_fee_rate  | "500"
+prepay_amt     | "1337"
+min_swap_amount| "250000"
+max_swap_amount| "2000000"
+cltv_delta     | 100
+```
+
+## Run Monitor
+
+```bash
+$./loop monitor
+```
+
+## Select channel for loop out
+
+![](ChannelBeforeLoopOut.png]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
