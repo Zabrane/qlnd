@@ -189,6 +189,31 @@ $./loop monitor
 
 
 
+```q
+q)first select from t where remote_pubkey like "0237fefbe8626bf888de0cad8c73630e32746a22a2c4faa91c1d9877a3826e1174"
+active                 | 1b
+remote_pubkey          | "0237fefbe8626bf888de0cad8c73630e32746a22a2c4faa91c1..
+channel_point          | "4d420561bf6dec66ae8d8027a2806a505a8808c3e8c1579f853..
+chan_id                | "649825665713700865"
+capacity               | "2270000"
+remote_balance         | "270531"
+commit_fee             | "3312"
+commit_weight          | "724"
+fee_per_kw             | "4575"
+num_updates            | "126"
+csv_delay              | 272
+chan_status_flags      | "ChanStatusDefault"
+local_chan_reserve_sat | "22700"
+remote_chan_reserve_sat| "22700"
+local_balance          | "1996157"
+initiator              | 1b
+total_satoshis_received| ""
+total_satoshis_sent    | ""
+```
+
+## Perform Loop out
+
+
 
 
 
