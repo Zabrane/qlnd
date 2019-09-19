@@ -220,6 +220,21 @@ miner_fee | "2704"
 
 ## Perform Loop out
 
+```
+q)input:`amt`dest`loop_out_channel`sweep_conf_target`max_swap_fee!("250000";"bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y";"649280308073267201";"2";"4000")
+q)input
+amt              | "250000"
+dest             | "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
+loop_out_channel | "649280308073267201"
+sweep_conf_target| "2"
+max_swap_fee     | "4000"
+result:.loopd.loopOut[input]
+result
+id          | ef235175715582d0ca14a1e408c018cf8533ab2cde551efd3f40ef5007affe99
+htlc_address| bc1q3eefpmqvycwgzyzkh6n0xc85c7q69hqp89u2nahhskn22ggghdesu23s8q
+```
+
+
 
 
 
