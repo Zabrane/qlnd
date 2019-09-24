@@ -195,7 +195,7 @@ $./loop monitor
 ## Select channel for loop out
 
 
-![](ChannelBeforeLoopOut.PNG)
+![](ZapChannelBeforeLoopOut.PNG)
 
 
 
@@ -278,7 +278,7 @@ total_satoshis_received| ""
 unsettled_balance      | "249792"
 ```
 
-
+![](ZapChannelAfterLoopOut.PNG)
 
 
 
