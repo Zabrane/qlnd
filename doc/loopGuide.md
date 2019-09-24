@@ -176,6 +176,16 @@ max_swap_amount| "2000000"
 cltv_delta     | 100
 ```
 
+## Check loop-out quote
+
+```q
+q).loopd.loopOutQuote["250000"]
+swap_fee  | "1125"
+prepay_amt| "1337"
+miner_fee | "3451"
+```
+
+
 ## Run Monitor
 
 ```bash
@@ -190,49 +200,86 @@ $./loop monitor
 
 
 ```q
-q)first select from t where remote_pubkey like "0237fefbe8626bf888de0cad8c73630e32746a22a2c4faa91c1d9877a3826e1174"
+q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
+q)first select from t where remote_pubkey like "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
 active                 | 1b
-remote_pubkey          | "0237fefbe8626bf888de0cad8c73630e32746a22a2c4faa91c1..
-channel_point          | "4d420561bf6dec66ae8d8027a2806a505a8808c3e8c1579f853..
-chan_id                | "649825665713700865"
-capacity               | "2270000"
-remote_balance         | "270531"
-commit_fee             | "3312"
-commit_weight          | "724"
-fee_per_kw             | "4575"
-num_updates            | "126"
-csv_delay              | 272
+remote_pubkey          | "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b..
+channel_point          | "bf9b72ce2460f46e0298ac371f171f3d72e3ca02741db22f0b9..
+chan_id                | "655662973008084993"
+capacity               | "1120000"
+remote_balance         | ""
+commit_fee             | "3833"
+commit_weight          | "600"
+fee_per_kw             | "5295"
+num_updates            | ""
+csv_delay              | 144
 chan_status_flags      | "ChanStatusDefault"
-local_chan_reserve_sat | "22700"
-remote_chan_reserve_sat| "22700"
-local_balance          | "1996157"
+local_chan_reserve_sat | "11200"
+remote_chan_reserve_sat| "11200"
+local_balance          | "1116167"
+total_satoshis_sent    | ""
 initiator              | 1b
 total_satoshis_received| ""
-total_satoshis_sent    | ""
 ```
 
-```q
-q).loopd.loopOutQuote["1500000"]
-swap_fee  | "1750"
-prepay_amt| "1337"
-miner_fee | "2704"
-```
 
 ## Perform Loop out
 
 ```
-q)input:`amt`dest`loop_out_channel`sweep_conf_target`max_swap_fee!("250000";"bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y";"649280308073267201";"2";"4000")
+q)input:`amt`loop_out_channel`dest`sweep_conf_target`max_swap_fee`max_prepay_amt`max_swap_routing_fee`max_prepay_routing_fee`max_miner_fee!("250000";"655662973008084993";"bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y";2;"1125";"1337";"1125";"3000";"4000")
 q)input
-amt              | "250000"
-dest             | "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
-loop_out_channel | "649280308073267201"
-sweep_conf_target| "2"
-max_swap_fee     | "4000"
-result:.loopd.loopOut[input]
-result
-id          | ef235175715582d0ca14a1e408c018cf8533ab2cde551efd3f40ef5007affe99
-htlc_address| bc1q3eefpmqvycwgzyzkh6n0xc85c7q69hqp89u2nahhskn22ggghdesu23s8q
+amt                   | "250000"
+loop_out_channel      | "655662973008084993"
+dest                  | "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
+sweep_conf_target     | 2
+max_swap_fee          | "1125"
+max_prepay_amt        | "1337"
+max_swap_routing_fee  | "1125"
+max_prepay_routing_fee| "3000"
+max_miner_fee         | "4000"
+q)result:.loopd.loopOut[input]
+q)result
+id          | "7829547e8f5d0670976f5b5bf38fa4295f5a2167ecf4f01d2f8f93a72d3d47..
+htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 ```
+
+## Check loop monitor
+
+```bash
+2019-09-24T20:29:10+01:00 LOOP_OUT INITIATED 0.0025 BTC
+2019-09-24T20:30:00+01:00 LOOP_OUT PREIMAGE_REVEALED 0.0025 BTC
+2019-09-24T20:30:37+01:00 LOOP_OUT SUCCESS 0.0025 BTC  
+```
+
+## Confirm channel balance change
+
+
+```q
+q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
+q)first select from t where remote_pubkey like "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
+active                 | 1b
+remote_pubkey          | "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b..
+channel_point          | "bf9b72ce2460f46e0298ac371f171f3d72e3ca02741db22f0b9..
+chan_id                | "655662973008084993"
+capacity               | "1120000"
+remote_balance         | "249792"
+commit_fee             | "4746"
+commit_weight          | "896"
+fee_per_kw             | "5295"
+num_updates            | "206"
+csv_delay              | 144
+chan_status_flags      | "ChanStatusDefault"
+local_chan_reserve_sat | "11200"
+remote_chan_reserve_sat| "11200"
+local_balance          | "615670"
+total_satoshis_sent    | "249792"
+initiator              | 1b
+total_satoshis_received| ""
+unsettled_balance      | "249792"
+```
+
+
+
 
 
 
