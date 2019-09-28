@@ -13,7 +13,7 @@ When a lightning channel is open, and well balanced, it can facilitate fast paym
 While closing a channel to settle balances on-chain can often be necessary, the act of closing incurs a financial penalty
 because it requires an on-chain transaction fee be paid and the closed channel can no longer contribute towards off-chain fees.
 In addition, closing and subsequently opening a new channel incurs a 'downtime' penalty because it requires 
-on-chain confirmations. An alternative approach is to practice lightning channel rebalancing to ensure inbound and
+on-chain confirmations to be received. An alternative approach is to practice lightning channel rebalancing to ensure inbound and
 outbound capacities are always sufficient to facilitate bi-directional payments, avoiding the need to close channels.
 
 [Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
