@@ -24,7 +24,7 @@ In this guide, the following types of swaps will be examained
 * Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
 * Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
 
-While the loop service will be covered below, alternative submarine swap services also exist, including
+While the loop service will be covered below, alternative submarine swap services also exist including
 https://boltz.exchange/ and http://submarineswaps.org/.
 
 ## Setup and Installation
