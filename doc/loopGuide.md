@@ -9,17 +9,23 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 
 # Introduction
 
+When a lightning channel is open, and well balanced, it can facilitate fast payments and earn fees for the node operator.
+While closing a channel to settle balances on-chain can often be necessary, the act of closing incurs a financial penalty
+because it requires an on-chain transaction fee be paid and the closed channel can no longer contribute towards off-chain fees.
+In addition, closing and subsequently opening a new channel incurs a 'downtime' penalty because it requires 
+on-chain confirmations. An alternative approach is to practice lightning channel rebalancing to ensure inbound and
+outbound capacities are always sufficient to facilitate bi-directional payments, avoiding the need to close channels.
+
 [Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
-way for lightning network participants to easily rebalance or refill their payment channels
-without having to close them. When a channel is open it has the potential to facilitate payments and earn fees which
-a closed channel cannot. In addition, the act of closing a channel incurs a financial penalty, because it requires
-an on-chain transaction fee be paid, and a time penalty because it requires on-chain confirmations. 
+way for lightning users to easily rebalance or refill their payment channels.
 
 In this guide, the following types of swaps will be examained 
 
 * Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
 * Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
 
+While the loop service will be covered below, alternative submarine swap services also exist, including
+https://boltz.exchange/ and http://submarineswaps.org/.
 
 ## Setup and Installation
 
