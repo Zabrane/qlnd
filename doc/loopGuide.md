@@ -41,13 +41,27 @@ Once installation is complete, run the daemon with sample command line instructi
 
 ### kdb+: qloopd.q
 
-To interact with the daemon from q, load the qloopd.q script, and call the `terms` API to confirm you can communicate
+To interact with the loop daemon from q, load the qloopd.q script and call the `.loopd.loopInTerms` API to confirm you can communicate
+successfully.
 
 ```q
 $q qloopd.q
-q).loopd.getTerms[]
+q).loopd.loopInTerms[]
+swap_fee_base  | "1000"
+swap_fee_rate  | "100"
+min_swap_amount| "250000"
+max_swap_amount| "2000000"
+cltv_delta     | 1000
 ```
 
+The qloopd.q script assumes loopd is running on the localhost and listening on the default port of 8081. In addition,
+it assumes the TLS certificate is in the default location of $HOME/.lnd. If this is not the case, then the following
+functions are provided to overwrite both the URL and TLS location.
+
+```q
+q).loopd.setURL["http://xxx.xxx.xxx.xx:8082/v1/loop/"]
+q).loopd.setTLS["/path/to/tlscert/tls.cert"]
+```
 
 
 ## Monitor
