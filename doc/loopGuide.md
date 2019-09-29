@@ -38,6 +38,14 @@ Once installation is complete, run the daemon with sample command line instructi
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
 ```
+## Monitor
+
+
+```bash
+$./loop monitor
+```
+
+
 
 ### kdb+: qloopd.q
 
@@ -61,14 +69,6 @@ functions are provided to overwrite both the URL and TLS location.
 ```q
 q).loopd.setURL["http://xxx.xxx.xxx.xx:8082/v1/loop/"]
 q).loopd.setTLS["/path/to/tlscert/tls.cert"]
-```
-
-
-## Monitor
-
-
-```bash
-$./loop monitor
 ```
 
 # Loop In
