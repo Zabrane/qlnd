@@ -38,7 +38,7 @@ Once installation is complete, run the daemon with sample command line instructi
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
 ```
-## Monitor
+### Monitor
 
 
 ```bash
