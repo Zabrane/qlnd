@@ -38,13 +38,6 @@ Once installation is complete, run the daemon with sample command line instructi
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
 ```
-## Monitor
-
-
-```bash
-$./loop monitor
-```
-
 
 
 ## kdb+ qloopd.q
@@ -73,7 +66,7 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 # Loop In
 
-## Initial State
+## Pre-Loop In: Channel balance
 
 In the channel image below, the local balance (outbound capacity) is very low whereas the remote balance (inbound capacity)
 is very high. In such a situation, the amount of funds which can be sent to the remote end is very limited and the
@@ -91,7 +84,7 @@ q)exec chan_id from t where remote_pubkey like pubkey
 "649448533229961216"
 ```
 
-## Get Terms
+## Request Loop In Terms
 
 Before performing the Loop In, the loop in terms need to be extracted from the loop service as these will be
 used later to populate various values for the `.loopd.loopIn` input
@@ -105,7 +98,7 @@ max_swap_amount| "2000000"
 cltv_delta     | 1000
 ```
 
-## Run Loop In
+## Execute Loop In
 
 ```q
 q)input:`amt`loop_in_channel`max_miner_fee`max_swap_fee`external_htlc!(300000;"649448533229961216";"10000";"1100";1b)
@@ -145,7 +138,7 @@ Note: offchain cost may report as 0 after loopd restart during swap
 2019-09-14T15:52:12+01:00 LOOP_IN SUCCESS 0.003 BTC - 3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ (cost: server 1030, onchain 0, offchain 0)
 ```
 
-## Post-Loop In
+## Post-Loop In: Channel balance
 
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
 using a qsql query
@@ -160,43 +153,7 @@ local_balance          | "431842"
 
 # Loop Out
 
-
-## Generate an on-chain address
-
-```q
-q).lnd.newaddress[]
-address| "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
-```
-
-## Check loop-out terms
-
-```q
-q).loopd.loopOutTerms[]
-swap_fee_base  | "1000"
-swap_fee_rate  | "500"
-prepay_amt     | "1337"
-min_swap_amount| "250000"
-max_swap_amount| "2000000"
-cltv_delta     | 100
-```
-
-## Check loop-out quote
-
-```q
-q).loopd.loopOutQuote["250000"]
-swap_fee  | "1125"
-prepay_amt| "1337"
-miner_fee | "3451"
-```
-
-
-## Run Monitor
-
-```bash
-$./loop monitor
-```
-
-## Select channel for loop out
+## Pre-Loop Out: Channel balance
 
 
 ![](ZapChannelBeforeLoopOut.PNG)
@@ -227,6 +184,44 @@ total_satoshis_received| ""
 ```
 
 
+## Generate an on-chain address
+
+```q
+q).lnd.newaddress[]
+address| "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
+```
+
+## Request Loop Out Terms
+
+```q
+q).loopd.loopOutTerms[]
+swap_fee_base  | "1000"
+swap_fee_rate  | "500"
+prepay_amt     | "1337"
+min_swap_amount| "250000"
+max_swap_amount| "2000000"
+cltv_delta     | 100
+```
+
+## Request Loop Out quote
+
+```q
+q).loopd.loopOutQuote["250000"]
+swap_fee  | "1125"
+prepay_amt| "1337"
+miner_fee | "3451"
+```
+
+
+## Run Monitor
+
+```bash
+$./loop monitor
+```
+
+
+
+
 ## Perform Loop out
 
 ```
@@ -255,7 +250,7 @@ htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 2019-09-24T20:30:37+01:00 LOOP_OUT SUCCESS 0.0025 BTC  
 ```
 
-## Confirm channel balance change
+## Port-Loop Out: Channel balance
 
 
 ```q
