@@ -27,9 +27,9 @@ In this guide, the following types of swaps will be examained
 While the loop service will be covered below, alternative submarine swap services also exist including
 https://boltz.exchange/ and http://submarineswaps.org/.
 
-## Setup and Installation
+# Setup and Installation
 
-### loop and loopd
+## loop and loopd
 
 To install both the loop client and daemon, please following instructions as detailed on main [repository](https://github.com/lightninglabs/loop).
 The Loop daemon, loopd, exposes a gRPC API (defaults to port 11010) and a REST API (defaults to port 8081).
@@ -38,7 +38,7 @@ Once installation is complete, run the daemon with sample command line instructi
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
 ```
-### Monitor
+## Monitor
 
 
 ```bash
@@ -47,7 +47,7 @@ $./loop monitor
 
 
 
-### kdb+: qloopd.q
+## kdb+ qloopd.q
 
 To interact with the loop daemon from q, load the qloopd.q script and call the `.loopd.loopInTerms` API to confirm you can communicate
 successfully.
