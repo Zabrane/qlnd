@@ -1,7 +1,8 @@
-p)import base64, codecs, json, requests, os
-p)loopurl = 'http://localhost:8081/v1/loop/'
+p)import base64, codecs, json, requests, os, socket
+p)loopip = socket.gethostbyname(socket.gethostname())
+p)loopurl = 'http://'+loopip+':8081/v1/loop/'
 p)loop_lnd_dir = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
-p)cert_path =  loop_lnd_dir+'/tls.cert'
+p)cert_path = loop_lnd_dir+'/tls.cert'
 
 p)def setURL(new_url):
   global loopurl
