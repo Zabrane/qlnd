@@ -73,35 +73,28 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 # Loop In
 
-## List Channel
+## Initial State
+
+In the channel image below, the local balance (outbound capacity) is very low whereas the remote balance (inbound capacity)
+is very high. In such a situation, the amount of funds which can be sent to the remote end is very limited and the
+channel needs rebalancing to increase the outbound capacity. The local balance can be increaed in this case using a Loop In, in
+which on-chain funds are swapped for off-chain funds.
 
 ![](ChannelBeforeLoop.png)
 
+In order to perform a Loop in, the channel id first needs to be extracted. This can be done using the commands below.
 
 ```q
 q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
-q)exec from t where remote_pubkey like "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f", remote_balance like "863660"
-active                 | 1b
-remote_pubkey          | "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
-channel_point          | "f5a250d0548d466e1bce11ba2dde7a1f535d850845f83b85ec2485a101c7fc1d:0"
-chan_id                | "649448533229961216"
-capacity               | "1000000"
-remote_balance         | "863660"
-commit_fee             | "3468"
-commit_weight          | "724"
-fee_per_kw             | "4789"
-num_updates            | "117"
-csv_delay              | 720
-chan_status_flags      | "ChanStatusDefault"
-local_chan_reserve_sat | "10000"
-remote_chan_reserve_sat| "10000"
-local_balance          | "132872"
-initiator              | 1b
-total_satoshis_received| ""
-total_satoshis_sent    | "663660"
+q)pubkey:"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
+q)exec chan_id from t where remote_pubkey like pubkey
+"649448533229961216"
 ```
 
 ## Get Terms
+
+Before performing the Loop In, the loop in terms need to be extracted from the loop service as these will be
+used later to populate various values for the `.loopd.loopIn` input
 
 ```q
 q).loopd.loopInTerms[]
@@ -130,6 +123,9 @@ htlc_address| "3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ"
 
 ## Send on-chain payment
 
+With the htlc_address returned, the next step is to send on-chain funds to this address.
+This can be performed using the `.lnd.sendCoins` command, which is part of the [qlnd.q](https://github.com/jlucid/qlnd/blob/master/qlnd.q) script.
+
 ```q
 q)ret:.lnd.sendCoins[`amount`addr!(300000;"3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ")]
 q)ret
@@ -137,6 +133,8 @@ txid| "f83d7c47615b18e512b040eaea814caedbd042d4bab08a97dd8edf71f89c7688"
 ```
 
 ## Monitor
+
+The monitoring tool can be used to check the status of the submarine swap and confirm its completion,.
 
 ```bash
 $./loop monitor
@@ -147,31 +145,17 @@ Note: offchain cost may report as 0 after loopd restart during swap
 2019-09-14T15:52:12+01:00 LOOP_IN SUCCESS 0.003 BTC - 3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ (cost: server 1030, onchain 0, offchain 0)
 ```
 
+## Post-Loop In
+
+Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
+using a qsql query
 
 ![](ChannelAfterLoop.png)
 
 
-
 ```q
-q)first select from t where remote_pubkey like "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f", remote_balance like "564690"
-active                 | 1b
-remote_pubkey          | "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
-channel_point          | "f5a250d0548d466e1bce11ba2dde7a1f535d850845f83b85ec2485a101c7fc1d:0"
-chan_id                | "649448533229961216"
-capacity               | "1000000"
-remote_balance         | "564690"
-commit_fee             | "3468"
-commit_weight          | "724"
-fee_per_kw             | "4789"
-num_updates            | "119"
-csv_delay              | 720
-chan_status_flags      | "ChanStatusDefault"
-local_chan_reserve_sat | "10000"
-remote_chan_reserve_sat| "10000"
+q)exec local_balance from t where remote_pubkey like pubkey
 local_balance          | "431842"
-initiator              | 1b
-total_satoshis_received| "298970"
-total_satoshis_sent    | "663660"
 ```
 
 # Loop Out
