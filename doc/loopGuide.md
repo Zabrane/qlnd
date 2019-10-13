@@ -28,8 +28,8 @@ While the loop service will be covered below, alternative submarine swap service
 https://boltz.exchange/ and http://submarineswaps.org/.
 
 
-All channel images used below were generated using the free [Zap Wallet](https://zap.jackmallers.com/).
-
+All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
+Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
 
 # Setup and Installation
 
