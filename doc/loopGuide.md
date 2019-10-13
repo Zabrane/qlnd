@@ -201,6 +201,9 @@ address| "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
 
 ## Request Loop Out Terms
 
+As with the previous Loop In, before performing a Loop Out the terms as enforced for the loop out swap should first
+be extracted from the server.
+
 ```q
 q).loopd.loopOutTerms[]
 swap_fee_base  | "1000"
@@ -212,6 +215,9 @@ cltv_delta     | 100
 ```
 
 ## Request Loop Out quote
+
+`.loopd.loopOutQuote` returns a quote for a loop out swap with the provided parameters.
+For more details see (guide)[#https://lightning.engineering/loop/rest/index.html#v1-loop-out-quote].
 
 ```q
 q).loopd.loopOutQuote["250000"]
