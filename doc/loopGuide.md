@@ -27,6 +27,10 @@ In this guide, the following types of swaps will be examained
 While the loop service will be covered below, alternative submarine swap services also exist including
 https://boltz.exchange/ and http://submarineswaps.org/.
 
+
+All channel images used below were generated using the free [Zap Wallet](https://zap.jackmallers.com/).
+
+
 # Setup and Installation
 
 ## loop and loopd
