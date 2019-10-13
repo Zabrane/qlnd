@@ -264,7 +264,7 @@ htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 2019-09-24T20:30:37+01:00 LOOP_OUT SUCCESS 0.0025 BTC  
 ```
 
-## Port-Loop Out: Channel balance
+## Post-Loop Out: Channel balance
 
 
 ```q
