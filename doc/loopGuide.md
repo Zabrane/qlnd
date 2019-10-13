@@ -266,32 +266,19 @@ htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 
 ## Post-Loop Out: Channel balance
 
-
-```q
-q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
-q)first select from t where remote_pubkey like "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
-active                 | 1b
-remote_pubkey          | "03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b..
-channel_point          | "bf9b72ce2460f46e0298ac371f171f3d72e3ca02741db22f0b9..
-chan_id                | "655662973008084993"
-capacity               | "1120000"
-remote_balance         | "249792"
-commit_fee             | "4746"
-commit_weight          | "896"
-fee_per_kw             | "5295"
-num_updates            | "206"
-csv_delay              | 144
-chan_status_flags      | "ChanStatusDefault"
-local_chan_reserve_sat | "11200"
-remote_chan_reserve_sat| "11200"
-local_balance          | "615670"
-total_satoshis_sent    | "249792"
-initiator              | 1b
-total_satoshis_received| ""
-unsettled_balance      | "249792"
-```
+Once the Loop Out has completed, the updated local balance can be viewed on the wallet UI and confirmed using a qsql query
 
 ![](ZapChannelAfterLoopOut.PNG)
+
+q)exec local_balance from t where remote_pubkey like pubkey
+
+```q
+q)pubkey:"03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
+q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
+q)exec local_balance from t where remote_pubkey like pubkey
+"615670"
+```
+
 
 
 
