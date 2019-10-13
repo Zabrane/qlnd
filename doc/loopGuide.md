@@ -155,9 +155,12 @@ local_balance          | "431842"
 
 ## Pre-Loop Out: Channel balance
 
+In the channel image below, the local balance (outbound capacity) is nearing the total channel capacity and the remote balance (inbound capacity) is very low. In such a situation, the amount of funds which can be received is very limited and the
+channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
+which off-chain funds are swapped for on-chain funds.
+
 
 ![](ZapChannelBeforeLoopOut.PNG)
-
 
 
 ```q
@@ -185,6 +188,11 @@ total_satoshis_received| ""
 
 
 ## Generate an on-chain address
+
+Before performing a loop Out, a destination address on-chain needs to be specified. 
+This receive address can be created within the wallet of your choice. If you wish for the funds to
+be moved to an address which is controlled by the lnd node, in order to use the funds to open more channels,
+the `.lnd.newaddress` function can be used to generate, as shown below.
 
 ```q
 q).lnd.newaddress[]
