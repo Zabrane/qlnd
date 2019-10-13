@@ -217,7 +217,7 @@ cltv_delta     | 100
 ## Request Loop Out quote
 
 `.loopd.loopOutQuote` returns a quote for a loop out swap with the provided parameters.
-For more details see (guide)[#https://lightning.engineering/loop/rest/index.html#v1-loop-out-quote].
+For more details see [guide](https://lightning.engineering/loop/rest/index.html#v1-loop-out-quote).
 
 ```q
 q).loopd.loopOutQuote["250000"]
