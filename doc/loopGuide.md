@@ -269,6 +269,59 @@ q)exec local_balance from t where remote_pubkey like pubkey
 
 
 
+# Self-payment
+
+Create an invoice which will be used to pay ourselves
+
+```q
+invoice:`memo`value`expiry!("Pay 100Sat to self";100;"3600")
+q)r:.lnd.addInvoice invoice
+q)r
+r_hash         | "oDykn6YYwMqXf+udOqWYEop6Hn1cpnD0fjtYl8U94cU="
+payment_request| "lnbc1u1pwl75xrpp55q72f8axrrqv49mlawwn4fvcz29858natjn8par78d..
+```
+
+Make a payment, set allow_self_payment to 1b
+
+```q
+q)return:.lnd.sendPayment[(`payment_request`allow_self_payment)!(r`payment_request;1b)]
+q)return
+payment_preimage| "YMk/Fhyx7UEYk0lviRdGiJwxTytR4kT0q+XiPdjJFdA="
+payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(609469;"100..
+payment_hash    | "oDykn6YYwMqXf+udOqWYEop6Hn1cpnD0fjtYl8U94cU="
+```
+
+Inspect hops
+
+```q
+q)return[`payment_route][`hops]
+chan_id              chan_capacity amt_to_forward expiry amt_to_forward_msat pub_key                                                              tlv_payload
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+"620042094792998913" "5000000"     "100"          609325 "100000"            "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f" 1
+"649451831779852288" "6666666"     "100"          609325 "100000"            "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c" 1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
