@@ -4,7 +4,7 @@ authors:
 date: Sept 2019
 keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 ---
-# Lightning: Loop In and Loop Out 
+# Lightning: Loop In, Loop Out and Circular payments 
 
 
 # Introduction
