@@ -269,20 +269,27 @@ q)exec local_balance from t where remote_pubkey like pubkey
 
 
 
-# Self-payment for channel rebalancing
+# Circular Payments 
 
-Select a channel where you wish to increase the inbound capacity (Remote Balance) by making an outgoing payment.
-Set the channel ID
+Channels can also be rebalanced by performing circular payments. This is when a node pays its own self-generated invoice by transferring funds from one channel to another via an intermediate node. This is purely off-chain rebalancing and doesnt involve any on-chain events.
+In order to perform a circular payment, first select a channel where you wish to increase the inbound capacity (Remote Balance) by making an outgoing payment.
 
-```q
-chan_id:"620042094792998913"
-```
+For this example, we will use the channel below, with the following channel ID (chan_id).
+
 
 ![](SelfPaymentOutboundBefore.PNG)
 
+```q
+q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
+q)select chan_id,local_balance,remote_balance from t where chan_id like "620042094792998913"
+chan_id              local_balance remote_balance
+-------------------------------------------------
+"620042094792998913" "3491920"     "1504577"
+```
 
-Create an invoice which will be used to pay ourselves, reducing the outbound capacity on on channel while increasing it on another.
-To demonstrate we create a memo with a 100sat amount.
+Create an invoice which will be used for the circular payment.
+Paying this invoice will decrease the outbound capacity on the specified channel, while increasing the outbound capacity on another
+channel. In the example below, an invoice for 100sat is generated.
 
 ```q
 q)invoice:`memo`value`expiry!("Self-payment of 100sat";100;"3600")
@@ -294,7 +301,8 @@ add_index      | "50"
 ```
 
 Pay the above invoice by setting the allow_self_payment flag to 1b and specifying the 
-outgoing_chan_id to chan_id
+outgoing_chan_id to the chan_id shown above. Currently, it is only possible to specify the first hop in the payment, that being, the channel from which the payment will be made (outgoing_chan_id).
+
 
 ```q
 q)return:.lnd.sendPayment[(`payment_request`allow_self_payment`outgoing_chan_id)!(r`payment_request;1b;"620042094792998913")]
@@ -304,7 +312,7 @@ payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(609478;"100";+
 payment_hash    | "LdX910ilNcz7GKEpV2Vof9zvIZFId0oVbuNgzqZG1AE="
 ```
 
-Inspect hops to confirm that the first hap was from chan_id and the return hop shows the nodes pub key.
+Inspect the payment hops table to confirm that the first hop in the payment was from the outgoing_chan_id as specified.
 
 ```q
 q)return[`payment_route][`hops]
@@ -327,12 +335,9 @@ value_sat       | "100"
 value_msat      | "100000"
 payment_request | "lnbc1u1pwl7kwzpp59h2lm46g556ue7cc5y54wetg0lww7gv3fpm559twudsvafjx6sqsdpy2djkce3dwpshjmt9de6zqmmxyqcnqvrnv96qcqzpgxqrrsssp5n82gqsennu387dfxfyat8khmthg6e82wg5fj7v7rwklsm9p4tytqc90tyey93sa9k2squrp69sdj0q4tlpwa3qam50hk4ze7ut4ryu6szjn4gz6evzmwxklz003yrw666lzlyyajalxx9s8ytcm52ze3h3gquthdu9"
 status          | "SUCCEEDED"
-creation_time_ns| "1577016068000000000"
-htlcs           | +`status`route!(,"SUCCEEDED";,`total_time_lock`total_amt`hops`total_amt_msat!(609478;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key`tlv_payload!(("620042094792998913";"649451831779852288");("5000000";"6666666");("100";"100");609334 609334;("100000";"100000");("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");11b);"100000"))
-q)
 ```
 
-See the channel balance change on the wallet UI
+The channel balance should be seen to update on the wallet UI.
 
 ![](SelfPaymentOutboundAfter.PNG)
 
@@ -347,11 +352,12 @@ chan_id              local_balance remote_balance
 
 The 100sat sent from the chan_id, is reflected as an increase in outbound capacity on the channel below
 
-Before
+Receiving channel before the circular payment was made
+
 ![](SelfPaymentInboundBefore.PNG)
 
+Receiving channel after the circular payment was made. The outbound capacity has increased by 100sat, as expected.
 
-After
 ![](SelfPaymentInboundAfter.PNG)
 
 
