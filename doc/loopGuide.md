@@ -336,6 +336,14 @@ See the channel balance change on the wallet UI
 
 ![](SelfPaymentOutboundAfter.PNG)
 
+```q
+q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
+q)select chan_id,local_balance,remote_balance from t where chan_id like "620042094792998913"
+chan_id              local_balance remote_balance
+-------------------------------------------------
+"620042094792998913" "3491820"     "1504677"
+```
+
 
 The 100sat sent from the chan_id, is reflected as an increase in outbound capacity on the channel below
 
