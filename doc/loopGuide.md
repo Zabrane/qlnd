@@ -314,7 +314,7 @@ chan_id              chan_capacity amt_to_forward expiry amt_to_forward_msat pub
 "649451831779852288" "6666666"     "100"          609334 "100000"            "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c" 1
 ```
 
-Confirm payment succeeded
+Confirm payment succeeded by inspecting the status of the last payment
 
 ```q
 q)last .lnd.listPayments[][`payments]
@@ -331,6 +331,27 @@ creation_time_ns| "1577016068000000000"
 htlcs           | +`status`route!(,"SUCCEEDED";,`total_time_lock`total_amt`hops`total_amt_msat!(609478;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key`tlv_payload!(("620042094792998913";"649451831779852288");("5000000";"6666666");("100";"100");609334 609334;("100000";"100000");("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");11b);"100000"))
 q)
 ```
+
+See the channel balance change on the wallet UI
+
+![](SelfPaymentOutboundAfter.PNG)
+
+
+The 100sat sent from the chan_id, is reflected as an increase in outbound capacity on the channel below
+
+Before
+![](SelfPaymentInboundBefore.PNG)
+
+
+After
+![](SelfPaymentInboundAfter.PNG)
+
+
+
+
+
+
+
 
 
 
