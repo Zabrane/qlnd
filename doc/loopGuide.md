@@ -301,7 +301,21 @@ chan_id              chan_capacity amt_to_forward expiry amt_to_forward_msat pub
 "649451831779852288" "6666666"     "100"          609325 "100000"            "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c" 1
 ```
 
+Confirm payment succeeded
 
+```q
+q)last .lnd.listPayments[][`payments]
+payment_hash    | "a03ca49fa618c0ca977feb9d3aa598128a7a1e7d5ca670f47e3b5897c53de1c5"
+value           | "100"
+creation_date   | "1577013570"
+path            | ("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c")
+payment_preimage| "60c93f161cb1ed411893496f891746889c314f2b51e244f4abe5e23dd8c915d0"
+value_sat       | "100"
+value_msat      | "100000"
+payment_request | "lnbc1u1pwl75xrpp55q72f8axrrqv49mlawwn4fvcz29858natjn8par78dvf03fau8zsdqa2pshjgp3xqc9xct5yp6x7grnv4kxvcqzpgxqrrsssp56pq23gnstnlz4jrujm30j30tmkv0us820pum6z2gs39934rc0wxqg6kya7fr0a9qmjjjh23vv0c57kq62kl85jkvalmssprzn9zxqkwry95ru7ecefe3r7d0zxr0rzkq7kqp5nqm8988ycqpa4vz7xx6kaspuve345"
+status          | "SUCCEEDED"
+creation_time_ns| "1577013570000000000"
+```
 
 
 
