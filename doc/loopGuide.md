@@ -271,7 +271,7 @@ q)exec local_balance from t where remote_pubkey like pubkey
 
 # Self-payment for channel rebalancing
 
-Select a channel where you wish to increase the inbound capacity by making an outgoing payment.
+Select a channel where you wish to increase the inbound capacity (Remote Balance) by making an outgoing payment.
 Set the channel ID
 
 ```q
