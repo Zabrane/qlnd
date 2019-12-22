@@ -269,52 +269,67 @@ q)exec local_balance from t where remote_pubkey like pubkey
 
 
 
-# Self-payment
+# Self-payment for channel rebalancing
 
-Create an invoice which will be used to pay ourselves
+Select a channel where you wish to increase the inbound capacity by making an outgoing payment.
+Set the channel ID
 
 ```q
-invoice:`memo`value`expiry!("Pay 100Sat to self";100;"3600")
+chan_id:"620042094792998913"
+```
+
+![](SelfPaymentOutboundBefore.PNG)
+
+
+Create an invoice which will be used to pay ourselves, reducing the outbound capacity on on channel while increasing it on another.
+To demonstrate we create a memo with a 100sat amount.
+
+```q
+q)invoice:`memo`value`expiry!("Self-payment of 100sat";100;"3600")
 q)r:.lnd.addInvoice invoice
 q)r
-r_hash         | "oDykn6YYwMqXf+udOqWYEop6Hn1cpnD0fjtYl8U94cU="
-payment_request| "lnbc1u1pwl75xrpp55q72f8axrrqv49mlawwn4fvcz29858natjn8par78d..
+r_hash         | "LdX910ilNcz7GKEpV2Vof9zvIZFId0oVbuNgzqZG1AE="
+payment_request| "lnbc1u1pwl7kwzpp59h2lm46g556ue7cc5y54wetg0lww7gv..."
+add_index      | "50"
 ```
 
-Make a payment, set allow_self_payment to 1b
+Pay the above invoice by setting the allow_self_payment flag to 1b and specifying the 
+outgoing_chan_id to chan_id
 
 ```q
-q)return:.lnd.sendPayment[(`payment_request`allow_self_payment)!(r`payment_request;1b)]
+q)return:.lnd.sendPayment[(`payment_request`allow_self_payment`outgoing_chan_id)!(r`payment_request;1b;"620042094792998913")]
 q)return
-payment_preimage| "YMk/Fhyx7UEYk0lviRdGiJwxTytR4kT0q+XiPdjJFdA="
-payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(609469;"100..
-payment_hash    | "oDykn6YYwMqXf+udOqWYEop6Hn1cpnD0fjtYl8U94cU="
+payment_preimage| "MlSkodJkm2Y35LGnQ8DOtV8gMKT/f5GGhWa0pY29+ug="
+payment_route   | `total_time_lock`total_amt`hops`total_amt_msat!(609478;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key`tlv_payload!(("620042094792998913";"649451831779852288");("5000000";"6666666");("100";"100");609334 609334;("100000";"100000");("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");11b);"100000")
+payment_hash    | "LdX910ilNcz7GKEpV2Vof9zvIZFId0oVbuNgzqZG1AE="
 ```
 
-Inspect hops
+Inspect hops to confirm that the first hap was from chan_id and the return hop shows the nodes pub key.
 
 ```q
 q)return[`payment_route][`hops]
 chan_id              chan_capacity amt_to_forward expiry amt_to_forward_msat pub_key                                                              tlv_payload
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-"620042094792998913" "5000000"     "100"          609325 "100000"            "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f" 1
-"649451831779852288" "6666666"     "100"          609325 "100000"            "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c" 1
+"620042094792998913" "5000000"     "100"          609334 "100000"            "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f" 1
+"649451831779852288" "6666666"     "100"          609334 "100000"            "023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c" 1
 ```
 
 Confirm payment succeeded
 
 ```q
 q)last .lnd.listPayments[][`payments]
-payment_hash    | "a03ca49fa618c0ca977feb9d3aa598128a7a1e7d5ca670f47e3b5897c53de1c5"
+payment_hash    | "2dd5fdd748a535ccfb18a1295765687fdcef219148774a156ee360cea646d401"
 value           | "100"
-creation_date   | "1577013570"
+creation_date   | "1577016068"
 path            | ("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c")
-payment_preimage| "60c93f161cb1ed411893496f891746889c314f2b51e244f4abe5e23dd8c915d0"
+payment_preimage| "3254a4a1d2649b6637e4b1a743c0ceb55f2030a4ff7f91868566b4a58dbdfae8"
 value_sat       | "100"
 value_msat      | "100000"
-payment_request | "lnbc1u1pwl75xrpp55q72f8axrrqv49mlawwn4fvcz29858natjn8par78dvf03fau8zsdqa2pshjgp3xqc9xct5yp6x7grnv4kxvcqzpgxqrrsssp56pq23gnstnlz4jrujm30j30tmkv0us820pum6z2gs39934rc0wxqg6kya7fr0a9qmjjjh23vv0c57kq62kl85jkvalmssprzn9zxqkwry95ru7ecefe3r7d0zxr0rzkq7kqp5nqm8988ycqpa4vz7xx6kaspuve345"
+payment_request | "lnbc1u1pwl7kwzpp59h2lm46g556ue7cc5y54wetg0lww7gv3fpm559twudsvafjx6sqsdpy2djkce3dwpshjmt9de6zqmmxyqcnqvrnv96qcqzpgxqrrsssp5n82gqsennu387dfxfyat8khmthg6e82wg5fj7v7rwklsm9p4tytqc90tyey93sa9k2squrp69sdj0q4tlpwa3qam50hk4ze7ut4ryu6szjn4gz6evzmwxklz003yrw666lzlyyajalxx9s8ytcm52ze3h3gquthdu9"
 status          | "SUCCEEDED"
-creation_time_ns| "1577013570000000000"
+creation_time_ns| "1577016068000000000"
+htlcs           | +`status`route!(,"SUCCEEDED";,`total_time_lock`total_amt`hops`total_amt_msat!(609478;"100";+`chan_id`chan_capacity`amt_to_forward`expiry`amt_to_forward_msat`pub_key`tlv_payload!(("620042094792998913";"649451831779852288");("5000000";"6666666");("100";"100");609334 609334;("100000";"100000");("03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f";"023bc00c30acc34a5c9cbf78f84aa775cb63f578a69a6f8ec9a7600753d4f9067c");11b);"100000"))
+q)
 ```
 
 
