@@ -1,6 +1,6 @@
 p)import base64, codecs, json, requests, os
-p)url = 'https://localhost:8080/v1/'
-p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd')
+p)url = 'https://217.160.185.97:8081/v1/'
+p)LND_DIR = os.getenv('LND_DIR', os.getenv('HOME')+'/.lnd2')
 p)cert_path =  LND_DIR+'/tls.cert'
 p)macaroon = codecs.encode(open(LND_DIR+'/data/chain/bitcoin/mainnet/admin.macaroon', 'rb').read(), 'hex')
 p)headers = {'Grpc-Metadata-macaroon': macaroon}
@@ -25,6 +25,11 @@ p)def setMACAROON(new_macr_path):
 p)def getInfo(): 
   endpoint  = 'getinfo'
   r = requests.get(url+endpoint, headers=headers, verify=cert_path)
+  return r.json()
+
+p)def bakeMacaroon(data):
+  endpoint = 'macaroon'
+  r = requests.post(url+endpoint, headers=headers, verify=cert_path, data=json.dumps(data))
   return r.json()
 
 p)def exportAllChannelBackups():
@@ -262,6 +267,7 @@ q).lnd.abandonChannel:.p.get[`abandonChannel;<]
 q).lnd.changePassword:.p.get[`changePassword;<]
 q).lnd.getChanInfo:.p.get[`getChanInfo;<]
 q).lnd.queryRoutes:.p.get[`queryRoutes;<]
+q).lnd.bakeMacaroon:.p.get[`bakeMacaroon;<]
 q).lnd.closedChannels:.p.get[`closedChannels;<]
 q).lnd.closeChannel:.p.get[`closeChannel;<]
 q).lnd.getNetworkInfo:.p.get[`getNetworkInfo;<]
