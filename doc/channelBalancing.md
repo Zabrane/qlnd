@@ -64,10 +64,6 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 ## Loop In
 
-All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
-Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
-
-
 ### Pre-Loop In: Channel balance
 
 In the channel image below, almost all the channel capacity is on the remote end and the local balance is very low. With such low outbound capacity, there is a limited ability to send. In this situation, a Loop In can shift some of the remote balance to the local end.
@@ -138,7 +134,8 @@ Note: offchain cost may report as 0 after loopd restart during swap
 ### Post-Loop In: Channel balance
 
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
-using a qsql query
+using a qsql query. The image below was generated using the non-custodial [Zap Wallet](https://zap.jackmallers.com/).
+Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
 
 ![](img/ChannelAfterLoop.png)
 
