@@ -77,9 +77,8 @@ In the channel image below, almost all the channel capacity is on the remote end
 In order to perform a Loop In, the channel id first needs to be extracted. This can be done using the commands below.
 
 ```q
-q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
 q)pubkey:"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
-q)exec chan_id from t where remote_pubkey like pubkey
+q).lnd.getChanIdByPubKey[pubkey]
 "649448533229961216"
 ```
 
@@ -163,8 +162,7 @@ which off-chain funds are swapped for on-chain funds.
 
 ```q
 q)pubkey:"03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
-q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
-q)exec local_balance from t where remote_pubkey like pubkey
+q).lnd.getChanIdByPubKey[pubkey]
 "1116167"
 ```
 
@@ -256,8 +254,7 @@ q)exec local_balance from t where remote_pubkey like pubkey
 
 ```q
 q)pubkey:"03634bda49c9c42afd876d8288802942c49e58fbec3844ff54b46143bfcb6cdfaf"
-q)t:(uj/) enlist@'.lnd.listChannels[][`channels]
-q)exec local_balance from t where remote_pubkey like pubkey
+q).lnd.getChanIdByPubKey[pubkey]
 "615670"
 ```
 
