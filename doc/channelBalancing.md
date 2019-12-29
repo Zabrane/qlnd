@@ -70,7 +70,7 @@ In the channel image below, almost all the channel capacity is on the remote end
 
 ![](img/ChannelBeforeLoop.png)
 
-In order to perform a Loop In, the channel id first needs to be extracted. This can be done using the commands below.
+In order to perform a Loop In, the channel ID first needs to be extracted. This can be done using the commands below.
 
 ```q
 q)pubkey:"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
