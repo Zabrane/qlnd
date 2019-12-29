@@ -16,10 +16,9 @@ The following sections describe three useful rebalancing techniques. These inclu
 
 # Loop In/Loop Out
 
-[Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
-way for lightning users to easily rebalance or refill their payment channels.
+[Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/). This service uses submarine swaps to bridge on-chain and off-chain Bitcoin. Loop allows lightning users to rebalance payment channels without closing them.
 
-In this guide, the following types of swaps will be examained 
+There are two different types of swaps
 
 * Loop Out: Off-chain to On-chain, where the Loop client sends funds off-chain to receive funds on-chain
 * Loop In: On-chain to Off-chain, where the Loop client sends funds on-chain to refill a channel off-chain
