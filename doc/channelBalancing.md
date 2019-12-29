@@ -70,10 +70,7 @@ Alternative wallets, including desktop and mobile can be found at [lopp.net](htt
 
 ### Pre-Loop In: Channel balance
 
-In the channel image below, the local balance (outbound capacity) is very low whereas the remote balance (inbound capacity)
-is very high. In such a situation, the amount of funds which can be sent to the remote end is very limited and the
-channel needs rebalancing to increase the outbound capacity. The local balance can be increaed using a Loop In, in
-which on-chain funds are swapped for off-chain funds.
+In the channel image below, almost all the channel capacity is on the remote end and the local balance is very low. With such low outbound capacity, there is a limited ability to send. In this situation, a Loop In can shift some of the remote balance to the local end.
 
 ![](img/ChannelBeforeLoop.png)
 
