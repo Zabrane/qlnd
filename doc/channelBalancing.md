@@ -12,7 +12,7 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 In Lightning, open and well-balanced channels are essential for successful payment routing. Every successful payment, in turn, helps the node operator to earn transaction fees.
 If a channel closes, there is a downtime penalty due to missed fees and it incurs an on-chain mining fee. If a channel is ill-balanced, payments will fail due to insufficient capacity.  Thus, it is important to avoid both channel closing events and ill-balanced channels.
 
-The following sections describe three useful rebalancing techniques. These include Loop In, Loop Out and Circular payments.
+The following sections describe three useful rebalancing techniques. These include *Loop In*, *Loop Out* and *Circular payments*.
 
 # Loop In/Loop Out
 
