@@ -14,6 +14,8 @@ If a channel closes, there is a downtime penalty due to missed fees and it incur
 
 The following sections describe three useful rebalancing techniques. These include Loop In, Loop Out and Circular payments.
 
+# Loop In/Loop Out
+
 [Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
 way for lightning users to easily rebalance or refill their payment channels.
 
@@ -29,9 +31,9 @@ https://boltz.exchange/ and http://submarineswaps.org/.
 All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
 Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
 
-# Setup and Installation
+## Setup and Installation
 
-## loop and loopd
+### loop and loopd
 
 To install both the loop client and daemon, please following instructions as detailed on main [repository](https://github.com/lightninglabs/loop).
 The Loop daemon, loopd, exposes a gRPC API (defaults to port 11010) and a REST API (defaults to port 8081).
@@ -42,7 +44,7 @@ Once installation is complete, run the daemon with sample command line instructi
 ```
 
 
-## kdb+ qloopd.q
+### kdb+ qloopd.q
 
 To interact with the loop daemon from q, load the qloopd.q script and call the `.loopd.loopInTerms` API to confirm you can communicate
 successfully.
@@ -66,9 +68,9 @@ q).loopd.setURL["http://xxx.xxx.xxx.xx:8082/v1/loop/"]
 q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 ```
 
-# Loop In
+## Loop In
 
-## Pre-Loop In: Channel balance
+### Pre-Loop In: Channel balance
 
 In the channel image below, the local balance (outbound capacity) is very low whereas the remote balance (inbound capacity)
 is very high. In such a situation, the amount of funds which can be sent to the remote end is very limited and the
@@ -86,7 +88,7 @@ q)exec chan_id from t where remote_pubkey like pubkey
 "649448533229961216"
 ```
 
-## Request Loop In Terms
+### Request Loop In Terms
 
 Before performing the Loop In, the loop in terms need to be extracted from the loop service as these will be
 used later to populate various values for the `.loopd.loopIn` input
@@ -100,7 +102,7 @@ max_swap_amount| "2000000"
 cltv_delta     | 1000
 ```
 
-## Execute Loop In
+### Execute Loop In
 
 ```q
 q)input:`amt`loop_in_channel`max_miner_fee`max_swap_fee`external_htlc!(300000;"649448533229961216";"10000";"1100";1b)
@@ -116,7 +118,7 @@ id          | "7c21a2888dacac7dfa6f8fa47e0b49f228657bd430c9385e09e5ad3fb63a299b"
 htlc_address| "3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ"
 ```
 
-## Send on-chain payment
+### Send on-chain payment
 
 With the htlc_address returned, the next step is to send on-chain funds to this address.
 This can be performed using the `.lnd.sendCoins` command, which is part of the [qlnd.q](https://github.com/jlucid/qlnd/blob/master/qlnd.q) script.
@@ -127,7 +129,7 @@ q)ret
 txid| "f83d7c47615b18e512b040eaea814caedbd042d4bab08a97dd8edf71f89c7688"
 ```
 
-## Monitor
+### Monitor
 
 The monitoring tool can be used to check the status of the submarine swap and confirm its completion,.
 
@@ -140,7 +142,7 @@ Note: offchain cost may report as 0 after loopd restart during swap
 2019-09-14T15:52:12+01:00 LOOP_IN SUCCESS 0.003 BTC - 3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ (cost: server 1030, onchain 0, offchain 0)
 ```
 
-## Post-Loop In: Channel balance
+### Post-Loop In: Channel balance
 
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
 using a qsql query
@@ -153,9 +155,9 @@ q)exec local_balance from t where remote_pubkey like pubkey
 local_balance          | "431842"
 ```
 
-# Loop Out
+## Loop Out
 
-## Pre-Loop Out: Channel balance
+### Pre-Loop Out: Channel balance
 
 In the channel image below, the local balance (outbound capacity) is nearing the total channel capacity and the remote balance (inbound capacity) is very low. In such a situation, the amount of funds which can be received is very limited and the
 channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
@@ -173,7 +175,7 @@ q)exec local_balance from t where remote_pubkey like pubkey
 ```
 
 
-## Generate an on-chain address
+### Generate an on-chain address
 
 Before performing a loop Out, a destination address on-chain needs to be specified. 
 This receive address can be created within the wallet of your choice. If you wish for the funds to
@@ -185,7 +187,7 @@ q).lnd.newaddress[]
 address| "bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y"
 ```
 
-## Request Loop Out Terms
+### Request Loop Out Terms
 
 As with the previous Loop In, before performing a Loop Out the terms as enforced for the loop out swap should first
 be extracted from the server.
@@ -200,7 +202,7 @@ max_swap_amount| "2000000"
 cltv_delta     | 100
 ```
 
-## Request Loop Out quote
+### Request Loop Out quote
 
 `.loopd.loopOutQuote` returns a quote for a loop out swap with the provided parameters.
 For more details see [guide](https://lightning.engineering/loop/rest/index.html#v1-loop-out-quote).
@@ -213,7 +215,7 @@ miner_fee | "3451"
 ```
 
 
-## Run Monitor
+### Run Monitor
 
 ```bash
 $./loop monitor
@@ -222,7 +224,7 @@ $./loop monitor
 
 
 
-## Perform Loop out
+### Perform Loop out
 
 ```
 q)input:`amt`loop_out_channel`dest`sweep_conf_target`max_swap_fee`max_prepay_amt`max_swap_routing_fee`max_prepay_routing_fee`max_miner_fee!("250000";"655662973008084993";"bc1qtumg8sp356nwekne62muprjcj5pj8rkn37c43y";2;"1125";"1337";"1125";"3000";"4000")
@@ -242,7 +244,7 @@ id          | "7829547e8f5d0670976f5b5bf38fa4295f5a2167ecf4f01d2f8f93a72d3d47..
 htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 ```
 
-## Check loop monitor
+### Check loop monitor
 
 ```bash
 2019-09-24T20:29:10+01:00 LOOP_OUT INITIATED 0.0025 BTC
@@ -250,7 +252,7 @@ htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 2019-09-24T20:30:37+01:00 LOOP_OUT SUCCESS 0.0025 BTC  
 ```
 
-## Post-Loop Out: Channel balance
+### Post-Loop Out: Channel balance
 
 Once the Loop Out has completed, the updated local balance can be viewed on the wallet UI and confirmed using a qsql query
 
