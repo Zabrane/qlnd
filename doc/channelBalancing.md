@@ -152,6 +152,8 @@ local_balance          | "431842"
 
 ## Loop Out
 
+![](img/LoopOutVideo.gif)
+
 ### Pre-Loop Out: Channel balance
 
 In the channel image below, the local balance (outbound capacity) is nearing the total channel capacity and the remote balance (inbound capacity) is very low. In such a situation, the amount of funds which can be received is very limited and the
