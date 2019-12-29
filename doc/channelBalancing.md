@@ -85,7 +85,7 @@ q)exec chan_id from t where remote_pubkey like pubkey
 
 ### Request Loop In Terms
 
-Before performing the Loop In, extract the payment terms from the loop service. These details help populate various arguments for the .loopd.loopIn command. 
+Before performing the Loop In, extract the payment terms from the loop service. These details help populate various arguments for the `.loopd.loopIn` command. 
 
 ```q
 q).loopd.loopInTerms[]
