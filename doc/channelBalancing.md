@@ -41,7 +41,7 @@ Once the installation is complete, start the daemon with the sample command belo
 
 ### kdb+ qloopd.q
 
-To interact with the loop daemon from q, first load the qloopd.q script. Then call the `.loopd.loopInTerms` API to confirm you can communicate with the daemon.
+To interact with the loop daemon from q, first load the [qloopd.q](https://github.com/jlucid/qlnd/blob/master/qloopd.q) script. Then call the `.loopd.loopInTerms` API to confirm you can communicate with the daemon.
 
 ```q
 $q qloopd.q
