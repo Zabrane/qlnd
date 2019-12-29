@@ -9,12 +9,11 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 
 # Introduction
 
-When a lightning channel is open and well balanced it can facilitate fast payments and earn fees for the node operator.
-While closing a channel to settle balances on-chain can often be necessary, the act of closing incurs a financial penalty
-because it requires an on-chain transaction fee be paid and the closed channel can no longer contribute towards off-chain fees.
-In addition, closing and subsequently opening a new channel incurs a 'downtime' penalty because it requires 
-on-chain confirmations to be received. An alternative approach is to practice lightning channel rebalancing to ensure inbound and
-outbound capacities are always sufficient to facilitate bi-directional payments, avoiding the need to close channels.
+In Lightning, open and well-balanced channels are essential for successful payment routing. Every successful payment, in turn, helps the node operator to earn transaction fees.
+If a channel closes, there is a downtime penalty due to missed fees and it incurs an on-chain fee. If a channel is ill-balanced, payments will fail due to insufficient capacity.  Thus, it is important to avoid both channel closing events and ill-balanced channels.
+
+The following sections describe three rebalancing techniques. These include Loop In, Loop Out and Circular payments.
+
 
 [Lightning Loop](https://github.com/lightninglabs/loop) is a non-custodial service offered by [Lightning Labs](https://lightning.engineering/) to bridge on-chain and off-chain Bitcoin using submarine swaps. Loop provides a
 way for lightning users to easily rebalance or refill their payment channels.
