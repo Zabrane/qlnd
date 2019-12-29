@@ -24,7 +24,7 @@ There are two different types of swaps
 
 * Loop In: An on-chain to off-chain transfer. Here a Loop client sends funds on-chain to refill a channel off-chain. This technique decreases the inbound capacity and increases outbound capacity.
 
-Alternative submarine swap services include https://boltz.exchange/ and http://submarineswaps.org/. These services also provide a way to pay lightning invoices with on-chain payments. 
+Alternative submarine swap services include [boltz.exchange](https://boltz.exchange/) and [submarineswaps.org](http://submarineswaps.org/). These services also provide a way to pay lightning invoices with on-chain payments. 
 
 
 All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
