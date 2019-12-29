@@ -30,9 +30,9 @@ Alternative submarine swap services include [boltz.exchange](https://boltz.excha
 
 ### loop and loopd
 
-To install both the loop client and daemon, please following instructions as detailed on main [repository](https://github.com/lightninglabs/loop).
+To install both the loop client and daemon, follow the instructions as detailed [here](https://github.com/lightninglabs/loop).
 The Loop daemon, loopd, exposes a gRPC API (defaults to port 11010) and a REST API (defaults to port 8081).
-Once installation is complete, run the daemon with sample command line instruction shown below.
+Once the installation is complete, start the daemon with the sample command below. 
 
 ```bash
 ./loopd --lnd.macaroondir=$HOME/.lnd/data/chain/bitcoin/mainnet/ --lnd.host=xxx.xxx.xxx.xx:10010 --lnd.tlspath=$HOME/.lnd/tls.cert --restlisten=xxx.xxx.xxx.xx:8081 --network=mainnet
@@ -41,8 +41,7 @@ Once installation is complete, run the daemon with sample command line instructi
 
 ### kdb+ qloopd.q
 
-To interact with the loop daemon from q, load the qloopd.q script and call the `.loopd.loopInTerms` API to confirm you can communicate
-successfully.
+To interact with the loop daemon from q, first load the qloopd.q script. Then call the `.loopd.loopInTerms` API to confirm you can communicate with the daemon.
 
 ```q
 $q qloopd.q
@@ -54,9 +53,9 @@ max_swap_amount| "2000000"
 cltv_delta     | 1000
 ```
 
-The qloopd.q script assumes loopd is running on the localhost and listening on the default port of 8081. In addition,
+The qloopd.q script assumes loopd is running on the localhost and listening on the default port of 8081. Also,
 it assumes the TLS certificate is in the default location of $HOME/.lnd. If this is not the case, then the following
-functions are provided to overwrite both the URL and TLS location.
+functions will overwrite both the URL and TLS location.
 
 ```q
 q).loopd.setURL["http://xxx.xxx.xxx.xx:8082/v1/loop/"]
