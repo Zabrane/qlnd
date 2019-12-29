@@ -147,7 +147,7 @@ Note: offchain cost may report as 0 after loopd restart during swap
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
 using a qsql query
 
-![](ChannelAfterLoop.png)
+![](img/ChannelAfterLoop.png)
 
 
 ```q
@@ -164,7 +164,7 @@ channel needs rebalancing to increase the inboubd capacity. The local balance ca
 which off-chain funds are swapped for on-chain funds.
 
 
-![](ZapChannelBeforeLoopOut.PNG)
+![](img/ZapChannelBeforeLoopOut.PNG)
 
 
 ```q
@@ -256,7 +256,7 @@ htlc_address| "bc1qyhd7xlv2nqeeem57ktesf375x5xt9446ytyllwxasa8k7e9rs8aswdvs9n"
 
 Once the Loop Out has completed, the updated local balance can be viewed on the wallet UI and confirmed using a qsql query
 
-![](ZapChannelAfterLoopOut.PNG)
+![](img/ZapChannelAfterLoopOut.PNG)
 
 q)exec local_balance from t where remote_pubkey like pubkey
 
@@ -277,7 +277,7 @@ In order to perform a circular payment, first select a channel where you wish to
 For this example, we will use the channel below, with the following channel ID (chan_id).
 
 
-![](SelfPaymentOutboundBefore.PNG)
+![](img/SelfPaymentOutboundBefore.PNG)
 
 ```q
 q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
@@ -339,7 +339,7 @@ status          | "SUCCEEDED"
 
 The channel balance should be seen to update on the wallet UI.
 
-![](SelfPaymentOutboundAfter.PNG)
+![](img/SelfPaymentOutboundAfter.PNG)
 
 ```q
 q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
@@ -354,11 +354,11 @@ The 100sat sent from the chan_id, is reflected as an increase in outbound capaci
 
 Receiving channel before the circular payment was made
 
-![](SelfPaymentInboundBefore.PNG)
+![](img/SelfPaymentInboundBefore.PNG)
 
 Receiving channel after the circular payment was made. The outbound capacity has increased by 100sat, as expected.
 
-![](SelfPaymentInboundAfter.PNG)
+![](img/SelfPaymentInboundAfter.PNG)
 
 
 
