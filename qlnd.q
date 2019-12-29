@@ -253,6 +253,13 @@ p)def decoder(Str):
 p)def encoder(Str):
  return base64.b64encode(Str.encode()).decode()
 
+
+q).lnd.getChanIdByPubKey:{[pubkey]
+    channels:(uj/) enlist@'.lnd.listChannels[][`channels];
+    exec chan_id from channels where remote_pubkey like pubkey
+  }
+
+
 q).lnd.encoder:.p.get[`encoder;<]
 q).lnd.decoder:.p.get[`decoder;<]
 q).lnd.decodeTxid:.p.get[`decodeTxid;<]
