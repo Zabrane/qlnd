@@ -77,7 +77,7 @@ is very high. In such a situation, the amount of funds which can be sent to the 
 channel needs rebalancing to increase the outbound capacity. The local balance can be increaed using a Loop In, in
 which on-chain funds are swapped for off-chain funds.
 
-![](ChannelBeforeLoop.png)
+![](img/ChannelBeforeLoop.png)
 
 In order to perform a Loop In, the channel id first needs to be extracted. This can be done using the commands below.
 
