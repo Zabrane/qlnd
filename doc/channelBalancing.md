@@ -80,18 +80,23 @@ q).lnd.getChanIdByPubKey[pubkey]
 
 ### Request Loop In Terms
 
-Before performing the Loop In, extract the payment terms from the loop service. These details help populate various arguments for the `.loopd.loopIn` command. 
+Before performing the Loop In, extract the payment terms and a quote from the loop service. These details help populate various arguments for the `.loopd.loopIn` command. 
 
 ```q
 q).loopd.loopInTerms[]
-swap_fee_base  | "1000"
-swap_fee_rate  | "100"
+swap_fee_base  | "1200"
 min_swap_amount| "250000"
 max_swap_amount| "2000000"
 cltv_delta     | 1000
+
+q).loopd.loopInQuote["300000"]
+swap_fee | "1200"
+miner_fee| "154"
 ```
 
 ### Execute Loop In
+
+
 
 ```q
 q)input:`amt`loop_in_channel`max_miner_fee`max_swap_fee`external_htlc!(300000;"649448533229961216";"10000";"1100";1b)
