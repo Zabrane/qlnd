@@ -20,9 +20,9 @@ The following sections describe three useful rebalancing techniques. These inclu
 
 There are two different types of swaps
 
-* Loop Out: An Off-chain to On-chain transfer. Here a Loop client sends funds off-chain to an on-chain address. This technique increased the inbound capacity and decreases outbound capacity.
+* Loop Out: An off-chain to on-chain transfer. Here a Loop client sends funds off-chain to an on-chain address. This technique increased the inbound capacity and decreases outbound capacity.
 
-* Loop In: An On-chain to Off-chain transfer. Here a Loop client sends funds on-chain to refill a channel off-chain. This technique decreases the inbound capacity and increases outbound capacity.
+* Loop In: An on-chain to off-chain transfer. Here a Loop client sends funds on-chain to refill a channel off-chain. This technique decreases the inbound capacity and increases outbound capacity.
 
 Alternative submarine swap services include https://boltz.exchange/ and http://submarineswaps.org/. These services also provide a way to pay lightning invoices with on-chain payments. 
 
