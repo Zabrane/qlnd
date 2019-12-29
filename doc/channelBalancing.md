@@ -26,10 +26,6 @@ There are two different types of swaps
 
 Alternative submarine swap services include [boltz.exchange](https://boltz.exchange/) and [submarineswaps.org](http://submarineswaps.org/). These services also provide a way to pay lightning invoices with an on-chain payment. 
 
-
-All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
-Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
-
 ## Setup and Installation
 
 ### loop and loopd
@@ -68,6 +64,10 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 ```
 
 ## Loop In
+
+All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
+Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
+
 
 ### Pre-Loop In: Channel balance
 
