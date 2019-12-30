@@ -120,7 +120,7 @@ htlc_address| "3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ"
 
 ### Send on-chain payment
 
-With the htlc_address returned, the next step is to send on-chain funds to this address.
+With the *htlc_address* returned, the next step is to send on-chain funds to this address.
 This can be performed using the `.lnd.sendCoins` command, which is part of the [qlnd.q](https://github.com/jlucid/qlnd/blob/master/qlnd.q) script.
 
 ```q
