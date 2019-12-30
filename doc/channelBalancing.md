@@ -157,6 +157,8 @@ local_balance          | "431842"
 
 ## Loop Out
 
+In the scenario below, incoming payments imbalance the channel and restrict the ability to receive. In this case, a Loop Out will shift the outbound capacity to the other side of the channel without needing to close it.
+
 ![](img/LoopOutVideo.gif)
 
 ### Pre-Loop Out: Channel balance
