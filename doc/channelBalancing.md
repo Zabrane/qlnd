@@ -70,7 +70,7 @@ In the scenario below, outgoing payments imbalance the channel and restrict the 
 
 ### Pre-Loop In: Channel balance
 
-In the channel image below, almost all the channel capacity is on the remote end and the local balance is very low. With such low outbound capacity, there is a limited ability to send. In this situation, a Loop In can shift some of the remote balance to the local end.
+To perform a Loop In, we take the example channel below where local capacity is very low.
 
 ![](img/ChannelBeforeLoop.png)
 
