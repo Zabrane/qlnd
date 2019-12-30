@@ -70,7 +70,7 @@ In the scenario below, outgoing payments imbalance the channel and restrict the 
 
 ### Pre-Loop In: Channel balance
 
-To perform a Loop In, we take the example channel below where local capacity is very low.
+To perform a Loop In, we take the example channel below where local balance is very low.
 
 ![](img/ChannelBeforeLoop.png)
 
