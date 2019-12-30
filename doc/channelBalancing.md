@@ -161,8 +161,7 @@ local_balance          | "431842"
 
 ### Pre-Loop Out: Channel balance
 
-In the channel image below, the local balance (outbound capacity) is nearing the total channel capacity and the remote balance (inbound capacity) is very low. In such a situation, the amount of funds which can be received is very limited and the
-channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
+To perform a Loop Out, we take the example channel below where remote balance is very low and the channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
 which off-chain funds are swapped for on-chain funds.
 
 
