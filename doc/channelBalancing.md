@@ -146,7 +146,6 @@ Note: offchain cost may report as 0 after loopd restart during swap
 
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
 using a qsql query. The image below was generated using the non-custodial [Zap Wallet](https://zap.jackmallers.com/).
-Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
 
 ![](img/ChannelAfterLoop.png)
 
