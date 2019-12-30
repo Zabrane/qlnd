@@ -64,6 +64,8 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 ## Loop In
 
+![](img/LoopInVideo.gif)
+
 ### Pre-Loop In: Channel balance
 
 In the channel image below, almost all the channel capacity is on the remote end and the local balance is very low. With such low outbound capacity, there is a limited ability to send. In this situation, a Loop In can shift some of the remote balance to the local end.
