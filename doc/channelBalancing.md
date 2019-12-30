@@ -64,7 +64,7 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 ## Loop In
 
-In the scenario below, 
+In the scenario below, outgoing payments imbalance the channel and restrict the ability to send. In this case, a Loop In will shift the inbound capacity to the local side of the channel without needing to close it.  
 
 ![](img/LoopInVideo.gif)
 
