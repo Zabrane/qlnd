@@ -88,19 +88,21 @@ Before performing the Loop In, extract the payment terms and a quote from the lo
 
 ```q
 q).loopd.loopInTerms[]
-swap_fee_base  | "1200"
+swap_fee_base  | "1100"
 min_swap_amount| "250000"
 max_swap_amount| "2000000"
 cltv_delta     | 1000
 
 q).loopd.loopInQuote["300000"]
-swap_fee | "1200"
+swap_fee | "1100"
 miner_fee| "154"
 ```
 
 ### Execute Loop In
 
-
+To perform the Loop In, prepare the input dictionary below, specifying the channel to loop in, *loop_in_channel*.
+The *amt* argument needs to be within the range *min_swap_amount* and *min_swap_amount*.
+The *max_miner_fee* and *max_swap_fee* should exceed the values *swap_fee* and *miner_fee*.
 
 ```q
 q)input:`amt`loop_in_channel`max_miner_fee`max_swap_fee`external_htlc!(300000;"649448533229961216";"10000";"1100";1b)
