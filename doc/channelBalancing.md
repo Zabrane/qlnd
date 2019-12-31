@@ -163,7 +163,7 @@ In the scenario below, incoming payments imbalance the channel and restrict the 
 
 ### Pre-Loop Out: Channel balance
 
-To perform a Loop Out, we take the example channel below where remote balance is very low and the channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
+To perform a Loop Out, we take the example channel below where remote balance is very low and the channel needs rebalancing to increase the inbound capacity. The local balance can be decreased in this case using a Loop Out, in
 which off-chain funds are swapped for on-chain funds.
 
 
