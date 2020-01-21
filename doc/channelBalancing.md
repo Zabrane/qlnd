@@ -10,7 +10,7 @@ keywords: bitcoin, lightning, loop, blockchain, kdb+, q, tickerplant
 # Introduction
 
 In Lightning, open and well-balanced channels are essential for successful payment routing. Every successful payment helps the node operator to earn transaction fees.
-If a channel closes, there is a downtime penalty due to missed fees and it incurs an on-chain mining fee. If a channel is ill-balanced, payments will fail due to insufficient capacity.  Thus, it is important to avoid both channel closing events and ill-balanced channels.
+If a channel closes, there is a downtime penalty due to missed routing fees and it incurs an on-chain mining fee. If a channel is imbalanced, payments will fail due to insufficient capacity.  Thus, it is important to avoid both channel closing events and imbalanced channels.
 
 The following sections describe three useful rebalancing techniques. These include **Loop In**, **Loop Out** and **Circular payments**.
 
@@ -64,17 +64,17 @@ q).loopd.setTLS["/path/to/tlscert/tls.cert"]
 
 ## Loop In
 
-All channel images used below were generated using the non-custodial free [Zap Wallet](https://zap.jackmallers.com/).
-Alternative wallets, including desktop and mobile can be found at [lopp.net](https://www.lopp.net/lightning-information.html)
+In the scenario below, outgoing payments imbalance the channel and restrict the ability to send. In this case, a Loop In will shift the inbound capacity to the local side of the channel without needing to close it.  
 
+![](img/LoopInVideo.gif)
 
 ### Pre-Loop In: Channel balance
 
-In the channel image below, almost all the channel capacity is on the remote end and the local balance is very low. With such low outbound capacity, there is a limited ability to send. In this situation, a Loop In can shift some of the remote balance to the local end.
+To perform a Loop In, we take the example channel below where local balance is very low.
 
 ![](img/ChannelBeforeLoop.png)
 
-In order to perform a Loop In, the channel id first needs to be extracted. This can be done using the commands below.
+In order to perform a Loop In, the channel ID first needs to be extracted. This can be done using the commands below.
 
 ```q
 q)pubkey:"03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f"
@@ -84,18 +84,25 @@ q).lnd.getChanIdByPubKey[pubkey]
 
 ### Request Loop In Terms
 
-Before performing the Loop In, extract the payment terms from the loop service. These details help populate various arguments for the `.loopd.loopIn` command. 
+Before performing the Loop In, extract the payment terms and a quote from the loop service. These details help populate various arguments for the `.loopd.loopIn` command. 
 
 ```q
 q).loopd.loopInTerms[]
-swap_fee_base  | "1000"
-swap_fee_rate  | "100"
+swap_fee_base  | "1100"
 min_swap_amount| "250000"
 max_swap_amount| "2000000"
 cltv_delta     | 1000
+
+q).loopd.loopInQuote["300000"]
+swap_fee | "1100"
+miner_fee| "154"
 ```
 
 ### Execute Loop In
+
+To perform the Loop In, prepare the input dictionary below, specifying the channel to loop in, *loop_in_channel*.
+The *amt* argument needs to be within the range *min_swap_amount* and *min_swap_amount*.
+The *max_miner_fee* and *max_swap_fee* should exceed the values *swap_fee* and *miner_fee*.
 
 ```q
 q)input:`amt`loop_in_channel`max_miner_fee`max_swap_fee`external_htlc!(300000;"649448533229961216";"10000";"1100";1b)
@@ -113,7 +120,7 @@ htlc_address| "3GeNFZxhZXdi69j2bd3ajrTQcPWH17HEfZ"
 
 ### Send on-chain payment
 
-With the htlc_address returned, the next step is to send on-chain funds to this address.
+With the *htlc_address* returned, the next step is to send on-chain funds to this address.
 This can be performed using the `.lnd.sendCoins` command, which is part of the [qlnd.q](https://github.com/jlucid/qlnd/blob/master/qlnd.q) script.
 
 ```q
@@ -138,7 +145,7 @@ Note: offchain cost may report as 0 after loopd restart during swap
 ### Post-Loop In: Channel balance
 
 Once the Loop In has completed, the updated local balance can be viewed on the wallet UI and confirmed
-using a qsql query
+using a qsql query. The image below was generated using the non-custodial [Zap Wallet](https://zap.jackmallers.com/).
 
 ![](img/ChannelAfterLoop.png)
 
@@ -150,10 +157,13 @@ local_balance          | "431842"
 
 ## Loop Out
 
+In the scenario below, incoming payments imbalance the channel and restrict the ability to receive. In this case, a Loop Out will shift the outbound capacity to the other side of the channel without needing to close it.
+
+![](img/LoopOutVideo.gif)
+
 ### Pre-Loop Out: Channel balance
 
-In the channel image below, the local balance (outbound capacity) is nearing the total channel capacity and the remote balance (inbound capacity) is very low. In such a situation, the amount of funds which can be received is very limited and the
-channel needs rebalancing to increase the inboubd capacity. The local balance can be decreased in this case using a Loop Out, in
+To perform a Loop Out, we take the example channel below where remote balance is very low and the channel needs rebalancing to increase the inbound capacity. The local balance can be decreased in this case using a Loop Out, in
 which off-chain funds are swapped for on-chain funds.
 
 
