@@ -151,7 +151,7 @@ using a qsql query. The image below was generated using the non-custodial [Zap W
 
 
 ```q
-q)exec local_balance from t where remote_pubkey like pubkey
+q)exec local_balance from .lnd.channelsTable[] where remote_pubkey like pubkey
 local_balance          | "431842"
 ```
 
@@ -281,8 +281,7 @@ For this example, we will use the channel below, with the following channel ID (
 ![](img/SelfPaymentOutboundBefore.PNG)
 
 ```q
-q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
-q)select chan_id,local_balance,remote_balance from t where chan_id like "620042094792998913"
+q)select chan_id,local_balance,remote_balance from .lnd.channelsTable[] where chan_id like "620042094792998913"
 chan_id              local_balance remote_balance
 -------------------------------------------------
 "620042094792998913" "3491920"     "1504577"
@@ -343,8 +342,7 @@ The channel balance should be seen to update on the wallet UI.
 ![](img/SelfPaymentOutboundAfter.PNG)
 
 ```q
-q)t:(uj/) enlist@' .lnd.listChannels[][`channels]
-q)select chan_id,local_balance,remote_balance from t where chan_id like "620042094792998913"
+q)select chan_id,local_balance,remote_balance from .lnd.channelsTable[] where chan_id like "620042094792998913"
 chan_id              local_balance remote_balance
 -------------------------------------------------
 "620042094792998913" "3491820"     "1504677"
